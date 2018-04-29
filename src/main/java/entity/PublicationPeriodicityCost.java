@@ -6,9 +6,16 @@ public class PublicationPeriodicityCost implements Serializable {
     private int id;
     private int timesPerYear;
     private double cost;
-    private int publicationId;
+    private Integer publicationId;
 
     public PublicationPeriodicityCost() {
+    }
+
+    private PublicationPeriodicityCost(Builder builder) {
+        this.id = builder.id;
+        this.timesPerYear = builder.timesPerYear;
+        this.cost = builder.cost;
+        this.publicationId = builder.publicationId;
     }
 
     public int getId() {
@@ -62,5 +69,47 @@ public class PublicationPeriodicityCost implements Serializable {
         temp = Double.doubleToLongBits(cost);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PublicationPeriodicityCost{");
+        sb.append("id=").append(id);
+        sb.append(", timesPerYear=").append(timesPerYear);
+        sb.append(", cost=").append(cost);
+        sb.append(", publicationId=").append(publicationId);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private int timesPerYear;
+        private double cost;
+        private Integer publicationId;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setTimesPerYear(int timesPerYear) {
+            this.timesPerYear = timesPerYear;
+            return this;
+        }
+
+        public Builder setCost(double cost) {
+            this.cost = cost;
+            return this;
+        }
+
+        public Builder setPublicationId(Integer publicationId) {
+            this.publicationId = publicationId;
+            return this;
+        }
+
+        public PublicationPeriodicityCost build() {
+            return new PublicationPeriodicityCost(this);
+        }
     }
 }

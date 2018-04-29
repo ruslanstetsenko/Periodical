@@ -9,6 +9,11 @@ public class UserRole implements Serializable {
     public UserRole() {
     }
 
+    private UserRole(Builder builder) {
+        this.id = builder.id;
+        this.roleName = builder.roleName;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,5 +43,33 @@ public class UserRole implements Serializable {
     @Override
     public int hashCode() {
         return roleName != null ? roleName.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("UserRole{");
+        sb.append("id=").append(id);
+        sb.append(", roleName='").append(roleName).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private String roleName;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setRoleName(String roleName) {
+            this.roleName = roleName;
+            return this;
+        }
+
+        public UserRole build() {
+            return new UserRole(this);
+        }
     }
 }

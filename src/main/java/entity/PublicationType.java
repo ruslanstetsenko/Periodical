@@ -9,6 +9,11 @@ public class PublicationType implements Serializable {
     public PublicationType() {
     }
 
+    private PublicationType(Builder builder) {
+        this.id = builder.id;
+        this.typeName = builder.typeName;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,5 +43,33 @@ public class PublicationType implements Serializable {
     @Override
     public int hashCode() {
         return typeName != null ? typeName.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PublicationType{");
+        sb.append("id=").append(id);
+        sb.append(", typeName='").append(typeName).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private String typeName;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setTypeName(String typeName) {
+            this.typeName = typeName;
+            return this;
+        }
+
+        public PublicationType build() {
+            return new PublicationType(this);
+        }
     }
 }

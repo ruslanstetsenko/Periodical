@@ -14,6 +14,16 @@ public class LivingAddress implements Serializable {
     public LivingAddress() {
     }
 
+    private LivingAddress(Builder builder) {
+        this.id = builder.id;
+        this.region = builder.region;
+        this.district = builder.district;
+        this.city = builder.city;
+        this.street = builder.street;
+        this.building = builder.building;
+        this.appartment = builder.appartment;
+    }
+
     public int getId() {
         return id;
     }
@@ -94,5 +104,68 @@ public class LivingAddress implements Serializable {
         result = 31 * result + (building != null ? building.hashCode() : 0);
         result = 31 * result + (appartment != null ? appartment.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("LivingAddress{");
+        sb.append("id=").append(id);
+        sb.append(", region='").append(region).append('\'');
+        sb.append(", district='").append(district).append('\'');
+        sb.append(", city='").append(city).append('\'');
+        sb.append(", street='").append(street).append('\'');
+        sb.append(", building='").append(building).append('\'');
+        sb.append(", appartment='").append(appartment).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private String region;
+        private String district;
+        private String city;
+        private String street;
+        private String building;
+        private String appartment;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setRegion(String region) {
+            this.region = region;
+            return this;
+        }
+
+        public Builder setDistrict(String district) {
+            this.district = district;
+            return this;
+        }
+
+        public Builder setCity(String city) {
+            this.city = city;
+            return this;
+        }
+
+        public Builder setStreet(String street) {
+            this.street = street;
+            return this;
+        }
+
+        public Builder setBuilding(String building) {
+            this.building = building;
+            return this;
+        }
+
+        public Builder setAppartment(String appartment) {
+            this.appartment = appartment;
+            return this;
+        }
+
+        public LivingAddress build() {
+            return new LivingAddress(this);
+        }
     }
 }

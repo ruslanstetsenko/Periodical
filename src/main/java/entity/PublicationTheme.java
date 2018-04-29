@@ -9,6 +9,11 @@ public class PublicationTheme implements Serializable {
     public PublicationTheme() {
     }
 
+    private PublicationTheme(Builder builder) {
+        this.id = builder.id;
+        this.themeName = builder.themeName;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,5 +43,33 @@ public class PublicationTheme implements Serializable {
     @Override
     public int hashCode() {
         return themeName != null ? themeName.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PublicationTheme{");
+        sb.append("id=").append(id);
+        sb.append(", themeName='").append(themeName).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private String themeName;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setThemeName(String themeName) {
+            this.themeName = themeName;
+            return this;
+        }
+
+        public PublicationTheme build() {
+            return new PublicationTheme(this);
+        }
     }
 }

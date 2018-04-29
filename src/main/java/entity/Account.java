@@ -10,10 +10,10 @@ public class Account implements Serializable {
     public Account() {
     }
 
-    private Account(AccountBuilder accountBuilder) {
-        this.id = accountBuilder.id;
-        this.login = accountBuilder.login;
-        this.password = accountBuilder.password;
+    private Account(Builder builder) {
+        this.id = builder.id;
+        this.login = builder.login;
+        this.password = builder.password;
     }
 
     public int getId() {
@@ -65,27 +65,27 @@ public class Account implements Serializable {
         return sb.toString();
     }
 
-    public static class AccountBuilder {
+    public static class Builder {
         private int id;
         private String login;
         private String password;
 
-        public AccountBuilder setId(int id) {
+        public Builder setId(int id) {
             this.id = id;
             return this;
         }
 
-        public AccountBuilder setLogin(String login) {
+        public Builder setLogin(String login) {
             this.login = login;
             return this;
         }
 
-        public AccountBuilder setPassword(String password) {
+        public Builder setPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public Account built() {
+        public Account build() {
             return new Account(this);
         }
     }

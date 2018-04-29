@@ -14,6 +14,15 @@ public class PassportIdentNumber implements Serializable {
     public PassportIdentNumber() {
     }
 
+    private PassportIdentNumber(Builder builder) {
+        this.id = builder.id;
+        this.serial = builder.serial;
+        this.number = builder.number;
+        this.dateOfIssue = builder.dateOfIssue;
+        this.issuedBy = builder.issuedBy;
+        this.idNumber = builder.idNumber;
+    }
+
     public int getId() {
         return id;
     }
@@ -75,5 +84,61 @@ public class PassportIdentNumber implements Serializable {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PassportIdentNumber{");
+        sb.append("id=").append(id);
+        sb.append(", serial='").append(serial).append('\'');
+        sb.append(", number=").append(number);
+        sb.append(", dateOfIssue=").append(dateOfIssue);
+        sb.append(", issuedBy='").append(issuedBy).append('\'');
+        sb.append(", idNumber=").append(idNumber);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private String serial;
+        private int number;
+        private Date dateOfIssue;
+        private String issuedBy;
+        private int idNumber;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setSerial(String serial) {
+            this.serial = serial;
+            return this;
+        }
+
+        public Builder setNumber(int number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder setDateOfIssue(Date dateOfIssue) {
+            this.dateOfIssue = dateOfIssue;
+            return this;
+        }
+
+        public Builder setIssuedBy(String issuedBy) {
+            this.issuedBy = issuedBy;
+            return this;
+        }
+
+        public Builder setIdNumber(int idNumber) {
+            this.idNumber = idNumber;
+            return this;
+        }
+
+        public PassportIdentNumber build() {
+            return new PassportIdentNumber(this);
+        }
     }
 }

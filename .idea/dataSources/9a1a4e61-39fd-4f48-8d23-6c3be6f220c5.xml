@@ -1103,7 +1103,7 @@
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="271" parent="232" name="issued by">
+    <column id="271" parent="232" name="issued_by">
       <Position>5</Position>
       <Comment>
 </Comment>

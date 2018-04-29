@@ -16,6 +16,17 @@ public class Subscription implements Serializable {
     public Subscription() {
     }
 
+    private Subscription(Builder builder) {
+        this.id = builder.id;
+        this.subscriptionDate = builder.subscriptionDate;
+        this.subscriptionType = builder.subscriptionType;
+        this.subscriptionCost = builder.subscriptionCost;
+        this.publicationId = builder.publicationId;
+        this.subscriptionStatusId = builder.subscriptionStatusId;
+        this.usersId = builder.usersId;
+        this.subscriptionBillsId = builder.subscriptionBillsId;
+    }
+
     public int getId() {
         return id;
     }
@@ -105,5 +116,75 @@ public class Subscription implements Serializable {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (publicationId != null ? publicationId.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Subscription{");
+        sb.append("id=").append(id);
+        sb.append(", subscriptionDate=").append(subscriptionDate);
+        sb.append(", subscriptionType='").append(subscriptionType).append('\'');
+        sb.append(", subscriptionCost=").append(subscriptionCost);
+        sb.append(", publicationId=").append(publicationId);
+        sb.append(", subscriptionStatusId=").append(subscriptionStatusId);
+        sb.append(", usersId=").append(usersId);
+        sb.append(", subscriptionBillsId=").append(subscriptionBillsId);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private Date subscriptionDate;
+        private String subscriptionType;
+        private double subscriptionCost;
+        private Integer publicationId;
+        private Integer subscriptionStatusId;
+        private Integer usersId;
+        private Integer subscriptionBillsId;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setSubscriptionDate(Date subscriptionDate) {
+            this.subscriptionDate = subscriptionDate;
+            return this;
+        }
+
+        public Builder setSubscriptionType(String subscriptionType) {
+            this.subscriptionType = subscriptionType;
+            return this;
+        }
+
+        public Builder setSubscriptionCost(double subscriptionCost) {
+            this.subscriptionCost = subscriptionCost;
+            return this;
+        }
+
+        public Builder setPublicationId(Integer publicationId) {
+            this.publicationId = publicationId;
+            return this;
+        }
+
+        public Builder setSubscriptionStatusId(Integer subscriptionStatusId) {
+            this.subscriptionStatusId = subscriptionStatusId;
+            return this;
+        }
+
+        public Builder setUsersId(Integer usersId) {
+            this.usersId = usersId;
+            return this;
+        }
+
+        public Builder setSubscriptionBillsId(Integer subscriptionBillsId) {
+            this.subscriptionBillsId = subscriptionBillsId;
+            return this;
+        }
+
+        public Subscription build() {
+            return new Subscription(this);
+        }
     }
 }

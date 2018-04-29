@@ -9,6 +9,11 @@ public class PublicationStatus implements Serializable {
     public PublicationStatus() {
     }
 
+    private PublicationStatus(Builder builder) {
+        this.id = builder.id;
+        this.statusName = builder.statusName;
+    }
+
     public int getId() {
         return id;
     }
@@ -38,5 +43,33 @@ public class PublicationStatus implements Serializable {
     @Override
     public int hashCode() {
         return statusName != null ? statusName.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PublicationStatus{");
+        sb.append("id=").append(id);
+        sb.append(", statusName='").append(statusName).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private String statusName;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setStatusName(String statusName) {
+            this.statusName = statusName;
+            return this;
+        }
+
+        public PublicationStatus build() {
+            return new PublicationStatus(this);
+        }
     }
 }
