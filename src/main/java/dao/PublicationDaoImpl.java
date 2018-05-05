@@ -44,6 +44,14 @@ public class PublicationDaoImpl implements PublicationDao {
     }
 
     @Override
+    public int getLastPublicationId(Connection connection) throws SQLException {
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT MAX(id) FROM publication");
+        resultSet.next();
+        return resultSet.getInt(1);
+    }
+
+    @Override
     public void update(Publication publication, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE publication SET name=?, issn_number=?, registration_date=?, website=?, publication_type_id=?, publication_status_id=?, publication_theme_id=? WHERE id=?");
         preparedStatement.setString(1, publication.getName());
@@ -58,9 +66,9 @@ public class PublicationDaoImpl implements PublicationDao {
     }
 
     @Override
-    public void delete(Publication publication, Connection connection) throws SQLException {
+    public void delete(int publicationId, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM publication WHERE id=?");
-        preparedStatement.setInt(1, publication.getId());
+        preparedStatement.setInt(1, publicationId);
         preparedStatement.executeUpdate();
     }
 

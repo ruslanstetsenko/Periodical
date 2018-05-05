@@ -10,19 +10,20 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
 
     @Override
     public void create(SubscriptionBill subscriptionBill, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO subscription_bills (total_cost, validity_period, paid, bill_nimber) VALUES (?, ?, ?, ?)");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO subscription_bills (total_cost, validity_period, paid, bill_nimber, bill_set_day, user_id) VALUES (?, ?, ?, ?, ?, ?)");
         preparedStatement.setDouble(1, subscriptionBill.getTotalCost());
         preparedStatement.setInt(2, subscriptionBill.getValidityPeriod());
         preparedStatement.setByte(3, subscriptionBill.getPaid());
         preparedStatement.setString(4, subscriptionBill.getBillNumber());
-
+        preparedStatement.setDate(5, subscriptionBill.getBillSetDay());
+        preparedStatement.setInt(6, subscriptionBill.getUserId());
         preparedStatement.execute();
     }
 
     @Override
     public SubscriptionBill read(int id, Connection connection) throws SQLException {
         SubscriptionBill subscriptionBill = new SubscriptionBill();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT total_cost, validity_period, paid, bill_nimber FROM subscription_bills WHERE id=?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT total_cost, validity_period, paid, bill_nimber, bill_set_day,user_id FROM subscription_bills WHERE id=?");
         preparedStatement.setInt(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -32,6 +33,8 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
         subscriptionBill.setValidityPeriod(resultSet.getInt("validity_period"));
         subscriptionBill.setPaid(resultSet.getByte("paid"));
         subscriptionBill.setBillNumber(resultSet.getString("bill_nimber"));
+        subscriptionBill.setBillSetDay(resultSet.getDate("bill_set_day"));
+        subscriptionBill.setUserId(resultSet.getInt("user_id"));
 
         return subscriptionBill;
     }
@@ -44,13 +47,14 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
         preparedStatement.setByte(3, subscriptionBill.getPaid());
         preparedStatement.setString(4, subscriptionBill.getBillNumber());
         preparedStatement.setInt(5, subscriptionBill.getId());
+
         preparedStatement.executeUpdate();
     }
 
     @Override
-    public void delete(SubscriptionBill subscriptionBill, Connection connection) throws SQLException {
+    public void delete(int subscriptionBillId, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM subscription_bills WHERE id=?");
-        preparedStatement.setInt(1, subscriptionBill.getId());
+        preparedStatement.setInt(1, subscriptionBillId);
         preparedStatement.executeUpdate();
     }
 
@@ -70,5 +74,13 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
                     .build());
         }
         return list;
+    }
+
+    @Override
+    public int readLastId(Connection connection) throws SQLException {
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT MAX(id) FROM subscription_bills");
+        resultSet.next();
+        return resultSet.getInt(1);
     }
 }

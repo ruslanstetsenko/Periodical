@@ -1,6 +1,9 @@
 package entity;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class SubscriptionBill implements Serializable {
     private int id;
@@ -8,8 +11,17 @@ public class SubscriptionBill implements Serializable {
     private int validityPeriod;
     private byte paid;
     private String billNumber;
+    private Date billSetDay;
+    private int userId;
+
+//    public SubscriptionBill() {
+//    }
 
     public SubscriptionBill() {
+        this.validityPeriod = 5;
+        this.paid = 1;
+        this.billNumber = "";
+        this.billSetDay = (Date) Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private SubscriptionBill(Builder builder) {
@@ -18,6 +30,7 @@ public class SubscriptionBill implements Serializable {
         this.validityPeriod = builder.validityPeriod;
         this.paid = builder.paid;
         this.billNumber = builder.billNumber;
+        this.userId = builder.userId;
     }
 
     public int getId() {
@@ -60,6 +73,22 @@ public class SubscriptionBill implements Serializable {
         this.billNumber = billNumber;
     }
 
+    public Date getBillSetDay() {
+        return billSetDay;
+    }
+
+    public void setBillSetDay(Date billSetDay) {
+        this.billSetDay = billSetDay;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,6 +112,7 @@ public class SubscriptionBill implements Serializable {
         sb.append(", validityPeriod=").append(validityPeriod);
         sb.append(", paid=").append(paid);
         sb.append(", billNumber='").append(billNumber).append('\'');
+        sb.append(", billSetDay=").append(billSetDay);
         sb.append('}');
         return sb.toString();
     }
@@ -93,6 +123,7 @@ public class SubscriptionBill implements Serializable {
         private int validityPeriod;
         private byte paid;
         private String billNumber;
+        private int userId;
 
         public Builder setId(int id) {
             this.id = id;
@@ -111,6 +142,11 @@ public class SubscriptionBill implements Serializable {
 
         public Builder setPaid(byte paid) {
             this.paid = paid;
+            return this;
+        }
+
+        public Builder setUserId(int userId) {
+            this.userId = userId;
             return this;
         }
 

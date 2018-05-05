@@ -42,6 +42,26 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     }
 
     @Override
+    public Subscription readByBill(int subscBillId, Connection connection) throws SQLException {
+        Subscription subscription = new Subscription();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, subscription_date, subscription_type, subscription_cost, publication_id,subscription_status_id,users_id, subscription_bills_id FROM subscription WHERE subscription_bills_id=?");
+        preparedStatement.setInt(1, subscBillId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        subscription.setId(resultSet.getInt("id"));
+        subscription.setSubscriptionDate(resultSet.getDate("subscription_date"));
+        subscription.setSubscriptionType(resultSet.getString("subscription_type"));
+        subscription.setSubscriptionCost(resultSet.getDouble("subscription_cost"));
+        subscription.setPublicationId(resultSet.getInt("publication_id"));
+        subscription.setSubscriptionStatusId(resultSet.getInt("subscription_status_id"));
+        subscription.setUsersId(resultSet.getInt("user_id"));
+        subscription.setSubscriptionBillsId(subscBillId);
+
+        return subscription;
+    }
+
+    @Override
     public void update(Subscription subscription, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE subscription SET subscription_date=?, subscription_type=?, subscription_cost=?, publication_id=?, subscription_status_id=?, users_id=?, subscription_bills_id=? WHERE id=?");
         preparedStatement.setDate(1, subscription.getSubscriptionDate());
