@@ -1,6 +1,6 @@
 package dao;
 
-import entity.SubscriptionStatus;
+import beens.SubscriptionStatus;
 
 import java.sql.*;
 import java.util.ArrayList;

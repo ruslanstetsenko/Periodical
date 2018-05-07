@@ -1,6 +1,6 @@
 package dao;
 
-import entity.UserRole;
+import beens.UserRole;
 
 import java.sql.*;
 import java.util.ArrayList;

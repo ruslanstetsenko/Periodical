@@ -2,7 +2,7 @@ package service;
 
 import dao.ContactInfoDao;
 import dao.DaoFactory;
-import entity.ContactInfo;
+import beens.ContactInfo;
 
 import java.sql.Connection;
 import java.sql.SQLException;

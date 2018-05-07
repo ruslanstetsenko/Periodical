@@ -1,6 +1,6 @@
 package dao;
 
-import entity.PublicationStatus;
+import beens.PublicationStatus;
 
 import java.sql.*;
 import java.util.ArrayList;

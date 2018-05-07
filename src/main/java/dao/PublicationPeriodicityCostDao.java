@@ -1,6 +1,6 @@
 package dao;
 
-import entity.PublicationPeriodicityCost;
+import beens.PublicationPeriodicityCost;
 
 import java.sql.Connection;
 import java.sql.SQLException;

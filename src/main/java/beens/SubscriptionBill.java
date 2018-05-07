@@ -1,4 +1,4 @@
-package entity;
+package beens;
 
 import java.io.Serializable;
 import java.sql.Date;

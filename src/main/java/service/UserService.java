@@ -3,7 +3,7 @@ package service;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.UserDao;
-import entity.User;
+import beens.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,12 +1,10 @@
 package service;
 
-import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.SubscriptionDao;
-import entity.Publication;
-import entity.Subscription;
-import entity.SubscriptionBill;
-import entity.User;
+import beens.Publication;
+import beens.Subscription;
+import beens.User;
 
 import java.sql.Connection;
 import java.sql.Date;

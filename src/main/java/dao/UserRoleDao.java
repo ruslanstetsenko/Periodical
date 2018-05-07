@@ -1,6 +1,6 @@
 package dao;
 
-import entity.UserRole;
+import beens.UserRole;
 
 import java.sql.Connection;
 import java.sql.SQLException;

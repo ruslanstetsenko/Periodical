@@ -2,7 +2,7 @@ package service;
 
 import connection.ConnectionPool;
 import dao.*;
-import entity.*;
+import beens.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,13 +40,13 @@ public class UserWindows {
             subscriptionList = subscriptionDao.getAll(connection)
                     .stream()
                     .filter(subscription -> subscription.getUsersId() == user.getId())
-                    .filter(subscription -> subscription.getSubscriptionStatusId() == currentSubscStatusId)
+                    .filter(subscription -> subscription.getSubscriptionStatusId() == 1)//check id
                     .collect(Collectors.toList());
             subscriptionAmount = subscriptionList.size();
             subscriptionBillList = subscriptionBillDao.getAll(connection)
                     .stream()
                     .filter(subscriptionBill -> subscriptionBill.getUserId() == user.getId())
-                    .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillStatus)
+                    .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
                     .collect(Collectors.toList());
             subscriptionBillAmount = subscriptionBillList.size();
         } catch (SQLException e) {
@@ -61,7 +61,7 @@ public class UserWindows {
             subscriptionList = subscriptionDao.getAll(connection)
                     .stream()
                     .filter(subscription -> subscription.getUsersId() == user.getId())
-                    .filter(subscription -> subscription.getSubscriptionStatusId() == currentSubscStatusId)
+                    .filter(subscription -> subscription.getSubscriptionStatusId() == status.getId())
                     .collect(Collectors.toList());
         } catch (SQLException e) {
             e.printStackTrace();

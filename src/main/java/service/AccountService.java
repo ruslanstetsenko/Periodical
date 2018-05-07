@@ -2,7 +2,7 @@ package service;
 
 import dao.AccountDao;
 import dao.DaoFactory;
-import entity.Account;
+import beens.Account;
 
 import java.sql.Connection;
 import java.sql.SQLException;

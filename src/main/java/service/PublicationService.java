@@ -2,7 +2,7 @@ package service;
 
 import connection.ConnectionPool;
 import dao.*;
-import entity.*;
+import beens.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;

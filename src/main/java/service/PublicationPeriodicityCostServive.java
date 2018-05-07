@@ -3,7 +3,7 @@ package service;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.PublicationPeriodicityCostDao;
-import entity.PublicationPeriodicityCost;
+import beens.PublicationPeriodicityCost;
 
 import java.sql.Connection;
 import java.sql.SQLException;

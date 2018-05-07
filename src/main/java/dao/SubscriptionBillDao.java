@@ -1,6 +1,6 @@
 package dao;
 
-import entity.SubscriptionBill;
+import beens.SubscriptionBill;
 
 import java.sql.Connection;
 import java.sql.SQLException;

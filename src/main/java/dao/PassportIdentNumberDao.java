@@ -1,6 +1,6 @@
 package dao;
 
-import entity.PassportIdentNumber;
+import beens.PassportIdentNumber;
 
 import java.sql.Connection;
 import java.sql.SQLException;

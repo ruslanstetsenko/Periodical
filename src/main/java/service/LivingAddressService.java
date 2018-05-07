@@ -2,7 +2,7 @@ package service;
 
 import dao.DaoFactory;
 import dao.LivingAddressDao;
-import entity.LivingAddress;
+import beens.LivingAddress;
 
 import java.sql.Connection;
 import java.sql.SQLException;

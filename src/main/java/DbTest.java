@@ -1,7 +1,7 @@
 import connection.ConnectionPool;
 import dao.AccountDao;
 import dao.AccountDaoImpl;
-import entity.Account;
+import beens.Account;
 
 import java.sql.Connection;
 import java.sql.SQLException;

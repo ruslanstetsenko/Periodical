@@ -4,8 +4,8 @@ import connection.ConnectionPool;
 import dao.AccountDao;
 import dao.DaoFactory;
 import dao.UserDao;
-import entity.Account;
-import entity.User;
+import beens.Account;
+import beens.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,9 +30,9 @@ public class Login {
                         if (accountId == user1.getAccountsId()) {
                             user = user1;
                             if (user.getUserRoleId() == 1) {
-                                new UserWindows().loadAdminWindow(user, connection);
+                                new AdminWindows().loadAdminWindow(connection);
                             } else {
-                                new UserWindows().loadUserWindow(connection);
+                                new UserWindows().loadUserWindow(user, connection);
                             }
                             break;
                         }

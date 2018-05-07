@@ -2,9 +2,10 @@ package service;
 
 import connection.ConnectionPool;
 import dao.*;
-import entity.*;
+import beens.*;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -25,11 +26,7 @@ public class AdminWindows {
     private List<Publication> publicationList;
     private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
     private List<SubscriptionBill> subscriptionBillList;
-
-    private int currentPubStatusId = 1;
-    private int currentPubTypeId = 1;
-    private int currentPubThemeId = 1;
-    private int currentBillStatus = 1;
+    private List<User> userList;
 
     private int publicationsAmount;
     private int subscriptionBillAmount;
@@ -39,22 +36,21 @@ public class AdminWindows {
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()
-                    .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-                    .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-                    .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
+                    .filter(publication -> publication.getPublicationStatusId() == 1)//check id
                     .collect(Collectors.toList());
             publicationsAmount = publicationList.size();
             subscriptionBillList = subscriptionBillDao.getAll(connection)
                     .stream()
-                    .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillStatus)
+                    .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
                     .collect(Collectors.toList());
             subscriptionBillAmount = subscriptionBillList.size();
+// add user list
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public List<Publication> selectPublicationsByStatus(PublicationStatus status) {
+    public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
         publicationList = null;
         try {
@@ -77,7 +73,7 @@ public class AdminWindows {
         return publicationList;
     }
 
-    public List<Publication> selectPublicationsByTheme(PublicationTheme theme) {
+    public List<Publication> selectPublicationsByTheme(PublicationTheme theme, int currentPubStatusId, int currentPubTypeId) {
         Connection connection = ConnectionPool.getConnection();
         publicationList = null;
         try {
@@ -100,7 +96,7 @@ public class AdminWindows {
         return publicationList;
     }
 
-    public List<Publication> selectPublicationsByType(PublicationType type) {
+    public List<Publication> selectPublicationsByType(PublicationType type, int currentPubStatusId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
         publicationList = null;
         try {
@@ -123,7 +119,7 @@ public class AdminWindows {
         return publicationList;
     }
 
-    public void addNewPublication(String name, int issnNumber, LocalDate registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId) {
+    public void addNewPublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
         Publication publicationNew = new Publication.Builder()
                 .setName(name)
@@ -159,7 +155,7 @@ public class AdminWindows {
         }
     }
 
-    public void updatePublication(String name, int issnNumber, LocalDate registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId) {
+    public void updatePublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
         Publication publication = new Publication.Builder()
                 .setName(name)
@@ -194,7 +190,7 @@ public class AdminWindows {
         }
     }
 
-    public void deletePublication(int publicationId) {
+    public void deletePublication(int publicationId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
         try {
             publicationDao.delete(publicationId, connection);
@@ -259,7 +255,7 @@ public class AdminWindows {
         }
     }
 
-    public void deleteSubscriptionBill(SubscriptionBill subscriptionBill) {
+    public void deleteSubscriptionBill(SubscriptionBill subscriptionBill, int currentBillStatus) {
         LocalDate setBill = LocalDate.ofInstant(subscriptionBill.getBillSetDay().toInstant(), ZoneId.systemDefault());
         if (subscriptionBill.getValidityPeriod() >
                 Period.between(setBill, LocalDate.now()).getDays()) {

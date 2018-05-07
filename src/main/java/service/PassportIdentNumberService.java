@@ -2,7 +2,7 @@ package service;
 
 import dao.DaoFactory;
 import dao.PassportIdentNumberDao;
-import entity.PassportIdentNumber;
+import beens.PassportIdentNumber;
 
 import java.sql.Connection;
 import java.sql.SQLException;

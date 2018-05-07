@@ -1,6 +1,6 @@
 package dao;
 
-import entity.ContactInfo;
+import beens.ContactInfo;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -3,9 +3,9 @@ package service;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.SubscriptionBillDao;
-import entity.Subscription;
-import entity.SubscriptionBill;
-import entity.User;
+import beens.Subscription;
+import beens.SubscriptionBill;
+import beens.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;

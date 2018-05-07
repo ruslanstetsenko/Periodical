@@ -1,15 +1,15 @@
-package entity;
+package beens;
 
 import java.io.Serializable;
 
-public class SubscriptionStatus implements Serializable {
+public class PublicationStatus implements Serializable {
     private int id;
     private String statusName;
 
-    public SubscriptionStatus() {
+    public PublicationStatus() {
     }
 
-    private SubscriptionStatus(Builder builder) {
+    private PublicationStatus(Builder builder) {
         this.id = builder.id;
         this.statusName = builder.statusName;
     }
@@ -35,7 +35,7 @@ public class SubscriptionStatus implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SubscriptionStatus that = (SubscriptionStatus) o;
+        PublicationStatus that = (PublicationStatus) o;
 
         return statusName != null ? statusName.equals(that.statusName) : that.statusName == null;
     }
@@ -47,7 +47,7 @@ public class SubscriptionStatus implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("SubscriptionStatus{");
+        final StringBuffer sb = new StringBuffer("PublicationStatus{");
         sb.append("id=").append(id);
         sb.append(", statusName='").append(statusName).append('\'');
         sb.append('}');
@@ -68,8 +68,8 @@ public class SubscriptionStatus implements Serializable {
             return this;
         }
 
-        public SubscriptionStatus build() {
-            return new SubscriptionStatus(this);
+        public PublicationStatus build() {
+            return new PublicationStatus(this);
         }
     }
 }
