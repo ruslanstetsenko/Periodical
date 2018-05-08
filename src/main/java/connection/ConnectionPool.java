@@ -2,9 +2,14 @@ package connection;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -15,14 +20,17 @@ public final class ConnectionPool {
     private final static String DB_URL = "url";
     private final static String DB_DRIVER_CLASS = "driver.class.name";
 
-    private static Properties properties;
+    private static Properties properties = new Properties();
+    private static ClassLoader classLoader;
+    private static InputStream inputStream;
     private static BasicDataSource dataSource;
+
 
     static {
         try {
-            properties = new Properties();
-            properties.load(new FileInputStream("src/main/resources/database.properties"));
-
+            classLoader = Thread.currentThread().getContextClassLoader();
+            inputStream = classLoader.getResourceAsStream("database.properties");
+            properties.load(inputStream);
             dataSource = new BasicDataSource();
             dataSource.setDriverClassName(properties.getProperty(DB_DRIVER_CLASS));
             dataSource.setUrl(properties.getProperty(DB_URL));
@@ -50,5 +58,22 @@ public final class ConnectionPool {
         }
         return connection;
     }
+//
+//    public static Connection getConnection() {
+//        Connection connection = null;
+//        try {
+//            Context initialContext = new InitialContext();
+//            Context envContext = (Context) initialContext.lookup("java:comp/env");
+//            DataSource dataSource = (DataSource) envContext.lookup("jdbc/periodical");
+//            connection = dataSource.getConnection();
+//            connection.setAutoCommit(false);
+//        } catch (NamingException e) {
+//            System.out.println("Exception!!!!!!");
+//            e.printStackTrace();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return connection;
+//    }
 
 }

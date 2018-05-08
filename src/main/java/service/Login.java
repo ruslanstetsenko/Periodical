@@ -13,7 +13,8 @@ import java.util.List;
 
 public class Login {
 
-    public void enterInAccount(String login, String password) {
+    public int enterInAccount(String login, String password) {
+        int userRole = 1;
         AccountDao accountDao = DaoFactory.getAccountDao();
         UserDao userDao = DaoFactory.getUserDao();
         Connection connection = ConnectionPool.getConnection();
@@ -32,6 +33,7 @@ public class Login {
                             if (user.getUserRoleId() == 1) {
                                 new AdminWindows().loadAdminWindow(connection);
                             } else {
+                                userRole = 2;
                                 new UserWindows().loadUserWindow(user, connection);
                             }
                             break;
@@ -39,7 +41,8 @@ public class Login {
                     }
                     break;
                 }
-                    //wrong login or password
+                //wrong login or password
+                userRole = 3;
             }
 
         } catch (SQLException e) {
@@ -51,6 +54,7 @@ public class Login {
                 e.printStackTrace();
             }
         }
+        return userRole;
     }
 //
 //    private void loadAdminWindow(Connection connection) throws SQLException {

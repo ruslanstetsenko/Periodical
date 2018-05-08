@@ -14,9 +14,9 @@
     <form name="loginForm" method="get" action="controller">
         <input type="hidden" name="command" value="okLogin">
         Login:
-        <input type="text" name="Login" placeholder="login"><br/>
+        <input type="text" name="login" placeholder="login"><br/>
         Password:
-        <input type="password" name="Passworb" placeholder="password"><br/>
+        <input type="password" name="password" placeholder="password"><br/>
         ${errorLoginMessage}<br/>
         ${incorrectActio}<br/>
         ${nullPage}<br/>

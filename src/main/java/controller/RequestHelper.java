@@ -12,6 +12,7 @@ public final class RequestHelper {
 
     private RequestHelper() {
         commands.put("addPublicationToSubscription", new AddPublicationToSubscriptionCommand());
+        commands.put("cancelCreatePublication", new CancelCreatePublicationCommand());
         commands.put("cancelEditPublication", new CancelEditPublicationCommand());
         commands.put("cancelEditSubscription", new CancelEditPublicationCommand());
         commands.put("cancelLogin", new CancelLoginComand());
@@ -26,9 +27,9 @@ public final class RequestHelper {
         commands.put("okEditPublication", new OkEditPublicationCommand());
         commands.put("okEditSubscription", new OkEditSubscriptionCommand());
         commands.put("okLogin", new OkLoginComand());
-        commands.put("pressShowAboutBill", new PressShowAboutBillCommand());
-        commands.put("pressShowAboutPublication", new PressShowAboutPublicationCommand());
-        commands.put("pressShowAboutSubscription", new PressShowAboutSubscriptionCommand());
+        commands.put("showAboutBill", new PressShowAboutBillCommand());
+        commands.put("showAboutPublication", new PressShowAboutPublicationCommand());
+        commands.put("showAboutSubscription", new PressShowAboutSubscriptionCommand());
         commands.put("selectBillsByStatusByUser", new SelectBillsByStatusByUserCommand());
         commands.put("selectBillsByStatus", new SelectBillsByStatusCommand());
         commands.put("selectPublicationsAdminWindow", new SelectPublicationsAdminWindowCommand());
