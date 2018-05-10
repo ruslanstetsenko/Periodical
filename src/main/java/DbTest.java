@@ -1,10 +1,8 @@
 import beens.ContactInfo;
+import beens.SubscriptionBill;
 import connection.ConnectionPool;
-import dao.AccountDao;
-import dao.AccountDaoImpl;
+import dao.*;
 import beens.Account;
-import dao.ContactInfoDao;
-import dao.DaoFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +12,10 @@ public class DbTest {
 
     public static void main(String[] args) throws SQLException {
 //        testAccount();
-        testContactInfo();
+//        testContactInfo();
+//        testSubscription();
+//        testPublicationType();
+        testPublicationTheme();
     }
 
     private static void testAccount() throws SQLException {
@@ -122,4 +123,25 @@ public class DbTest {
             System.out.println(contactInfo);
         }
     }
+
+    private static void testSubscription() throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
+        System.out.println(subscriptionDao.getSubscriprionAndPubName(connection, 3));
+
+    }
+
+    private static void testPublicationType() throws SQLException{
+        Connection connection = ConnectionPool.getConnection();
+        PublicationTypeDao publicationTypeDao = DaoFactory.getPublicationTypeDao();
+        System.out.println(publicationTypeDao.read(4, connection));
+    }
+
+    private static void testPublicationTheme() throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        PublicationThemeDao publicationThemeDao = DaoFactory.getPublicationThemeDao();
+        System.out.println(publicationThemeDao.read(5, connection));
+
+    }
+
 }

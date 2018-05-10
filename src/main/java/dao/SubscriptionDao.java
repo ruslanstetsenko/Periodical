@@ -5,6 +5,7 @@ import beens.Subscription;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface SubscriptionDao {
 
@@ -14,5 +15,5 @@ public interface SubscriptionDao {
     public void update(Subscription subscription, Connection connection) throws SQLException;
     public void delete(Subscription subscription, Connection connection) throws SQLException;
     public List<Subscription> getAll(Connection connection) throws SQLException;
-
+    public Map<String, Subscription> getSubscriprionAndPubName(Connection connection, int userId) throws SQLException;
 }

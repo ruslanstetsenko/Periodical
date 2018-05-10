@@ -68,16 +68,18 @@ public class PublicationService {
         }
     }
 
-    public void showAboutPublication(Publication publication) {
+    public Publication showAboutPublication(int publicationId) {
         Connection connection = ConnectionPool.getConnection();
+        Publication publication = new Publication();
         try {
+            publication = publicationDao.read(publicationId, connection);
             PublicationType publicationType = publicationTypeDao.read(publication.getPublicationTypeId(), connection);
             PublicationTheme publicationTheme = publicationThemeDao.read(publication.getPublicationThemeId(), connection);
             publicationPeriodicityCostList = publicationPeriodicityCostDao.getAll(connection)
                     .stream()
-                    .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == publication.getId())
+                    .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == publicationId)
                     .collect(Collectors.toList());
-        } catch (SQLException e) {
+            } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -86,6 +88,8 @@ public class PublicationService {
                 e.printStackTrace();
             }
         }
+
+        return publication;
     }
 
     public void deletePublication(Publication publication) {

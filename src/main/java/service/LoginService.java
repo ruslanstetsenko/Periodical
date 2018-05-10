@@ -11,10 +11,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Login {
+public class LoginService {
 
-    public int enterInAccount(String login, String password) {
-        int userRole = 1;
+    public int [] enterInAccount(String login, String password) {
+        int [] arr = new int[2];
         AccountDao accountDao = DaoFactory.getAccountDao();
         UserDao userDao = DaoFactory.getUserDao();
         Connection connection = ConnectionPool.getConnection();
@@ -31,10 +31,13 @@ public class Login {
                         if (accountId == user1.getAccountsId()) {
                             user = user1;
                             if (user.getUserRoleId() == 1) {
-                                new AdminWindows().loadAdminWindow(connection);
+                                arr[0] = 1;
+                                arr[1] = user.getId();
+//                                new AdminWindowsService().loadAdminWindow(connection);
                             } else {
-                                userRole = 2;
-                                new UserWindows().loadUserWindow(user, connection);
+                                arr[0] = 2;
+                                arr[1] = user.getId();
+//                                new UserWindowsService().loadUserWindow(user, connection);
                             }
                             break;
                         }
@@ -42,7 +45,6 @@ public class Login {
                     break;
                 }
                 //wrong login or password
-                userRole = 3;
             }
 
         } catch (SQLException e) {
@@ -54,7 +56,7 @@ public class Login {
                 e.printStackTrace();
             }
         }
-        return userRole;
+        return arr;
     }
 //
 //    private void loadAdminWindow(Connection connection) throws SQLException {

@@ -10,10 +10,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AdminWindows {
+public class AdminWindowsService {
 
     private PublicationDao publicationDao = DaoFactory.getPublicationDao();
     private PublicationTypeDao publicationTypeDao = DaoFactory.getPublicationTypeDao();
@@ -23,36 +24,42 @@ public class AdminWindows {
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
     private UserDao userDao = DaoFactory.getUserDao();
 
-    private List<Publication> publicationList;
     private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
-    private List<SubscriptionBill> subscriptionBillList;
     private List<User> userList;
 
     private int publicationsAmount;
     private int subscriptionBillAmount;
 
 
-    public void loadAdminWindow(Connection connection) {
+    public List[] loadAdminWindow() {
+        Connection connection = ConnectionPool.getConnection();
+        List<Publication> publicationList = new ArrayList<>();
+        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
+
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()
                     .filter(publication -> publication.getPublicationStatusId() == 1)//check id
                     .collect(Collectors.toList());
-            publicationsAmount = publicationList.size();
             subscriptionBillList = subscriptionBillDao.getAll(connection)
                     .stream()
                     .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
                     .collect(Collectors.toList());
-            subscriptionBillAmount = subscriptionBillList.size();
-// add user list
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return new List[]{publicationList, subscriptionBillList};
     }
 
     public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
-        publicationList = null;
+        List<Publication> publicationList = new ArrayList<>();
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()
@@ -75,7 +82,7 @@ public class AdminWindows {
 
     public List<Publication> selectPublicationsByTheme(PublicationTheme theme, int currentPubStatusId, int currentPubTypeId) {
         Connection connection = ConnectionPool.getConnection();
-        publicationList = null;
+        List<Publication> publicationList = new ArrayList<>();
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()
@@ -98,7 +105,7 @@ public class AdminWindows {
 
     public List<Publication> selectPublicationsByType(PublicationType type, int currentPubStatusId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
-        publicationList = null;
+        List<Publication> publicationList = new ArrayList<>();
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()
@@ -121,6 +128,7 @@ public class AdminWindows {
 
     public void addNewPublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
+        List<Publication> publicationList = new ArrayList<>();
         Publication publicationNew = new Publication.Builder()
                 .setName(name)
                 .setIssnNumber(issnNumber)
@@ -157,6 +165,7 @@ public class AdminWindows {
 
     public void updatePublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
+        List<Publication> publicationList = new ArrayList<>();
         Publication publication = new Publication.Builder()
                 .setName(name)
                 .setIssnNumber(issnNumber)
@@ -192,6 +201,7 @@ public class AdminWindows {
 
     public void deletePublication(int publicationId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();
+        List<Publication> publicationList = new ArrayList<>();
         try {
             publicationDao.delete(publicationId, connection);
             connection.commit();
@@ -220,6 +230,7 @@ public class AdminWindows {
 
     public List<SubscriptionBill> selectBillsByStatus(byte status) {
         Connection connection = ConnectionPool.getConnection();
+        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         subscriptionBillList = null;
         try {
             subscriptionBillList = subscriptionBillDao.getAll(connection)
@@ -260,6 +271,7 @@ public class AdminWindows {
         if (subscriptionBill.getValidityPeriod() >
                 Period.between(setBill, LocalDate.now()).getDays()) {
             Connection connection = ConnectionPool.getConnection();
+            List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
             try {
                 subscriptionBillDao.delete(subscriptionBill.getId(), connection);
                 connection.commit();
@@ -267,7 +279,7 @@ public class AdminWindows {
                         .stream()
                         .filter(subscriptionBill1 -> subscriptionBill1.getPaid() == currentBillStatus)
                         .collect(Collectors.toList());
-                publicationsAmount = publicationList.size();
+//                publicationsAmount = publicationList.size();
             } catch (SQLException e) {
                 e.printStackTrace();
                 try {

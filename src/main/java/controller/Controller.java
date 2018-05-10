@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/controller")
+@WebServlet(name = "Controller", urlPatterns = {"/controller"})
 public class Controller extends HttpServlet implements Servlet {
 
     RequestHelper requestHelper = RequestHelper.getInstance();
@@ -32,8 +32,8 @@ public class Controller extends HttpServlet implements Servlet {
     private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         Command command = requestHelper.getCommand(request);
         String page = command.execute(request, response);
-
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
-        dispatcher.forward(request, response);
+//        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
+//        dispatcher.forward(request, response);
+        request.getRequestDispatcher(page).forward(request, response);
     }
 }

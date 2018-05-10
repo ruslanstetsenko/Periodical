@@ -8,6 +8,7 @@ import java.io.IOException;
 public class CreatePublicationCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return null;
+
+        return "/jsps/createPublication.jsp";
     }
 }

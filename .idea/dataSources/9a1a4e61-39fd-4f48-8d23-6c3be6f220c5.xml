@@ -1307,7 +1307,6 @@
     <column id="307" parent="238" name="subscription_type">
       <Position>3</Position>
       <DataType>varchar(15)|0s</DataType>
-      <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="308" parent="238" name="subscription_cost">

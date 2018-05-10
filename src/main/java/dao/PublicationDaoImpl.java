@@ -38,7 +38,7 @@ public class PublicationDaoImpl implements PublicationDao {
         publication.setWebsite(resultSet.getString("website"));
         publication.setPublicationTypeId(resultSet.getInt("publication_type_id"));
         publication.setPublicationStatusId(resultSet.getInt("publication_status_id"));
-        publication.setPublicationThemeId(resultSet.getInt("publication_type_id"));
+        publication.setPublicationThemeId(resultSet.getInt("publication_theme_id"));
 
         return publication;
     }

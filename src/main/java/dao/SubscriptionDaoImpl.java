@@ -3,8 +3,7 @@ package dao;
 import beens.Subscription;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SubscriptionDaoImpl implements SubscriptionDao {
 
@@ -101,5 +100,26 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     .build());
         }
         return list;
+    }
+
+    @Override
+    public Map<String, Subscription> getSubscriprionAndPubName(Connection connection, int userId) throws SQLException {
+        Map<String, Subscription> map = new LinkedHashMap<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM subscription INNER JOIN publication ON subscription.publication_id = publication.id WHERE subscription.users_id =? ORDER BY subscription_status_id");
+        preparedStatement.setInt(1, userId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            map.put(resultSet.getString("name"), new Subscription.Builder()
+                    .setId(resultSet.getInt("id"))
+                    .setSubscriptionDate(resultSet.getDate("subscription_date"))
+                    .setSubscriptionType(resultSet.getString("subscription_type"))
+                    .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
+                    .setPublicationId(resultSet.getInt("publication_id"))
+                    .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))
+                    .setUsersId(resultSet.getInt("users_id"))
+                    .setSubscriptionBillsId(resultSet.getInt("subscription_bills_id"))
+                    .build());
+        }
+        return map;
     }
 }

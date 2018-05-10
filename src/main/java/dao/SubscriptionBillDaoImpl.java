@@ -70,7 +70,9 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
                     .setTotalCost(resultSet.getDouble("total_cost"))
                     .setValidityPeriod(resultSet.getInt("validity_period"))
                     .setPaid(resultSet.getByte("paid"))
-                    .setBillNumber(resultSet.getString("bill_number"))
+                    .setBillNumber(resultSet.getString("bill_nimber"))
+                    .setBillSetDay(resultSet.getDate("bill_set_day"))
+                    .setUserId(resultSet.getInt("user_id"))
                     .build());
         }
         return list;

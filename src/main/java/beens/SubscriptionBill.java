@@ -31,6 +31,7 @@ public class SubscriptionBill implements Serializable {
         this.paid = builder.paid;
         this.billNumber = builder.billNumber;
         this.userId = builder.userId;
+        this.billSetDay = builder.billSetDay;
     }
 
     public int getId() {
@@ -123,6 +124,7 @@ public class SubscriptionBill implements Serializable {
         private int validityPeriod;
         private byte paid;
         private String billNumber;
+        private Date billSetDay;
         private int userId;
 
         public Builder setId(int id) {
@@ -142,6 +144,11 @@ public class SubscriptionBill implements Serializable {
 
         public Builder setPaid(byte paid) {
             this.paid = paid;
+            return this;
+        }
+
+        public Builder setBillSetDay(Date billSetDay) {
+            this.billSetDay = billSetDay;
             return this;
         }
 

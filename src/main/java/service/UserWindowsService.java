@@ -6,10 +6,13 @@ import beens.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UserWindows {
+public class UserWindowsService {
 
     private PublicationDao publicationDao = DaoFactory.getPublicationDao();
     private PublicationTypeDao publicationTypeDao = DaoFactory.getPublicationTypeDao();
@@ -22,8 +25,6 @@ public class UserWindows {
 
     private List<Publication> publicationList;
     private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
-    private List<SubscriptionBill> subscriptionBillList;
-    private List<Subscription> subscriptionList;
 
     private int currentPubStatusId = 1;
     private int currentSubscStatusId = 1;
@@ -35,28 +36,40 @@ public class UserWindows {
     private int subscriptionBillAmount;
     private int subscriptionAmount;
 
-    public void loadUserWindow(User user, Connection connection) {
+    public Object[] loadUserWindow(int userId) {
+        Connection connection = ConnectionPool.getConnection();
+//        List<Subscription> subscriptionList = new ArrayList<>();
+        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
+//        List<Publication> publicationList = new ArrayList<>();
+        Map<String, Subscription> map = new HashMap<>();
+
         try {
-            subscriptionList = subscriptionDao.getAll(connection)
-                    .stream()
-                    .filter(subscription -> subscription.getUsersId() == user.getId())
-                    .filter(subscription -> subscription.getSubscriptionStatusId() == 1)//check id
-                    .collect(Collectors.toList());
-            subscriptionAmount = subscriptionList.size();
+//            subscriptionList = subscriptionDao.getAll(connection)
+//                    .stream()
+//                    .filter(subscription -> subscription.getUsersId() == user.getId())
+//                    .filter(subscription -> subscription.getSubscriptionStatusId() == 1)//check id
+//                    .collect(Collectors.toList());
             subscriptionBillList = subscriptionBillDao.getAll(connection)
                     .stream()
-                    .filter(subscriptionBill -> subscriptionBill.getUserId() == user.getId())
                     .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
+                    .filter(subscriptionBill -> subscriptionBill.getUserId() == userId)
                     .collect(Collectors.toList());
-            subscriptionBillAmount = subscriptionBillList.size();
+            map = subscriptionDao.getSubscriprionAndPubName(connection, userId);
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return new Object[]{map, subscriptionBillList};
     }
 
     public List<Subscription> selectSubscByStatus (SubscriptionStatus status, User user) {
         Connection connection = ConnectionPool.getConnection();
-        subscriptionList = null;
+        List<Subscription> subscriptionList = null;
         try {
             subscriptionList = subscriptionDao.getAll(connection)
                     .stream()
