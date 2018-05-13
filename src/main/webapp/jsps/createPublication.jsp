@@ -5,7 +5,7 @@
   Time: 12:47
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -33,7 +33,6 @@
             <tr>
                 <th align="left"><strong>Тип видання:</strong></th>
                 <th>
-                    <input type="hidden" name="command" value="selectPublicationsAdminWindow">
                     <select name="selectPubType" size="1">
                         <option name="type1" value="">газета</option>
                         <option name="type2" value="">журнал</option>

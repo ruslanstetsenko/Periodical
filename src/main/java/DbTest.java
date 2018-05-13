@@ -15,7 +15,8 @@ public class DbTest {
 //        testContactInfo();
 //        testSubscription();
 //        testPublicationType();
-        testPublicationTheme();
+//        testPublicationTheme();
+        testPublication();
     }
 
     private static void testAccount() throws SQLException {
@@ -127,8 +128,9 @@ public class DbTest {
     private static void testSubscription() throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
-        System.out.println(subscriptionDao.getSubscriprionAndPubName(connection, 3));
-
+        System.out.println(subscriptionDao.getSubscByBillByUser(connection, 2, 1));
+        System.out.println();
+        System.out.println(subscriptionDao.getSubscByBill(connection, 4));
     }
 
     private static void testPublicationType() throws SQLException{
@@ -142,6 +144,12 @@ public class DbTest {
         PublicationThemeDao publicationThemeDao = DaoFactory.getPublicationThemeDao();
         System.out.println(publicationThemeDao.read(5, connection));
 
+    }
+
+    private static void testPublication() throws SQLException {
+        Connection connection = ConnectionPool.getConnection();
+        PublicationDao publicationDao = DaoFactory.getPublicationDao();
+        System.out.println(publicationDao.getByTypeThemeStatus(connection, 2, 5, 1));
     }
 
 }

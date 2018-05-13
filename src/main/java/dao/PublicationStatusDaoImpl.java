@@ -30,6 +30,17 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
     }
 
     @Override
+    public int readByName(Connection connection, String statusName) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM publication_status WHERE status_name=?");
+        preparedStatement.setString(1, statusName);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt("id");
+    }
+
+    @Override
     public void update(PublicationStatus publicationStatus, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE publication_status SET status_name=? WHERE id=?");
         preparedStatement.setString(1, publicationStatus.getStatusName());

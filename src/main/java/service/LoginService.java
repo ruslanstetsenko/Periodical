@@ -33,11 +33,9 @@ public class LoginService {
                             if (user.getUserRoleId() == 1) {
                                 arr[0] = 1;
                                 arr[1] = user.getId();
-//                                new AdminWindowsService().loadAdminWindow(connection);
                             } else {
                                 arr[0] = 2;
                                 arr[1] = user.getId();
-//                                new UserWindowsService().loadUserWindow(user, connection);
                             }
                             break;
                         }

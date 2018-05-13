@@ -23,6 +23,7 @@ public class AdminWindowsService {
     private SubscriptionBillDao subscriptionBillDao = DaoFactory.getSubscriptionBillDao();
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
     private UserDao userDao = DaoFactory.getUserDao();
+    private PublicationStatusDao publicationStatusDao = DaoFactory.getPublicationStatusDao();
 
     private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
     private List<User> userList;
@@ -35,16 +36,16 @@ public class AdminWindowsService {
         Connection connection = ConnectionPool.getConnection();
         List<Publication> publicationList = new ArrayList<>();
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
+        List<PublicationType> publicationTypeList = new ArrayList<>();
+        List<PublicationTheme> publicationThemeList = new ArrayList<>();
+        List<PublicationStatus> publicationStatusList = new ArrayList<>();
 
         try {
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication -> publication.getPublicationStatusId() == 1)//check id
-                    .collect(Collectors.toList());
-            subscriptionBillList = subscriptionBillDao.getAll(connection)
-                    .stream()
-                    .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
-                    .collect(Collectors.toList());
+            publicationList = publicationDao.getAll(connection);
+            subscriptionBillList = subscriptionBillDao.getAll(connection);
+            publicationTypeList = publicationTypeDao.getAll(connection);
+            publicationThemeList = publicationThemeDao.getAll(connection);
+            publicationStatusList = publicationStatusDao.getAll(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -54,7 +55,64 @@ public class AdminWindowsService {
                 e.printStackTrace();
             }
         }
-        return new List[]{publicationList, subscriptionBillList};
+        return new List[]{publicationList, subscriptionBillList, publicationTypeList, publicationThemeList, publicationStatusList};
+    }
+
+    public List[] selectedloadAdminWindow(int pubTypeId, int pubThemeId, int pubStatusId, int billStatusId) {
+        Connection connection = ConnectionPool.getConnection();
+        List<Publication> publicationList = new ArrayList<>();
+        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
+        List<PublicationType> publicationTypeList = new ArrayList<>();
+        List<PublicationTheme> publicationThemeList = new ArrayList<>();
+        List<PublicationStatus> publicationStatusList = new ArrayList<>();
+
+        try {
+            if (billStatusId == 0) {
+                subscriptionBillList = subscriptionBillDao.getAll(connection);
+                publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
+                System.out.println(publicationList);
+
+            } else {
+                subscriptionBillList = subscriptionBillDao.getByStatus(connection, billStatusId);
+                publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
+                System.out.println(publicationList + "\n");
+
+            }
+            publicationTypeList = publicationTypeDao.getAll(connection);
+            publicationThemeList = publicationThemeDao.getAll(connection);
+            publicationStatusList = publicationStatusDao.getAll(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return new List[]{publicationList, subscriptionBillList, publicationTypeList, publicationThemeList, publicationStatusList};
+    }
+
+    private List<Publication> supportGetPubList(Connection connection, int pubTypeId, int pubThemeId, int pubStatusId) throws SQLException {
+        List<Publication> publicationList = new ArrayList<>();
+        if (pubTypeId == 0 && pubThemeId == 0 && pubStatusId == 0) {
+            publicationList = publicationDao.getAll(connection);
+        } else if (pubTypeId != 0 && pubThemeId != 0 && pubStatusId != 0) {
+            publicationList = publicationDao.getByTypeThemeStatus(connection, pubTypeId, pubThemeId, pubStatusId);
+        } else if (pubTypeId != 0 && pubThemeId != 0) {
+            publicationList = publicationDao.getByTypeByTheme(connection, pubTypeId, pubThemeId);
+        } else if (pubTypeId != 0 && pubStatusId != 0) {
+            publicationList = publicationDao.getByTypeByStatus(connection, pubTypeId, pubStatusId);
+        } else if (pubThemeId != 0 && pubStatusId != 0) {
+            publicationList = publicationDao.getByThemeByStatus(connection, pubThemeId, pubStatusId);
+        } else if (pubTypeId != 0) {
+            publicationList = publicationDao.getByType(connection, pubTypeId);
+        } else if (pubThemeId != 0) {
+            publicationList = publicationDao.getByTheme(connection, pubThemeId);
+        } else {
+            publicationList = publicationDao.getByStatus(connection, pubStatusId);
+        }
+        return publicationList;
     }
 
     public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
@@ -163,41 +221,6 @@ public class AdminWindowsService {
         }
     }
 
-    public void updatePublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
-        Connection connection = ConnectionPool.getConnection();
-        List<Publication> publicationList = new ArrayList<>();
-        Publication publication = new Publication.Builder()
-                .setName(name)
-                .setIssnNumber(issnNumber)
-                .setRegistrationDate(registrationDate)
-                .setWebsite(website)
-                .setPublicationTypeId(publicationTypeId)
-                .setPublicationStatusId(publicationStatusId)
-                .build();
-        try {
-            publicationDao.update(publication, connection);
-            connection.commit();
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication1 -> publication.getPublicationStatusId() == currentPubStatusId)
-                    .filter(publication1 -> publication.getPublicationTypeId() == currentPubTypeId)
-                    .filter(publication1 -> publication.getPublicationThemeId() == currentPubThemeId)
-                    .collect(Collectors.toList());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void deletePublication(int publicationId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection();

@@ -1397,7 +1397,7 @@
     </column>
     <column id="325" parent="239" name="paid">
       <Position>4</Position>
-      <DataType>tinyint(1)|0s</DataType>
+      <DataType>int(1)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>

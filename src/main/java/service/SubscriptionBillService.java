@@ -44,4 +44,21 @@ public class SubscriptionBillService {
             }
         }
     }
+
+    public SubscriptionBill getBill(int billId) {
+        Connection connection = ConnectionPool.getConnection();
+        SubscriptionBill bill = new SubscriptionBill();
+        try {
+            bill = subscriptionBillDao.read(billId, connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return bill;
+    }
 }

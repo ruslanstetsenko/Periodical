@@ -36,25 +36,18 @@ public class UserWindowsService {
     private int subscriptionBillAmount;
     private int subscriptionAmount;
 
-    public Object[] loadUserWindow(int userId) {
+    public Object[] loadUserWindow(int userId, int billId) {
         Connection connection = ConnectionPool.getConnection();
-//        List<Subscription> subscriptionList = new ArrayList<>();
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-//        List<Publication> publicationList = new ArrayList<>();
         Map<String, Subscription> map = new HashMap<>();
 
         try {
-//            subscriptionList = subscriptionDao.getAll(connection)
-//                    .stream()
-//                    .filter(subscription -> subscription.getUsersId() == user.getId())
-//                    .filter(subscription -> subscription.getSubscriptionStatusId() == 1)//check id
-//                    .collect(Collectors.toList());
             subscriptionBillList = subscriptionBillDao.getAll(connection)
                     .stream()
                     .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
                     .filter(subscriptionBill -> subscriptionBill.getUserId() == userId)
                     .collect(Collectors.toList());
-            map = subscriptionDao.getSubscriprionAndPubName(connection, userId);
+            map = subscriptionDao.getSubscByBillByUser(connection, userId, billId);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

@@ -14,4 +14,5 @@ public interface SubscriptionBillDao {
     public void delete(int subscriptionBillId, Connection connection) throws SQLException;
     public List<SubscriptionBill> getAll(Connection connection) throws SQLException;
     public int readLastId(Connection connection) throws SQLException;
+    public List<SubscriptionBill> getByStatus(Connection connection, int statusId) throws SQLException;
 }

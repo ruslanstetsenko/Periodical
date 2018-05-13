@@ -6,16 +6,20 @@
     <display-name>MyServlet</display-name>
     <description>MySQL Test App</description>
 
-    <!--<servlet>-->
-        <!--<servlet-name>Controller</servlet-name>-->
-        <!--<display-name>Contrioler</display-name>-->
-        <!--<servlet-class>controller.Controller</servlet-class>-->
-    <!--</servlet>-->
+    <servlet>
+        <servlet-name>Controller</servlet-name>
+        <display-name>Contrioler</display-name>
+        <servlet-class>controller.Controller</servlet-class>
+    </servlet>
 
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>Controller</servlet-name>-->
-        <!--<url-pattern>/controller</url-pattern>-->
-    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/controller</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>15</session-timeout>
+    </session-config>
 
     <resource-ref>
         <description>DB Connection</description>
@@ -23,6 +27,26 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
+
+    <!--<filter>-->
+        <!--<filter-name>encoding-filter</filter-name>-->
+        <!--<filter-class>-->
+            <!--org.springframework.web.filter.CharacterEncodingFilter-->
+        <!--</filter-class>-->
+        <!--<init-param>-->
+            <!--<param-name>encoding</param-name>-->
+            <!--<param-value>UTF-8</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+            <!--<param-name>forceEncoding</param-name>-->
+            <!--<param-value>true</param-value>-->
+        <!--</init-param>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+        <!--<filter-name>encoding-filter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <!--<welcome-file-list>-->
         <!--<welcome-file>/index.jsp</welcome-file>-->

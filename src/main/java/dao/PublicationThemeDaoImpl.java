@@ -30,6 +30,17 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
     }
 
     @Override
+    public int readByName(Connection connection, String themeName) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM publication_theme WHERE theme_name=?");
+        preparedStatement.setString(1, themeName);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt("id");
+    }
+
+    @Override
     public void update(PublicationTheme publicationTheme, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE publication_theme SET theme_name=? WHERE id=?");
         preparedStatement.setString(1, publicationTheme.getThemeName());

@@ -8,20 +8,13 @@ import java.time.ZoneId;
 public class SubscriptionBill implements Serializable {
     private int id;
     private double totalCost;
-    private int validityPeriod;
-    private byte paid;
-    private String billNumber;
-    private Date billSetDay;
+    private int validityPeriod = 5;
+    private int paid = 1;
+    private String billNumber = "";
+    private Date billSetDay  = new Date(java.util.Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
     private int userId;
 
-//    public SubscriptionBill() {
-//    }
-
     public SubscriptionBill() {
-        this.validityPeriod = 5;
-        this.paid = 1;
-        this.billNumber = "";
-        this.billSetDay = (Date) Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private SubscriptionBill(Builder builder) {
@@ -58,11 +51,11 @@ public class SubscriptionBill implements Serializable {
         this.validityPeriod = validityPeriod;
     }
 
-    public byte getPaid() {
+    public int getPaid() {
         return paid;
     }
 
-    public void setPaid(byte paid) {
+    public void setPaid(int paid) {
         this.paid = paid;
     }
 
@@ -122,7 +115,7 @@ public class SubscriptionBill implements Serializable {
         private int id;
         private double totalCost;
         private int validityPeriod;
-        private byte paid;
+        private int paid;
         private String billNumber;
         private Date billSetDay;
         private int userId;
@@ -142,7 +135,7 @@ public class SubscriptionBill implements Serializable {
             return this;
         }
 
-        public Builder setPaid(byte paid) {
+        public Builder setPaid(int paid) {
             this.paid = paid;
             return this;
         }

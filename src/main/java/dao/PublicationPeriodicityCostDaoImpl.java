@@ -40,7 +40,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
         preparedStatement.setInt(1, publicationPeriodicityCost.getTimesPerYear());
         preparedStatement.setDouble(2, publicationPeriodicityCost.getCost());
         preparedStatement.setInt(3, publicationPeriodicityCost.getPublicationId());
-        preparedStatement.setInt(3, publicationPeriodicityCost.getId());
+        preparedStatement.setInt(4, publicationPeriodicityCost.getId());
         preparedStatement.executeUpdate();
     }
 

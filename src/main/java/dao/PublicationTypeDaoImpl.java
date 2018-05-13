@@ -30,6 +30,17 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
     }
 
     @Override
+    public int readByName(Connection connection, String typeName) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM publication_type WHERE type_name=?");
+        preparedStatement.setString(1, typeName);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt("id");
+    }
+
+    @Override
     public void update(PublicationType publicationType, Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE publication_type SET type_name=? WHERE id=?");
         preparedStatement.setString(1, publicationType.getTypeName());

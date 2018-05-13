@@ -5,7 +5,12 @@
   Time: 12:03
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page isELIgnored="false" %>
+
 <html>
 <head>
     <title>Login</title>
@@ -14,9 +19,9 @@
     <form name="loginForm" method="get" action="controller">
         <input type="hidden" name="command" value="okLogin">
         Login:
-        <input type="text" name="login" placeholder="login"><br/>
+        <input type="text" name="login" placeholder="login" value=""><br/>
         Password:
-        <input type="password" name="password" placeholder="password"><br/>
+        <input type="password" name="password" placeholder="password" value=""><br/>
         ${errorLoginMessage}<br/>
         ${incorrectActio}<br/>
         ${nullPage}<br/>

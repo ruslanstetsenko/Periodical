@@ -20,6 +20,9 @@ public final class ConnectionPool {
     private final static String DB_URL = "url";
     private final static String DB_DRIVER_CLASS = "driver.class.name";
 
+    private final static String USE_UNICODE = "driver.class.name";
+    private final static String ENCODIND = "driver.class.name";
+
     private static Properties properties = new Properties();
     private static ClassLoader classLoader;
     private static InputStream inputStream;
