@@ -106,4 +106,25 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
         }
         return list;
     }
+
+    @Override
+    public List<SubscriptionBill> getByUser(Connection connection, int userId) throws SQLException {
+        List<SubscriptionBill> list = new ArrayList<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM subscription_bills WHERE user_id=?");
+        preparedStatement.setInt(1, userId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            list.add(new SubscriptionBill.Builder()
+                    .setId(resultSet.getInt("id"))
+                    .setTotalCost(resultSet.getDouble("total_cost"))
+                    .setValidityPeriod(resultSet.getInt("validity_period"))
+                    .setPaid(resultSet.getInt("paid"))
+                    .setBillNumber(resultSet.getString("bill_nimber"))
+                    .setBillSetDay(resultSet.getDate("bill_set_day"))
+                    .setUserId(userId)
+                    .build());
+        }
+        return list;
+    }
 }

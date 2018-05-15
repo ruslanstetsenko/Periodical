@@ -2,6 +2,7 @@ package commands;
 
 import service.AdminWindowsService;
 import service.LoginService;
+import service.SubscriptionService;
 import service.UserWindowsService;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,10 @@ public class OkLoginComand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
+        if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            return "/index.jsp";
+        }
+        String sessionId = session.getId();
         int[] arr = new LoginService().enterInAccount(request.getParameter("login"), request.getParameter("password"));
         int role = arr[0];
         int userId = arr[1];
@@ -24,6 +29,7 @@ public class OkLoginComand implements Command {
         session.setAttribute("currentPubStatusId", 0);
         session.setAttribute("currentBillPaidId", 0);
         if (role == 1) {
+            session.setAttribute("sessionId", sessionId);
             Object[] arrObj = new AdminWindowsService().loadAdminWindow();
             session.setAttribute("publicationList", arrObj[0]);
             session.setAttribute("subscriptionBillList", arrObj[1]);
@@ -34,10 +40,14 @@ public class OkLoginComand implements Command {
             return "/jsps/adminPage.jsp";
 
         } else if (role == 2) {
+            session.setAttribute("sessionId", sessionId);
             UserWindowsService userWindowsService = new UserWindowsService();
-            int billId = Integer.valueOf(request.getParameter("billId"));
-            session.setAttribute("mapPubNameSubscription", userWindowsService.loadUserWindow(userId, billId)[0]);
-            session.setAttribute("subscriptionBillListUser", userWindowsService.loadUserWindow(userId, billId)[1]);
+            SubscriptionService subscriptionService = new SubscriptionService();
+            session.setAttribute("currentSubStatusId", 0);
+            session.setAttribute("currentBillPaidId", 0);
+            session.setAttribute("mapPubNameSubscription", userWindowsService.loadUserWindow(userId)[0]);
+            session.setAttribute("subscriptionBillList", userWindowsService.loadUserWindow(userId)[1]);
+            session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
 
             return "/jsps/userPage.jsp";
         }

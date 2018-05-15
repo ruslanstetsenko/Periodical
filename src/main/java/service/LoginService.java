@@ -17,7 +17,7 @@ public class LoginService {
         int [] arr = new int[2];
         AccountDao accountDao = DaoFactory.getAccountDao();
         UserDao userDao = DaoFactory.getUserDao();
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         User user;
         int accountId;
 

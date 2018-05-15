@@ -76,7 +76,7 @@
                 <td>
                     <form action="controller" method="get">
                         <input type="hidden" name="command" value="showAboutBill">
-                        <button name="billId" value="${bill.id}" type="submit">Докладно</button>
+                        <button name="currentBillPaidId" value="${bill.id}" type="submit">Докладно</button>
                     </form>
                 </td>
             </tr>

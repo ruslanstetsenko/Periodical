@@ -33,7 +33,7 @@ public class AdminWindowsService {
 
 
     public List[] loadAdminWindow() {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         List<PublicationType> publicationTypeList = new ArrayList<>();
@@ -59,7 +59,7 @@ public class AdminWindowsService {
     }
 
     public List[] selectedloadAdminWindow(int pubTypeId, int pubThemeId, int pubStatusId, int billStatusId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         List<PublicationType> publicationTypeList = new ArrayList<>();
@@ -70,12 +70,12 @@ public class AdminWindowsService {
             if (billStatusId == 0) {
                 subscriptionBillList = subscriptionBillDao.getAll(connection);
                 publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
-                System.out.println(publicationList);
+//                System.out.println(publicationList);
 
             } else {
                 subscriptionBillList = subscriptionBillDao.getByStatus(connection, billStatusId);
                 publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
-                System.out.println(publicationList + "\n");
+//                System.out.println(publicationList + "\n");
 
             }
             publicationTypeList = publicationTypeDao.getAll(connection);
@@ -116,7 +116,7 @@ public class AdminWindowsService {
     }
 
     public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
         try {
             publicationList = publicationDao.getAll(connection)
@@ -139,7 +139,7 @@ public class AdminWindowsService {
     }
 
     public List<Publication> selectPublicationsByTheme(PublicationTheme theme, int currentPubStatusId, int currentPubTypeId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
         try {
             publicationList = publicationDao.getAll(connection)
@@ -162,7 +162,7 @@ public class AdminWindowsService {
     }
 
     public List<Publication> selectPublicationsByType(PublicationType type, int currentPubStatusId, int currentPubThemeId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
         try {
             publicationList = publicationDao.getAll(connection)
@@ -185,7 +185,7 @@ public class AdminWindowsService {
     }
 
     public void addNewPublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(false);
         List<Publication> publicationList = new ArrayList<>();
         Publication publicationNew = new Publication.Builder()
                 .setName(name)
@@ -223,7 +223,7 @@ public class AdminWindowsService {
 
 
     public void deletePublication(int publicationId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(false);
         List<Publication> publicationList = new ArrayList<>();
         try {
             publicationDao.delete(publicationId, connection);
@@ -252,7 +252,7 @@ public class AdminWindowsService {
     }
 
     public List<SubscriptionBill> selectBillsByStatus(byte status) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         subscriptionBillList = null;
         try {
@@ -274,7 +274,7 @@ public class AdminWindowsService {
     }
 
     public void showAboutSubscrBill(SubscriptionBill subscriptionBill) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         try {
             int userId = subscriptionDao.readByBill(subscriptionBill.getId(), connection).getUsersId();
             User user = userDao.read(userId, connection);
@@ -293,7 +293,7 @@ public class AdminWindowsService {
         LocalDate setBill = LocalDate.ofInstant(subscriptionBill.getBillSetDay().toInstant(), ZoneId.systemDefault());
         if (subscriptionBill.getValidityPeriod() >
                 Period.between(setBill, LocalDate.now()).getDays()) {
-            Connection connection = ConnectionPool.getConnection();
+            Connection connection = ConnectionPool.getConnection(false);
             List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
             try {
                 subscriptionBillDao.delete(subscriptionBill.getId(), connection);

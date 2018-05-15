@@ -1,7 +1,8 @@
 package dao;
 
 import beens.SubscriptionBill;
-
+//import connection.ConnectionPool;
+//import javax.persistence.SqlResultSetMapping;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface SubscriptionBillDao {
     public List<SubscriptionBill> getAll(Connection connection) throws SQLException;
     public int readLastId(Connection connection) throws SQLException;
     public List<SubscriptionBill> getByStatus(Connection connection, int statusId) throws SQLException;
+    public List<SubscriptionBill> getByUser(Connection connection, int subscriptionId) throws SQLException;
+
 }

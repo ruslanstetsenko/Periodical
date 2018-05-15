@@ -36,18 +36,14 @@ public class UserWindowsService {
     private int subscriptionBillAmount;
     private int subscriptionAmount;
 
-    public Object[] loadUserWindow(int userId, int billId) {
-        Connection connection = ConnectionPool.getConnection();
+    public Object[] loadUserWindow(int userId) {
+        Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         Map<String, Subscription> map = new HashMap<>();
 
         try {
-            subscriptionBillList = subscriptionBillDao.getAll(connection)
-                    .stream()
-                    .filter(subscriptionBill -> subscriptionBill.getPaid() == 2)//check id
-                    .filter(subscriptionBill -> subscriptionBill.getUserId() == userId)
-                    .collect(Collectors.toList());
-            map = subscriptionDao.getSubscByBillByUser(connection, userId, billId);
+            subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+            map = subscriptionDao.getSubscByUser(connection, userId);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -60,8 +56,47 @@ public class UserWindowsService {
         return new Object[]{map, subscriptionBillList};
     }
 
-    public List<Subscription> selectSubscByStatus (SubscriptionStatus status, User user) {
-        Connection connection = ConnectionPool.getConnection();
+    public Object[] loadSelectedUserWindow(int userId, int currentSubStatusId, int currentBillPaidId) {
+        Connection connection = ConnectionPool.getConnection(true);
+        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
+        Map<String, Subscription> map = new HashMap<>();
+
+//        if (currentBillPaidId == 0) {
+//            try {
+//                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        try {
+            if (currentSubStatusId == 0 && currentBillPaidId == 0) {
+                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+                map = subscriptionDao.getSubscByUser(connection, userId);
+            } else if (currentSubStatusId == 0) {
+                map = subscriptionDao.getSubscByUser(connection, userId);
+                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
+                        .stream()
+                        .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillPaidId)
+                        .collect(Collectors.toList());
+            } else if (currentBillPaidId == 0) {
+                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+                map = subscriptionDao.getSubscByBillByUser(connection, userId, currentSubStatusId);
+            } else {
+                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
+                        .stream()
+                        .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillPaidId)
+                        .collect(Collectors.toList());
+                map = subscriptionDao.getSubscByBillByUser(connection, userId, currentSubStatusId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new Object[]{map, subscriptionBillList};
+    }
+
+    public List<Subscription> selectSubscByStatus(SubscriptionStatus status, User user) {
+        Connection connection = ConnectionPool.getConnection(true);
         List<Subscription> subscriptionList = null;
         try {
             subscriptionList = subscriptionDao.getAll(connection)
@@ -82,7 +117,7 @@ public class UserWindowsService {
     }
 
     public void showAboutSubscription(Subscription subscription) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         try {
             Publication publication = publicationDao.read(subscription.getPublicationId(), connection);
             PublicationStatus publicationStatus = publicationStatusDao.read(publication.getPublicationStatusId(), connection);
@@ -96,9 +131,10 @@ public class UserWindowsService {
             }
         }
     }
-//subscribe window
+
+    //subscribe window
     public void selectActivePublications() {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()
@@ -116,8 +152,8 @@ public class UserWindowsService {
         }
     }
 
-    public void selectPublByTypeByTheme (Publication publication) {
-        Connection connection = ConnectionPool.getConnection();
+    public void selectPublByTypeByTheme(Publication publication) {
+        Connection connection = ConnectionPool.getConnection(true);
         try {
             publicationList = publicationDao.getAll(connection)
                     .stream()

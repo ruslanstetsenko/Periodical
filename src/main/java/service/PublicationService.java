@@ -19,15 +19,32 @@ public class PublicationService {
     private PublicationStatusDao publicationStatusDao = DaoFactory.getPublicationStatusDao();
     private PublicationPeriodicityCostDao publicationPeriodicityCostDao = DaoFactory.getPublicationPeriodicityCostDao();
 
-    public void createPublication(Publication publication, PublicationType publicationType, PublicationTheme publicationTheme, List<PublicationPeriodicityCost> periodicityCosts) {
-        Connection connection = ConnectionPool.getConnection();
-        publication.setPublicationTypeId(publicationType.getId());
-        publication.setPublicationStatusId(1);
-        publication.setPublicationThemeId(publicationTheme.getId());
+    public Publication getPublication(int pubId) {
+        Connection connection = ConnectionPool.getConnection(true);
+        Publication publication = new Publication();
+        try {
+            publication = publicationDao.read(pubId, connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return publication;
+    }
+
+    public void createPublication(String pubName, int issn, String website, Date setDate, int pubType, int pubStatus, int pubTheme, PublicationPeriodicityCost[] costs) {
+        Connection connection = ConnectionPool.getConnection(false);
+        Publication publication = new Publication.Builder()
+                .setName(pubName).setIssnNumber(issn).setWebsite(website).setRegistrationDate(setDate).setPublicationTypeId(pubType).setPublicationStatusId(pubStatus).setPublicationThemeId(pubTheme).build();
         try {
             publicationDao.create(publication, connection);
+            connection.commit();
             int publicationId = publicationDao.getLastPublicationId(connection);
-            for (PublicationPeriodicityCost cost : periodicityCosts) {
+            for (PublicationPeriodicityCost cost : costs) {
                 cost.setPublicationId(publicationId);
                 publicationPeriodicityCostDao.create(cost, connection);
             }
@@ -49,7 +66,7 @@ public class PublicationService {
     }
 
     public void updatePublication(int publicationId, String pubName, int issn, String website, Date setDate, int publicationType, int publicationTheme, int publicationStatus, String[] costs, List<PublicationPeriodicityCost> costBeens) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(false);
 
         try {
             publicationDao.update(publicationId, pubName, issn, website, setDate, publicationType, publicationTheme, publicationStatus, connection);
@@ -76,13 +93,13 @@ public class PublicationService {
     }
 
     public Object[] aboutPublication(int publicationId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         Publication publication = new Publication();
         PublicationType publicationType = new PublicationType();
         PublicationTheme publicationTheme = new PublicationTheme();
         PublicationStatus publicationStatus = new PublicationStatus();
         List<PublicationPeriodicityCost> publicationPeriodicityCostList = new ArrayList<>();
-        
+
         try {
             publication = publicationDao.read(publicationId, connection);
             publicationType = publicationTypeDao.read(publication.getPublicationTypeId(), connection);
@@ -92,7 +109,7 @@ public class PublicationService {
                     .stream()
                     .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == publicationId)
                     .collect(Collectors.toList());
-            } catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -105,7 +122,7 @@ public class PublicationService {
     }
 
     public Object[] editPublication(int publicationId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         Publication publication = new Publication();
         List<PublicationType> publicationTypeList = new ArrayList<>();
         List<PublicationTheme> publicationThemeList = new ArrayList<>();
@@ -114,7 +131,7 @@ public class PublicationService {
 
         try {
             publication = publicationDao.read(publicationId, connection);
-            publicationTypeList= publicationTypeDao.getAll(connection);
+            publicationTypeList = publicationTypeDao.getAll(connection);
             publicationThemeList = publicationThemeDao.getAll(connection);
             publicationStatusList = publicationStatusDao.getAll(connection);
             publicationPeriodicityCostList = publicationPeriodicityCostDao.getAll(connection)
@@ -134,9 +151,10 @@ public class PublicationService {
     }
 
     public void deletePublication(Publication publication) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(false);
         try {
             publicationDao.delete(publication.getId(), connection);
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
             try {

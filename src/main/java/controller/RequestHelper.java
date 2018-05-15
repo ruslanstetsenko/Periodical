@@ -15,16 +15,18 @@ public final class RequestHelper {
         commands.put("backPrevPage", new BackPrevPageCommand());
         commands.put("cancelCreatePublication", new CancelCreatePublicationCommand());
         commands.put("cancelEditPublication", new CancelEditPublicationCommand());
-        commands.put("cancelEditSubscription", new CancelEditPublicationCommand());
+        commands.put("cancelEditSubscription", new CancelEditSubscriptionCommand());
         commands.put("cancelLogin", new CancelLoginComand());
+        commands.put("cancelWievAboutBill", new CancelWievAboutBillComand());
         commands.put("confirmDelete", new ConfirmDeleteCommand());
         commands.put("createPublication", new CreatePublicationCommand());
-        commands.put("createSubscription", new CreatePublicationCommand());
+        commands.put("createSubscription", new CreateSubscriptionCommand());
         commands.put("deleteBill", new DeleteBillCommand());
         commands.put("editPublication", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
         commands.put("login", new LoginCommand());
         commands.put("NoCommand", new NoCommand());
+        commands.put("okCreatePublication", new OkCreatePublicationCommand());
         commands.put("okEditPublication", new OkEditPublicationCommand());
         commands.put("okEditSubscription", new OkEditSubscriptionCommand());
         commands.put("okLogin", new OkLoginComand());
@@ -35,7 +37,7 @@ public final class RequestHelper {
         commands.put("selectBillsByStatus", new SelectBillsByStatusCommand());
         commands.put("selectPublicationsAdminWindow", new SelectPublicationsAdminWindowCommand());
         commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
-        commands.put("selectSubscriptionsByStatus", new SelectSubscriptionsByStatusCommand());
+        commands.put("selectSubsBillsUserWindow", new SelectSubsBillsUserWindowComand());
     }
 
     public Command getCommand(HttpServletRequest request) {

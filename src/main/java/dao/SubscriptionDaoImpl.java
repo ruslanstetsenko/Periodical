@@ -34,7 +34,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
         subscription.setSubscriptionCost(resultSet.getDouble("subscription_cost"));
         subscription.setPublicationId(resultSet.getInt("publication_id"));
         subscription.setSubscriptionStatusId(resultSet.getInt("subscription_status_id"));
-        subscription.setUsersId(resultSet.getInt("user_id"));
+        subscription.setUsersId(resultSet.getInt("users_id"));
         subscription.setSubscriptionBillsId(resultSet.getInt("subscription_bills_id"));
 
         return subscription;
@@ -118,6 +118,50 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     .setPublicationId(resultSet.getInt("publication_id"))
                     .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))
                     .setUsersId(resultSet.getInt("users_id"))
+                    .setSubscriptionBillsId(resultSet.getInt("subscription_bills_id"))
+                    .build());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Subscription> getSubscByUser(Connection connection, int userId) throws SQLException {
+        Map<String, Subscription> map = new LinkedHashMap<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM subscription INNER JOIN publication ON subscription.publication_id = publication.id WHERE users_id =? ORDER BY subscription_status_id");
+        preparedStatement.setInt(1, userId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            map.put(resultSet.getString("name"), new Subscription.Builder()
+                    .setId(resultSet.getInt("id"))
+                    .setSubscriptionDate(resultSet.getDate("subscription_date"))
+                    .setSubscriptionType(resultSet.getString("subscription_type"))
+                    .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
+                    .setPublicationId(resultSet.getInt("publication_id"))
+                    .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))
+                    .setUsersId(resultSet.getInt("users_id"))
+                    .setSubscriptionBillsId(resultSet.getInt("subscription_bills_id"))
+                    .build());
+        }
+        return map;
+    }
+
+    @Override
+    public Map<String, Subscription> getSubscByStatusByUser(Connection connection, int userId, int subsStatus) throws SQLException {
+        Map<String, Subscription> map = new LinkedHashMap<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM subscription INNER JOIN publication ON subscription.publication_id = publication.id WHERE users_id =? AND subscription_status_id=? ORDER BY subscription_status_id");
+        preparedStatement.setInt(1, userId);
+        preparedStatement.setInt(2, subsStatus);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            map.put(resultSet.getString("name"), new Subscription.Builder()
+                    .setId(resultSet.getInt("id"))
+                    .setSubscriptionDate(resultSet.getDate("subscription_date"))
+                    .setSubscriptionType(resultSet.getString("subscription_type"))
+                    .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
+                    .setPublicationId(resultSet.getInt("publication_id"))
+                    .setSubscriptionStatusId(subsStatus)
+                    .setUsersId(userId)
                     .setSubscriptionBillsId(resultSet.getInt("subscription_bills_id"))
                     .build());
         }

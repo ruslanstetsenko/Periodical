@@ -17,7 +17,7 @@ public class SubscriptionBillService {
 
     //create biil and subscription
     public void createBill(User user, List<Subscription> subscriptionList) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(false);
         SubscriptionBill subscriptionBill = new SubscriptionBill();
         subscriptionBill.setUserId(user.getId());
         subscriptionBill.setTotalCost(subscriptionList.stream().mapToDouble(Subscription::getSubscriptionCost).sum());
@@ -46,7 +46,7 @@ public class SubscriptionBillService {
     }
 
     public SubscriptionBill getBill(int billId) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         SubscriptionBill bill = new SubscriptionBill();
         try {
             bill = subscriptionBillDao.read(billId, connection);

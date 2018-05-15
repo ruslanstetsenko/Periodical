@@ -1,5 +1,4 @@
 import beens.ContactInfo;
-import beens.SubscriptionBill;
 import connection.ConnectionPool;
 import dao.*;
 import beens.Account;
@@ -20,7 +19,7 @@ public class DbTest {
     }
 
     private static void testAccount() throws SQLException {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         AccountDao accountDao = DaoFactory.getAccountDao();
         List<Account> list = accountDao.getAll(connection);
 
@@ -73,7 +72,7 @@ public class DbTest {
     }
 
     private static void testContactInfo() throws SQLException {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         ContactInfoDao contactInfoDao = DaoFactory.getContactInfoDao();
         List<ContactInfo> list = contactInfoDao.getAll(connection);
 
@@ -126,7 +125,7 @@ public class DbTest {
     }
 
     private static void testSubscription() throws SQLException {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
         System.out.println(subscriptionDao.getSubscByBillByUser(connection, 2, 1));
         System.out.println();
@@ -134,22 +133,23 @@ public class DbTest {
     }
 
     private static void testPublicationType() throws SQLException{
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         PublicationTypeDao publicationTypeDao = DaoFactory.getPublicationTypeDao();
         System.out.println(publicationTypeDao.read(4, connection));
     }
 
     private static void testPublicationTheme() throws SQLException {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         PublicationThemeDao publicationThemeDao = DaoFactory.getPublicationThemeDao();
         System.out.println(publicationThemeDao.read(5, connection));
 
     }
 
     private static void testPublication() throws SQLException {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(true);
         PublicationDao publicationDao = DaoFactory.getPublicationDao();
         System.out.println(publicationDao.getByTypeThemeStatus(connection, 2, 5, 1));
+        System.out.println("last pubId = " + publicationDao.getLastPublicationId(connection));
     }
 
 }

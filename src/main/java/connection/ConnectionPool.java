@@ -2,11 +2,6 @@ package connection;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,11 +45,11 @@ public final class ConnectionPool {
         }
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection(boolean autocommit) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(autocommit);
             return connection;
         } catch (SQLException e) {
             e.printStackTrace();

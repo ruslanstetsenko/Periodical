@@ -11,6 +11,11 @@ public class ShowAboutPublicationCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
+        if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            return "/jsps/login.jsp";
+        }
+//        System.out.println("session id = " + session.getId());
+
         int publicationId = Integer.valueOf(request.getParameter("publicationId"));
 
 //        System.out.println("currentPubTypeId " + session.getAttribute("currentPubTypeId"));

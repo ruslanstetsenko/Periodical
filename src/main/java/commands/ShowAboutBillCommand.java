@@ -17,12 +17,17 @@ public class ShowAboutBillCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        int billId = Integer.valueOf(request.getParameter("billId"));
-        SubscriptionBill bill = new SubscriptionBillService().getBill(billId);
-        Map<String, Subscription> subscriptions = new SubscriptionService().getSubscByBill(billId);
+        if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            return "/jsps/login.jsp";
+        }
+//        System.out.println("session id = " + session.getId());
+
+        int currentBillPaidId = Integer.valueOf(request.getParameter("currentBillPaidId"));
+        SubscriptionBill selectedBill = new SubscriptionBillService().getBill(currentBillPaidId);
+        Map<String, Subscription> subscriptions = new SubscriptionService().getSubscByBill(currentBillPaidId);
 
         session.setAttribute("mapSubscriptions", subscriptions);
-        session.setAttribute("bill", bill);
+        session.setAttribute("selectedBill", selectedBill);
 
         return "/jsps/aboutBill.jsp";
     }

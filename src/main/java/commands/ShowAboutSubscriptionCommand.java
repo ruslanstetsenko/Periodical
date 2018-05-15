@@ -1,13 +1,41 @@
 package commands;
 
+import beens.Publication;
+import beens.Subscription;
+import service.PublicationService;
+import service.SubscriptionService;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShowAboutSubscriptionCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return null;
+        HttpSession session = request.getSession(true);
+        if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            return "/jsps/login.jsp";
+        }
+        int currentSubsId = Integer.valueOf(request.getParameter("currentSubsId"));
+
+        Subscription subscription = new SubscriptionService().getSubscription(currentSubsId);
+        Publication publication = new PublicationService().getPublication(subscription.getPublicationId());
+        session.setAttribute("publicationName", publication.getName());
+        session.setAttribute("subscriptionDate", subscription.getSubscriptionDate());
+        session.setAttribute("subscriptionCost", subscription.getSubscriptionCost());
+        session.setAttribute("subscriptionStatusId", subscription.getSubscriptionStatusId());
+
+        Object[] publicationParam = new PublicationService().aboutPublication(currentSubsId);
+        session.setAttribute("publication", publicationParam[0]);
+        session.setAttribute("publicationType", publicationParam[1]);
+        session.setAttribute("publicationTheme", publicationParam[2]);
+        session.setAttribute("publicationStatus", publicationParam[3]);
+        session.setAttribute("publicationPeriodicityCostList", publicationParam[4]);
+
+        return "/jsps/aboutSubscription.jsp";
     }
 }

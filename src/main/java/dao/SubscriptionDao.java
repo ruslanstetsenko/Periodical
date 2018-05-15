@@ -16,6 +16,9 @@ public interface SubscriptionDao {
     public void delete(Subscription subscription, Connection connection) throws SQLException;
     public List<Subscription> getAll(Connection connection) throws SQLException;
     public Map<String, Subscription> getSubscByBillByUser(Connection connection, int userId, int billId) throws SQLException;
+    public Map<String, Subscription> getSubscByUser(Connection connection, int userId) throws SQLException;
+    public Map<String, Subscription> getSubscByStatusByUser(Connection connection, int userId, int subsStatus) throws SQLException;
     public Map<String, Subscription> getSubscByBill(Connection connection, int billId) throws SQLException;
+
 
 }

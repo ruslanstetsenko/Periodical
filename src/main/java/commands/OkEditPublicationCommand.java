@@ -19,6 +19,10 @@ public class OkEditPublicationCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
+        if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            return "/jsps/login.jsp";
+        }
+
         int publicationId = (Integer) session.getAttribute("publicationId");
         String pubName = request.getParameter("pubName");
         int issn = Integer.valueOf(request.getParameter("ISSN")) ;

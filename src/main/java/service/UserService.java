@@ -13,7 +13,7 @@ public class UserService {
     private UserDao userDao = DaoFactory.getUserDao();
 
     public void createUser(User user) {
-        Connection connection = ConnectionPool.getConnection();
+        Connection connection = ConnectionPool.getConnection(false);
         try {
             userDao.create(user, connection);
             connection.commit();
