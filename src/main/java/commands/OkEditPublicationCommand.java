@@ -41,17 +41,17 @@ public class OkEditPublicationCommand implements Command {
         String[] costs = request.getParameterValues("cost");
         new PublicationService().updatePublication(publicationId, pubName, issn, website, setDate, publicationType, publicationTheme, publicationStatus, costs, costBeens);
 
-        AdminWindowsService adminWindowsService = new AdminWindowsService();
+        PublicationService publicationService = new PublicationService();
         int pubTypeId = (Integer) session.getAttribute("currentPubTypeId");
         int pubThemeId = (Integer) session.getAttribute("currentPubThemeId");
         int pubStatusId = (Integer) session.getAttribute("currentPubStatusId");
         int billPaidId = (Integer) session.getAttribute("currentBillPaidId");
 
-        session.setAttribute("publicationList", adminWindowsService.selectedloadAdminWindow(pubTypeId, pubThemeId, pubStatusId, billPaidId)[0]);
-        session.setAttribute("subscriptionBillList", adminWindowsService.selectedloadAdminWindow(pubTypeId, pubThemeId, pubStatusId, billPaidId)[1]);
-        session.setAttribute("publicationTypeList", adminWindowsService.selectedloadAdminWindow(pubTypeId, pubThemeId, pubStatusId, billPaidId)[2]);
-        session.setAttribute("publicationThemeList", adminWindowsService.selectedloadAdminWindow(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
-        session.setAttribute("publicationStatusList", adminWindowsService.selectedloadAdminWindow(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
+        session.setAttribute("publicationList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[0]);
+        session.setAttribute("subscriptionBillList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[1]);
+        session.setAttribute("publicationTypeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[2]);
+        session.setAttribute("publicationThemeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
+        session.setAttribute("publicationStatusList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
 
         return "/jsps/adminPage.jsp";
     }

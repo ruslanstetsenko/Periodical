@@ -14,6 +14,22 @@ public class PublicationPeriodicityCostServive {
     private PublicationPeriodicityCostDao publicationPeriodicityCostDao = DaoFactory.getPublicationPeriodicityCostDao();
     private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
 
+    public double getCostValue(int costId) {
+        Connection connection = ConnectionPool.getConnection(true);
+        double value = 0.0;
+        try {
+            value = publicationPeriodicityCostDao.read(costId, connection).getCost();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return value;
+    }
 
     public void update(PublicationPeriodicityCost cost) {
         Connection connection = ConnectionPool.getConnection(false);

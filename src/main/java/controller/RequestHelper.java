@@ -21,12 +21,14 @@ public final class RequestHelper {
         commands.put("confirmDelete", new ConfirmDeleteCommand());
         commands.put("createPublication", new CreatePublicationCommand());
         commands.put("createSubscription", new CreateSubscriptionCommand());
+        commands.put("cancelCreateSubscription", new CancelCreateSubscriptionCommand());
         commands.put("deleteBill", new DeleteBillCommand());
         commands.put("editPublication", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
         commands.put("login", new LoginCommand());
         commands.put("NoCommand", new NoCommand());
         commands.put("okCreatePublication", new OkCreatePublicationCommand());
+        commands.put("okCreateSubscription", new OkCreateSubscriptionCommand());
         commands.put("okEditPublication", new OkEditPublicationCommand());
         commands.put("okEditSubscription", new OkEditSubscriptionCommand());
         commands.put("okLogin", new OkLoginComand());

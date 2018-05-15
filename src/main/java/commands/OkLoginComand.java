@@ -1,15 +1,13 @@
 package commands;
 
-import service.AdminWindowsService;
-import service.LoginService;
-import service.SubscriptionService;
-import service.UserWindowsService;
+import service.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 public class OkLoginComand implements Command {
     @Override
@@ -30,12 +28,12 @@ public class OkLoginComand implements Command {
         session.setAttribute("currentBillPaidId", 0);
         if (role == 1) {
             session.setAttribute("sessionId", sessionId);
-            Object[] arrObj = new AdminWindowsService().loadAdminWindow();
-            session.setAttribute("publicationList", arrObj[0]);
-            session.setAttribute("subscriptionBillList", arrObj[1]);
-            session.setAttribute("publicationTypeList", arrObj[2]);
-            session.setAttribute("publicationThemeList", arrObj[3]);
-            session.setAttribute("publicationStatusList", arrObj[4]);
+            List[] arrLists = new PublicationService().getAllPublication();
+            session.setAttribute("publicationList", arrLists[0]);
+            session.setAttribute("subscriptionBillList", arrLists[1]);
+            session.setAttribute("publicationTypeList", arrLists[2]);
+            session.setAttribute("publicationThemeList", arrLists[3]);
+            session.setAttribute("publicationStatusList", arrLists[4]);
 
             return "/jsps/adminPage.jsp";
 

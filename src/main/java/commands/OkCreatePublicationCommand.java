@@ -63,7 +63,7 @@ public class OkCreatePublicationCommand implements Command {
         int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
         int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
 //
-        Object[] arr = new AdminWindowsService().selectedloadAdminWindow(currentPubTypeId, currentPubThemeId, currentPubStatusId, currentBillPaidId);
+        Object[] arr = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId, currentBillPaidId);
         session.setAttribute("publicationList", arr[0]);
         session.setAttribute("subscriptionBillList", arr[1]);
         session.setAttribute("publicationTypeList", arr[2]);

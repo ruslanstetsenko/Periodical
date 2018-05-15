@@ -1,6 +1,7 @@
 package commands;
 
 import service.AdminWindowsService;
+import service.PublicationService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public class SelectPublicationsAdminWindowCommand implements Command {
 //        session.setAttribute("currentPubStatusId", request.getParameter("currentPubStatusId"));
 //        session.setAttribute("currentBillPaidId", request.getParameter("currentBillPaidId"));
 
-        Object[] arr = new AdminWindowsService().selectedloadAdminWindow(currentPubTypeId, currentPubThemeId, currentPubStatusId, currentBillPaidId);
+        Object[] arr = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId, currentBillPaidId);
         session.setAttribute("publicationList", arr[0]);
         session.setAttribute("subscriptionBillList", arr[1]);
         session.setAttribute("publicationTypeList", arr[2]);

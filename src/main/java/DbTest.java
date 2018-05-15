@@ -2,6 +2,7 @@ import beens.ContactInfo;
 import connection.ConnectionPool;
 import dao.*;
 import beens.Account;
+import service.PublicationService;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,7 +16,8 @@ public class DbTest {
 //        testSubscription();
 //        testPublicationType();
 //        testPublicationTheme();
-        testPublication();
+//        testPublication();
+        testPublicService();
     }
 
     private static void testAccount() throws SQLException {
@@ -150,6 +152,10 @@ public class DbTest {
         PublicationDao publicationDao = DaoFactory.getPublicationDao();
         System.out.println(publicationDao.getByTypeThemeStatus(connection, 2, 5, 1));
         System.out.println("last pubId = " + publicationDao.getLastPublicationId(connection));
+    }
+
+    private static void testPublicService() {
+        System.out.println(new PublicationService().getPublicationWithCosts());
     }
 
 }

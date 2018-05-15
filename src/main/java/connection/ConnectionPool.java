@@ -35,7 +35,7 @@ public final class ConnectionPool {
             dataSource.setUsername(properties.getProperty(DB_USERNAME));
             dataSource.setPassword(properties.getProperty(DB_PASSWORD));
 
-            dataSource.setMinIdle(100);
+            dataSource.setMinIdle(10);
             dataSource.setMaxIdle(1000);
 
         } catch (FileNotFoundException e) {
