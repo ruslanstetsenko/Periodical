@@ -1,4 +1,6 @@
 import beens.ContactInfo;
+import beens.Publication;
+import beens.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.*;
 import beens.Account;
@@ -7,6 +9,7 @@ import service.PublicationService;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class DbTest {
 
@@ -17,8 +20,8 @@ public class DbTest {
 //        testPublicationType();
 //        testPublicationTheme();
 //        testPublication();
-//        testPublicService();
-        testPubPeriodCost();
+        testPublicService();
+//        testPubPeriodCost();
     }
 
     private static void testAccount() throws SQLException {
@@ -156,7 +159,10 @@ public class DbTest {
     }
 
     private static void testPublicService() {
-        System.out.println(new PublicationService().getPublicationWithCosts());
+        Map<Publication, List<PublicationPeriodicityCost>> map = new PublicationService().getPublicationWithCosts(1, 0, 1);
+        System.out.println(map);
+        System.out.println("amount: " + map.size());
+
     }
 
     private static void testPubPeriodCost() throws SQLException {

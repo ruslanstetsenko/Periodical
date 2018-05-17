@@ -14,6 +14,9 @@ public class CancelCreateSubscriptionCommand implements Command {
             return "/jsps/login.jsp";
         }
 
+        session.setAttribute("currentPubTypeId", 0);
+        session.setAttribute("currentPubThemeId", 0);
+
         return "/jsps/userPage.jsp";
     }
 }

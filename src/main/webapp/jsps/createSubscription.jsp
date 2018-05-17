@@ -18,25 +18,25 @@
 <body>
 <div>
     <form name="createSubscription" method="post" action="controller">
-    <input type="hidden" name="command" value="okCreateSubscription">
+        <input type="hidden" name="command" value="okCreateSubscription">
 
-    <p>Перелік періодичних видань</p>
-    <table>
-        <thead>
-        <tr>
-            <td></td>
-            <th>Найменування</th>
-            <th>Вебсайт</th>
-            <th>Варіанти підписки</th>
-        </tr>
-        </thead>
+        <p>Перелік періодичних видань</p>
+        <table>
+            <thead>
+            <tr>
+                <td></td>
+                <th>Найменування</th>
+                <th>Вебсайт</th>
+                <th>Варіанти підписки</th>
+            </tr>
+            </thead>
 
-        <tbody>
-        <c:forEach var="publWithCost" items="${publicationListWithCost}">
-            <%--<form name="createSubscription" method="get" action="controller">--%>
+            <tbody>
+            <c:forEach var="publWithCost" items="${publicationListWithCost}">
+                <%--<form name="createSubscription" method="get" action="controller">--%>
                 <input type="hidden" name="command" value="addPublicationToSubscription">
                 <tr>
-                    <%--<td valign="top"><input type="checkbox" name="curentPubid" value="${publWithCost.key.id}"></td>--%>
+                        <%--<td valign="top"><input type="checkbox" name="curentPubid" value="${publWithCost.key.id}"></td>--%>
                     <td valign="center"><c:out value="${publWithCost.key.name}"/></td>
                     <td valign="center" align="right"><c:out value="${publWithCost.key.website}"/></td>
                         <%--<td>--%>
@@ -48,7 +48,6 @@
                         <%--</td>--%>
 
 
-
                     <td valign="center">
 
                         <c:forEach var="subscription" items="${mapPubNameSubscription}">
@@ -58,28 +57,30 @@
                         </c:forEach>
                         <br>
 
-                        <select size="1" name="curentCostId" <c:if test="${subscriptionExist}">DISABLED</c:if> >
+                        <select size="1" name="curentCostId"
+                                <c:if test="${subscriptionExist}">DISABLED</c:if> >
 
 
                             <option></option>
                             <c:forEach var="periodicyCost" items="${publWithCost.value}">
-                                <option value="${periodicyCost.id}"><c:out value="${periodicyCost.cost}"/> грн. на <c:out value="${periodicyCost.timesPerYear}"/> місяць/місяців
+                                <option value="${periodicyCost.id}"><c:out value="${periodicyCost.cost}"/> грн. на
+                                    <c:out value="${periodicyCost.timesPerYear}"/> місяць/місяців
                                 </option>
                                 <c:set var="subscriptionExist" value="false"/>
                             </c:forEach>
                         </select>
                     </td>
-                    <%--<td>--%>
+                        <%--<td>--%>
                         <%--<input type="submit" name="addPubToSubs" value="Додати підписку" <c:if test="${costValue == 0}">disabled</c:if>>--%>
-                    <%--</td>--%>
+                        <%--</td>--%>
                 </tr>
-            <%--</form>--%>
-        </c:forEach>
-        </tbody>
-    </table>
+                <%--</form>--%>
+            </c:forEach>
+            </tbody>
+        </table>
 
-    <p>кількість видань: ${fn:length(publicationListWithCost)}</p>
-    <input type="submit" name="createSubscription" value="Оформити підписку">
+        <p>кількість видань: ${fn:length(publicationListWithCost)}</p>
+        <input type="submit" name="createSubscription" value="Оформити підписку">
 
     </form>
 
@@ -107,15 +108,15 @@
                 </c:forEach>
             </select>
         </div>
-
-
+        <br>
+        <input type="submit" name="useFilters" value="Задіяти фільтри">
     </form>
 
 </div>
 
 <div id="publicationsList">
     <form name="cancelSubscription" method="get" action="controller">
-        <input type="hidden" name="command" value="cancelEditSubscription">
+        <input type="hidden" name="command" value="cancelCreateSubscription">
         <input type="submit" name="showInfo" value="Відмінити оформлення">
     </form>
 </div>

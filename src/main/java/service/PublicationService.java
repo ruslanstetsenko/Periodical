@@ -271,6 +271,17 @@ public class PublicationService {
         return publicationList;
     }
 
+    public List<Publication> selectPublicationsByTypeByTheme(int typeId, int themeId) {
+        Connection connection = ConnectionPool.getConnection(true);
+        List<Publication> publicationList = new ArrayList<>();
+        try {
+            publicationList = supportGetPubList(connection, themeId, themeId, 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return publicationList;
+    }
+
     public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
@@ -403,7 +414,7 @@ public class PublicationService {
         }
     }
 
-    public Map<Publication, List<PublicationPeriodicityCost>> getPublicationWithCosts() {
+    public Map<Publication, List<PublicationPeriodicityCost>> getPublicationWithCosts(int typeId, int themeId, int statusId) {
         Connection connection = ConnectionPool.getConnection(true);
         Map<Publication, List<PublicationPeriodicityCost>> publicationListMap = new LinkedHashMap<>();
         List<Publication> publications = new ArrayList<>();
@@ -411,9 +422,7 @@ public class PublicationService {
         List<PublicationPeriodicityCost> forEachPub = new ArrayList<>();
 
         try {
-            publications = publicationDao.getByStatus(connection, 1)
-                    .stream().sorted(Comparator.comparing(Publication::getId))
-                    .collect(Collectors.toList());
+            publications = supportGetPubList(connection, typeId, themeId, statusId);
             publicationPeriodicityCosts = publicationPeriodicityCostDao.getAll(connection)
                     .stream()
                     .sorted(Comparator.comparing(PublicationPeriodicityCost::getPublicationId))

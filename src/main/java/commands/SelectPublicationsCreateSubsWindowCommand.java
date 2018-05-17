@@ -1,5 +1,7 @@
 package commands;
 
+import beens.Publication;
+import beens.PublicationPeriodicityCost;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -7,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class SelectPublicationsCreateSubsWindowCommand implements Command {
     @Override
@@ -15,32 +19,28 @@ public class SelectPublicationsCreateSubsWindowCommand implements Command {
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             return "/jsps/login.jsp";
         }
-        System.out.println("session id = " + session.getId());
 
         int currentPubTypeId = Integer.valueOf(request.getParameter("currentPubTypeId"));
         int currentPubThemeId = Integer.valueOf(request.getParameter("currentPubThemeId"));
-        int currentPubStatusId = Integer.valueOf(request.getParameter("currentPubStatusId"));
-        int currentBillPaidId = Integer.valueOf(request.getParameter("currentBillPaidId"));
 
-//        System.out.println("currentPubTypeId = " + currentPubTypeId);
+        List<Publication> publicationList = new PublicationService().selectPublicationsByTypeByTheme(currentPubTypeId, currentPubThemeId);
+        session.setAttribute("publicationList", publicationList);
+//        session.setAttribute("publicationThemeList", arrLists[1]);
+        System.out.println("publicationList " + publicationList);
+        System.out.println("currentPubTypeId " + currentPubTypeId);
+        System.out.println("currentPubThemeId " + currentPubThemeId);
 
-        session.setAttribute("currentPubTypeId", currentPubTypeId);
-        session.setAttribute("currentPubThemeId", currentPubThemeId);
-        session.setAttribute("currentPubStatusId", currentPubStatusId);
-        session.setAttribute("currentBillPaidId", currentBillPaidId);
+        session.setAttribute("currentPubTypeId", request.getParameter("currentPubTypeId"));
+        session.setAttribute("currentPubThemeId", request.getParameter("currentPubThemeId"));
 
-//        session.setAttribute("currentPubTypeId", request.getParameter("currentPubTypeId"));
-//        session.setAttribute("currentPubThemeId", request.getParameter("currentPubThemeId"));
-//        session.setAttribute("currentPubStatusId", request.getParameter("currentPubStatusId"));
-//        session.setAttribute("currentBillPaidId", request.getParameter("currentBillPaidId"));
+        PublicationService publicationService = new PublicationService();
+        Map<Publication, List<PublicationPeriodicityCost>> map = publicationService.getPublicationWithCosts(currentPubTypeId, currentPubThemeId, 1);
+//        List[] arrLists = publicationService.getPubThemesAndTypes();
+        session.setAttribute("publicationListWithCost", map.entrySet());
+//        session.setAttribute("publicationTypeList", arrLists[0]);
+//        session.setAttribute("publicationThemeList", arrLists[1]);
 
-        Object[] arr = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId, currentBillPaidId);
-        session.setAttribute("publicationList", arr[0]);
-        session.setAttribute("subscriptionBillList", arr[1]);
-        session.setAttribute("publicationTypeList", arr[2]);
-        session.setAttribute("publicationThemeList", arr[3]);
-        session.setAttribute("publicationStatusList", arr[4]);
 
-        return "/jsps/adminPage.jsp";
+        return "/jsps/createSubscription.jsp";
     }
 }

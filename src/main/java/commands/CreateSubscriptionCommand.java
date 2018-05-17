@@ -24,7 +24,10 @@ public class CreateSubscriptionCommand implements Command {
         }
 
         PublicationService publicationService = new PublicationService();
-        Map<Publication, List<PublicationPeriodicityCost>> map = publicationService.getPublicationWithCosts();
+        Map<Publication, List<PublicationPeriodicityCost>> map = publicationService.getPublicationWithCosts(0, 0, 1);
+        session.setAttribute("currentSubStatusId", 0);
+        session.setAttribute("currentBillPaidId", 0);
+
         List[] arrLists = publicationService.getPubThemesAndTypes();
         session.setAttribute("publicationListWithCost", map.entrySet());
         session.setAttribute("publicationTypeList", arrLists[0]);
