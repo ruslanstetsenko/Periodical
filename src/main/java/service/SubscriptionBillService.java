@@ -1,5 +1,6 @@
 package service;
 
+import beens.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.SubscriptionBillDao;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,19 +28,17 @@ public class SubscriptionBillService {
 
 
     //create biil and subscription
-    public void createBill(User user, List<Subscription> subscriptionList) {
+    public int createBill(int userId, List<PublicationPeriodicityCost> publicationPeriodicityCostList) {
         Connection connection = ConnectionPool.getConnection(false);
         SubscriptionBill subscriptionBill = new SubscriptionBill();
-        subscriptionBill.setUserId(user.getId());
-        subscriptionBill.setTotalCost(subscriptionList.stream().mapToDouble(Subscription::getSubscriptionCost).sum());
-        subscriptionBill.setBillNumber(subscriptionBill.getBillSetDay().toString() + user.getId());
+        subscriptionBill.setUserId(userId);
+        subscriptionBill.setTotalCost(publicationPeriodicityCostList.stream().mapToDouble(PublicationPeriodicityCost::getCost).sum());
+        subscriptionBill.setBillNumber((new Date().getTime())%1_000_000 + "_" + userId);
+        int subscriptionBillId = 0;
         try {
             subscriptionBillDao.create(subscriptionBill, connection);
-            int subscriptionBillId = subscriptionBillDao.readLastId(connection);
-            for (Subscription subscription : subscriptionList) {
-                new SubscriptionService().createSubscription(connection, subscription, subscriptionBillId);
-            }
             connection.commit();
+            subscriptionBillId = subscriptionBillDao.readLastId(connection);
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -53,6 +53,7 @@ public class SubscriptionBillService {
                 e.printStackTrace();
             }
         }
+        return subscriptionBillId;
     }
 
     public SubscriptionBill getBill(int billId) {

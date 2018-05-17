@@ -28,13 +28,18 @@ public class SubscriptionService {
     private SubscriptionStatusDao subscriptionStatusDao = DaoFactory.getSubscriptionStatusDao();
     private PublicationDao publicationDao = DaoFactory.getPublicationDao();
 
-    public void createSubscription(Connection connection, Subscription subscription, int subscriptionBillId) {
-        subscription.setSubscriptionBillsId(subscriptionBillId);
+    public void createSubscription(Subscription subscription) {
+        Connection connection = ConnectionPool.getConnection(false);
         try {
             subscriptionDao.create(subscription, connection);
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         } finally {
             try {
                 connection.close();

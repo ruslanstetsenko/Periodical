@@ -17,7 +17,8 @@ public class DbTest {
 //        testPublicationType();
 //        testPublicationTheme();
 //        testPublication();
-        testPublicService();
+//        testPublicService();
+        testPubPeriodCost();
     }
 
     private static void testAccount() throws SQLException {
@@ -156,6 +157,12 @@ public class DbTest {
 
     private static void testPublicService() {
         System.out.println(new PublicationService().getPublicationWithCosts());
+    }
+
+    private static void testPubPeriodCost() throws SQLException {
+        Connection connection = ConnectionPool.getConnection(true);
+        PublicationPeriodicityCostDao dao = DaoFactory.getPublicationPeriodicityCostDao();
+        System.out.println(dao.read(30, connection));
     }
 
 }

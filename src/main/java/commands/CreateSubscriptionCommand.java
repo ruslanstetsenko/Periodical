@@ -2,6 +2,7 @@ package commands;
 
 import beens.Publication;
 import beens.PublicationPeriodicityCost;
+import beens.Subscription;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -25,15 +26,10 @@ public class CreateSubscriptionCommand implements Command {
         PublicationService publicationService = new PublicationService();
         Map<Publication, List<PublicationPeriodicityCost>> map = publicationService.getPublicationWithCosts();
         List[] arrLists = publicationService.getPubThemesAndTypes();
-//        List[] arrLists = new PublicationService().getAllPublication();
         session.setAttribute("publicationListWithCost", map.entrySet());
         session.setAttribute("publicationTypeList", arrLists[0]);
         session.setAttribute("publicationThemeList", arrLists[1]);
 
-//        Set<> set = map.entrySet();
-//        for (Map.Entry<Publication, List<PublicationPeriodicityCost>> entry : map.entrySet()) {
-//            entry.ge
-//        }
 
         return "/jsps/createSubscription.jsp";
     }

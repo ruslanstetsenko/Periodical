@@ -100,9 +100,11 @@
             <p><input type="radio" name="currentBillPaidId" value="0"
                       <c:if test="${currentBillPaidId == 0}">CHECKED</c:if>/>показати всі</p>
             <p><input type="radio" name="currentBillPaidId" value="1"
-                      <c:if test="${currentBillPaidId == 1}">CHECKED</c:if>/>оплачений</p>
+                      <c:if test="${currentBillPaidId == 1}">CHECKED</c:if>/>новий</p>
             <p><input type="radio" name="currentBillPaidId" value="2"
-                      <c:if test="${currentBillPaidId == 2}">CHECKED</c:if>/>не оплачений</p>
+                      <c:if test="${currentBillPaidId == 2}">CHECKED</c:if>/>оплачений</p>
+            <p><input type="radio" name="currentBillPaidId" value="3"
+                      <c:if test="${currentBillPaidId == 3}">CHECKED</c:if>/>не оплачений</p>
         </div>
 
         <input type="submit" name="useFilters" value="Задіяти фільтри">

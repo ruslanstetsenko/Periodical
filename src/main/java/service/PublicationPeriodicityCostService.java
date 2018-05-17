@@ -9,10 +9,27 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class PublicationPeriodicityCostServive {
+public class PublicationPeriodicityCostService {
 
     private PublicationPeriodicityCostDao publicationPeriodicityCostDao = DaoFactory.getPublicationPeriodicityCostDao();
     private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
+
+    public PublicationPeriodicityCost getPubPeriodicyCost(int id) {
+        Connection connection = ConnectionPool.getConnection(true);
+        PublicationPeriodicityCost bean = new PublicationPeriodicityCost();
+        try {
+            bean = publicationPeriodicityCostDao.read(id, connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return bean;
+    }
 
     public double getCostValue(int costId) {
         Connection connection = ConnectionPool.getConnection(true);

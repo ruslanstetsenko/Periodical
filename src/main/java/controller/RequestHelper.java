@@ -38,6 +38,7 @@ public final class RequestHelper {
         commands.put("selectBillsByStatusByUser", new SelectBillsByStatusByUserCommand());
         commands.put("selectBillsByStatus", new SelectBillsByStatusCommand());
         commands.put("selectPublicationsAdminWindow", new SelectPublicationsAdminWindowCommand());
+        commands.put("selectPublicationsCreateSubsWindow", new SelectPublicationsCreateSubsWindowCommand());
         commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
         commands.put("selectSubsBillsUserWindow", new SelectSubsBillsUserWindowComand());
     }

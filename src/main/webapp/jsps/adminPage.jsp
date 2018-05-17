@@ -89,87 +89,89 @@
 <div>
     <form name="publicationType" method="get" action="controller">
         <input type="hidden" name="command" value="selectPublicationsAdminWindow">
+
         <div>
             <p><b>тип видання:</b></p>
-            <input type="radio" name="currentPubTypeId" value="0" <c:if test="${currentPubTypeId == 0}">CHECKED</c:if>/>показати
-            всі
-            <c:forEach var="type" items="${publicationTypeList}">
-                <p align="left">
-                    <input type="radio" name="currentPubTypeId" value="${type.id}"
-                           <c:if test="${currentPubTypeId == type.id}">CHECKED</c:if>/><c:out
-                        value="${type.typeName}"/>
-                </p>
-            </c:forEach>
+            <select size="1" name="currentPubTypeId">
+                <option value="0" <c:if test="${currentPubTypeId == 0}">SELECTED</c:if>>показати всі</option>
+                <c:forEach var="type" items="${publicationTypeList}">
+                    <option value="${type.id}" <c:if test="${currentPubTypeId == type.id}">SELECTED</c:if>><c:out
+                            value="${type.typeName}"/></option>
+                </c:forEach>
+            </select>
         </div>
+
+        <%--<div>--%>
+        <%--<p><b>тип видання:</b></p>--%>
+        <%--<input type="radio" name="currentPubTypeId" value="0" <c:if test="${currentPubTypeId == 0}">CHECKED</c:if>/>показати--%>
+        <%--всі--%>
+        <%--<c:forEach var="type" items="${publicationTypeList}">--%>
+        <%--<p align="left">--%>
+        <%--<input type="radio" name="currentPubTypeId" value="${type.id}"--%>
+        <%--<c:if test="${currentPubTypeId == type.id}">CHECKED</c:if>/><c:out--%>
+        <%--value="${type.typeName}"/>--%>
+        <%--</p>--%>
+        <%--</c:forEach>--%>
+        <%--</div>--%>
 
         <div>
             <p><b>тематика видання:</b></p>
-            <input type="radio" name="currentPubThemeId" value="0" <c:if test="${currentPubThemeId == 0}">CHECKED</c:if>/>показати
-            всі
-            <c:forEach var="theme" items="${publicationThemeList}">
-                <p align="left">
-                    <input type="radio" name="currentPubThemeId" value="${theme.id}"
-                           <c:if test="${currentPubThemeId == theme.id}">CHECKED</c:if>/><c:out
-                        value="${theme.themeName}"/>
-                </p>
-            </c:forEach>
+            <select size="1" name="currentPubThemeId">
+                <option value="0" <c:if test="${currentPubThemeId == 0}">SELECTED</c:if>>показати всі</option>
+                <c:forEach var="theme" items="${publicationThemeList}">
+                    <option value="${theme.id}" <c:if test="${currentPubThemeId == theme.id}">SELECTED</c:if>><c:out
+                            value="${theme.themeName}"/></option>
+                </c:forEach>
+            </select>
 
-            <%--<p><select size="1">--%>
-            <%--<option name="currentPubThemeId" value="0" <c:if test="${currentPubThemeId == 0}">SELECTED</c:if>>--%>
-            <%--показати--%>
+            <%--<input type="radio" name="currentPubThemeId" value="0" <c:if test="${currentPubThemeId == 0}">CHECKED</c:if>/>показати--%>
             <%--всі--%>
-            <%--</option>--%>
             <%--<c:forEach var="theme" items="${publicationThemeList}">--%>
-            <%--<option name="currentPubThemeId" value="${theme.id}"--%>
-            <%--<c:if test="${currentPubThemeId == theme.id}">SELECTED</c:if>><c:out--%>
-            <%--value="${theme.themeName}"/></option>--%>
+            <%--<p align="left">--%>
+            <%--<input type="radio" name="currentPubThemeId" value="${theme.id}"--%>
+            <%--<c:if test="${currentPubThemeId == theme.id}">CHECKED</c:if>/><c:out--%>
+            <%--value="${theme.themeName}"/>--%>
+            <%--</p>--%>
             <%--</c:forEach>--%>
-            <%--</select>--%>
+
         </div>
 
         <div>
             <p><b>статус видання:</b></p>
-            <input type="radio" name="currentPubStatusId" value="0" <c:if test="${currentPubStatusId == 0}">CHECKED</c:if>/>показати
-            всі
-            <c:forEach var="status" items="${publicationStatusList}">
-                <p align="left">
-                    <input type="radio" name="currentPubStatusId" value="${status.id}"
-                           <c:if test="${currentPubStatusId == status.id}">CHECKED</c:if>/><c:out
-                        value="${status.statusName}"/>
-                </p>
-            </c:forEach>
-            <%--<p><select name="selectStatus" size="1">--%>
-                <%--<option name="currentPubStatusId" value="0" <c:if test="${currentPubStatusId == 0}">SELECTED</c:if>>--%>
-                    <%--показати--%>
-                    <%--всі--%>
-                <%--</option>--%>
-                <%--<c:forEach var="status" items="${publicationStatusList}">--%>
-                    <%--<option name="currentPubStatusId" value="${status.id}"--%>
-                            <%--<c:if test="${currentPubStatusId == status.id}">SELECTED</c:if>><c:out--%>
-                            <%--value="${status.statusName}"/></option>--%>
-                <%--</c:forEach>--%>
-            <%--</select>--%>
+            <select size="1" name="currentPubStatusId">
+                <option value="0" <c:if test="${currentPubStatusId == 0}">SELECTED</c:if>>показати всі</option>
+                <c:forEach var="status" items="${publicationStatusList}">
+                    <option value="${status.id}" <c:if test="${currentPubStatusId == status.id}">SELECTED</c:if>><c:out
+                            value="${status.statusName}"/></option>
+                </c:forEach>
+            </select>
+
+            <%--<input type="radio" name="currentPubStatusId" value="0" <c:if test="${currentPubStatusId == 0}">CHECKED</c:if>/>показати--%>
+            <%--всі--%>
+            <%--<c:forEach var="status" items="${publicationStatusList}">--%>
+            <%--<p align="left">--%>
+            <%--<input type="radio" name="currentPubStatusId" value="${status.id}"--%>
+            <%--<c:if test="${currentPubStatusId == status.id}">CHECKED</c:if>/><c:out--%>
+            <%--value="${status.statusName}"/>--%>
+            <%--</p>--%>
+            <%--</c:forEach>--%>
+            <%----%>
         </div>
 
         <div>
             <p><b>статус рахунку</b></p>
-            <p><input type="radio" name="currentBillPaidId" value="0" <c:if test="${currentBillPaidId == 0}">CHECKED</c:if>/>показати всі</p>
-            <p><input type="radio" name="currentBillPaidId" value="1" <c:if test="${currentBillPaidId == 1}">CHECKED</c:if>/>оплачений</p>
-            <p><input type="radio" name="currentBillPaidId" value="2" <c:if test="${currentBillPaidId == 2}">CHECKED</c:if>/>не оплачений</p>
+            <select size="1" name="currentBillPaidId">
+                <option value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>>показати всі</option>
+                <option value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>>новий</option>
+                <option value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>>оплачений</option>
+                <option value="3" <c:if test="${currentBillPaidId == 3}">SELECTED</c:if>>не оплачений</option>
+            </select>
 
-            <%--<p><select size="1">--%>
-                <%--<option name="currentBillPaidId" value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>>--%>
-                    <%--показати всі--%>
-                <%--</option>--%>
-                <%--<option name="currentBillPaidId" value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>>--%>
-                    <%--оплачений--%>
-                <%--</option>--%>
-                <%--<option name="currentBillPaidId" value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>>не--%>
-                    <%--оплачений--%>
-                <%--</option>--%>
-            <%--</select>--%>
+            <%--<p><input type="radio" name="currentBillPaidId" value="0" <c:if test="${currentBillPaidId == 0}">CHECKED</c:if>/>показати всі</p>--%>
+            <%--<p><input type="radio" name="currentBillPaidId" value="1" <c:if test="${currentBillPaidId == 1}">CHECKED</c:if>/>оплачений</p>--%>
+            <%--<p><input type="radio" name="currentBillPaidId" value="2" <c:if test="${currentBillPaidId == 2}">CHECKED</c:if>/>не оплачений</p>--%>
         </div>
-
+        <br>
         <input type="submit" name="useFilters" value="Задіяти фільтри">
     </form>
 

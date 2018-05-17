@@ -21,7 +21,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
     public PublicationPeriodicityCost read(int id, Connection connection) throws SQLException {
         PublicationPeriodicityCost publicationPeriodicityCost = new PublicationPeriodicityCost();
 
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT times_per_year, cost, publication_id FROM publication_periodicity_cost WHERE id=?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication_periodicity_cost WHERE id=?");
         preparedStatement.setInt(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();

@@ -1,8 +1,9 @@
 package commands;
 
+import beens.Publication;
 import beens.PublicationPeriodicityCost;
 import beens.Subscription;
-import service.PublicationPeriodicityCostServive;
+import service.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,34 +14,65 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OkCreateSubscriptionCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PublicationPeriodicityCost costBean;
+        Subscription subscription;
+        PublicationPeriodicityCostService publicationPeriodicityCostService = new PublicationPeriodicityCostService();
+        PublicationService publicationService = new PublicationService();
+        SubscriptionService subscriptionService = new SubscriptionService();
+        List<PublicationPeriodicityCost> publicationPeriodicityCostList = new ArrayList<>();
+        List<Publication> publicationList = new ArrayList<>();
+
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             return "/jsps/login.jsp";
         }
 
         int userId = (Integer) session.getAttribute("userId");
-        List<Integer> publicationsId = Arrays.stream(request.getParameterValues("curentPubid"))
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
-        List<Integer> periodicyCostIs = Arrays.stream(request.getParameterValues("curentCostid"))
+
+        List<Integer> periodicyCostId = Arrays.stream(request.getParameterValues("curentCostId"))
                 .filter(element -> !element.equals(""))
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
-        PublicationPeriodicityCostServive costServive = new PublicationPeriodicityCostServive();
 
-        List<Subscription> subscriptionList = new ArrayList<>();
-        for (int i = 0; i < publicationsId.size(); i++) {
-            subscriptionList.add(new Subscription.Builder().setPublicationId(publicationsId.get(i)).setUsersId(userId).setSubscriptionBillsId(periodicyCostIs.get(i)).setSubscriptionDate(new Date(new java.util.Date().getTime())).setSubscriptionStatusId(3).setSubscriptionCost(costServive.getCostValue(periodicyCostIs.get(i))).build());
+        System.out.println("periodicyCostId " + periodicyCostId);
+
+        for (Integer costId : periodicyCostId) {
+            costBean = publicationPeriodicityCostService.getPubPeriodicyCost(costId);
+            System.out.println(costBean);
+            System.out.println("periodicyCostId " + periodicyCostId.size());
+
+            publicationPeriodicityCostList.add(costBean);
+            publicationList.add(publicationService.getPublication(costBean.getPublicationId()));
         }
 
+        int subsBillId = new SubscriptionBillService().createBill(userId, publicationPeriodicityCostList);
 
+        for (int i = 0; i < publicationList.size(); i++) {
+            subscription = new Subscription.Builder()
+                    .setSubscriptionDate(new Date(new java.util.Date().getTime()))
+                    .setSubscriptionCost(publicationPeriodicityCostList.get(i).getCost())
+                    .setPublicationId(publicationList.get(i).getId())
+                    .setSubscriptionStatusId(3)
+                    .setUsersId(userId)
+                    .setSubscriptionBillsId(subsBillId).build();
+            subscriptionService.createSubscription(subscription);
+        }
 
-        Subscription subscription = new Subscription.Builder().
+        int currentSubStatusId = (Integer) session.getAttribute("currentSubStatusId");
+        int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
+        session.setAttribute("currentSubStatusId", currentSubStatusId);
+        session.setAttribute("currentBillPaidId", currentBillPaidId);
+
+        UserWindowsService userWindowsService = new UserWindowsService();
+        Object[] parameters = userWindowsService.loadSelectedUserWindow(userId, currentSubStatusId, currentBillPaidId);
+        session.setAttribute("mapPubNameSubscription", parameters[0]);
+        session.setAttribute("subscriptionBillList", parameters[1]);
 
         return "/jsps/userPage.jsp";
     }

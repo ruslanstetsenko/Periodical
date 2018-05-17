@@ -34,6 +34,7 @@ public class Controller extends HttpServlet implements Servlet {
         String page = command.execute(request, response);
 //        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
 //        dispatcher.forward(request, response);
+        //перевірити команду на NoComand
         request.getRequestDispatcher(page).forward(request, response);
     }
 }

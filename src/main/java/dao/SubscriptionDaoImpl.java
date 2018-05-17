@@ -14,9 +14,9 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
         preparedStatement.setString(2, subscription.getSubscriptionType());
         preparedStatement.setDouble(3, subscription.getSubscriptionCost());
         preparedStatement.setInt(4, subscription.getPublicationId());
-        preparedStatement.setInt(1, subscription.getSubscriptionStatusId());
-        preparedStatement.setInt(1, subscription.getUsersId());
-        preparedStatement.setInt(1, subscription.getSubscriptionBillsId());
+        preparedStatement.setInt(5, subscription.getSubscriptionStatusId());
+        preparedStatement.setInt(6, subscription.getUsersId());
+        preparedStatement.setInt(7, subscription.getSubscriptionBillsId());
         preparedStatement.execute();
     }
 

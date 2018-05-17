@@ -81,13 +81,13 @@ public class UserWindowsService {
                         .collect(Collectors.toList());
             } else if (currentBillPaidId == 0) {
                 subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
-                map = subscriptionDao.getSubscByBillByUser(connection, userId, currentSubStatusId);
+                map = subscriptionDao.getSubscByStatusByUser(connection, userId, currentSubStatusId);
             } else {
                 subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
                         .stream()
                         .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillPaidId)
                         .collect(Collectors.toList());
-                map = subscriptionDao.getSubscByBillByUser(connection, userId, currentSubStatusId);
+                map = subscriptionDao.getSubscByStatusByUser(connection, userId, currentSubStatusId);
             }
         } catch (SQLException e) {
             e.printStackTrace();

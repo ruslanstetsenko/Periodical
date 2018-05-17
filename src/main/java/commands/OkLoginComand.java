@@ -14,7 +14,7 @@ public class OkLoginComand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/index.jsp";
+            return "jsps/login.jsp";
         }
         String sessionId = session.getId();
         int[] arr = new LoginService().enterInAccount(request.getParameter("login"), request.getParameter("password"));
