@@ -61,6 +61,12 @@
             <th align="left">Ким виданий</th>
             <td><c:out value="${userPassportIdNumb.issuedBy}"/></td>
         </tr>
+        <tr>
+            <th align="left">Ідентифікаційний номер</th>
+            <td><c:out value="${userPassportIdNumb.idNumber}"/></td>
+        </tr>
+
+
         </tbody>
     </table>
 </div>
@@ -104,6 +110,12 @@
         </tbody>
     </table>
 </div>
+
+<div>
+    <a href="users.jsp">До переліку користувачів</a>
+</div>
+
+
 
 </body>
 </html>

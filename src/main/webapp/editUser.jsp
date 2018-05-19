@@ -25,23 +25,23 @@
                  <tbody>
                  <tr>
                      <th align="left">Прізвище</th>
-                     <td><input type="text" name="userName"></td>
+                     <td><input type="text" name="userName" value="${user.name}"></td>
                  </tr>
                  <tr>
                      <th align="left">Імя</th>
-                     <td><input type="text" name="userSurName"></td>
+                     <td><input type="text" name="userSurName" value="${user.surname}"></td>
                  </tr>
                  <tr>
                      <th align="left">По-батькові</th>
-                     <td><input type="text" name="userLastName"></td>
+                     <td><input type="text" name="userLastName" value="${user.lastName}"></td>
                  </tr>
                  <tr>
                      <th align="left">Дата народження</th>
-                     <td><input type="text" name="userBirthDate"></td>
+                     <td><input type="text" name="userBirthDate" value="${user.birthday}"></td>
                  </tr>
                  <tr>
                      <th align="left">Реєстрація в системі</th>
-                     <td><input type="text" name="userRegistrationDate"></td>
+                     <td><input type="text" name="userRegistrationDate" value="${user.registrationDate}"></td>
                  </tr>
                  </tbody>
              </table>
@@ -53,23 +53,23 @@
                  <tbody>
                  <tr>
                      <th align="left">Серія</th>
-                     <td><input type="text" name="passportSerial"></td>
+                     <td><input type="text" name="passportSerial" value="${userPassportIdNumb.serial}"></td>
                  </tr>
                  <tr>
                      <th align="left">Номер</th>
-                     <td><input type="text" name="passportNumber"></td>
+                     <td><input type="text" name="passportNumber" value="${userPassportIdNumb.number}"></td>
                  </tr>
                  <tr>
                      <th align="left">Дата видачі</th>
-                     <td><input type="text" name="passportDateOfIssue"></td>
+                     <td><input type="text" name="passportDateOfIssue" value="${userPassportIdNumb.dateOfIssue}"></td>
                  </tr>
                  <tr>
                      <th align="left">Ким виданий</th>
-                     <td><input type="text" name="passportIssuedBy"></td>
+                     <td><input type="text" name="passportIssuedBy" value="${userPassportIdNumb.issuedBy}"></td>
                  </tr>
                  <tr>
                      <th align="left">Ідентифікаційний номер</th>
-                     <td><input type="text" name="identNuber"></td>
+                     <td><input type="text" name="identNuber" value="${userPassportIdNumb.idNumber}"></td>
                  </tr>
                  </tbody>
              </table>
@@ -81,27 +81,27 @@
                  <tbody>
                  <tr>
                      <td align="left">Область</td>
-                     <td><input type="text" name="region"></td>
+                     <td><input type="text" name="region" value="${userLivingAddress.region}"></td>
                  </tr>
                  <tr>
                      <td align="left">Район</td>
-                     <td><input type="text" name="district"></td>
+                     <td><input type="text" name="district" value="${userLivingAddress.district}"></td>
                  </tr>
                  <tr>
                      <td align="left">Населений пункт</td>
-                     <td><input type="text" name="city"></td>
+                     <td><input type="text" name="city" value="${userLivingAddress.city}"></td>
                  </tr>
                  <tr>
                      <td>Вулиця</td>
-                     <td><input type="text" name="street"></td>
+                     <td><input type="text" name="street" value="${userLivingAddress.street}"></td>
                  </tr>
                  <tr>
                      <td>Номер будинка</td>
-                     <td><input type="text" name="building"></td>
+                     <td><input type="text" name="building" value="${userLivingAddress.building}"></td>
                  </tr>
                  <tr>
                      <td>Номер квартири</td>
-                     <td><input type="text" name="appartment"></td>
+                     <td><input type="text" name="appartment" value="${userLivingAddress.appartment}"></td>
                  </tr>
                  </tbody>
              </table>
@@ -113,11 +113,11 @@
                  <tbody>
                  <tr>
                      <th align="left">Телефон</th>
-                     <td><input type="text" name="userPhoneNumber"></td>
+                     <td><input type="text" name="userPhoneNumber" value="${userContactInfo.phone}"></td>
                  </tr>
                  <tr>
                      <th align="left">Електронна адреса</th>
-                     <td><input type="text" name="userEmail"></td>
+                     <td><input type="text" name="userEmail" value="${userContactInfo.email}"></td>
                  </tr>
                  </tbody>
              </table>

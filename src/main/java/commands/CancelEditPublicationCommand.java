@@ -13,7 +13,7 @@ public class CancelEditPublicationCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return PageConfigManager.getProperty("path.page.login");
+            return PageConfigManager.getProperty("path.page.index");
         }
 //        HttpSession session = request.getSession(true);
 //        System.out.println(session.getAttribute("currentPubTypeId"));

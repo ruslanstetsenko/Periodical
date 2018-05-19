@@ -53,8 +53,12 @@
         </c:forEach>
         </tbody>
     </table>
-
 </div>
+
+<form name="createUser" method="post">
+    <input type="hidden" name="command" value="createUser">
+    <input type="submit" name="createUser" value="Створити користувача">
+</form>
 
 <div>
     <a href="adminPage.jsp">До головного вікна</a>

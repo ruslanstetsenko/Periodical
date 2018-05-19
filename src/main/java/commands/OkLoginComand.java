@@ -17,7 +17,7 @@ public class OkLoginComand implements Command {
         HttpSession session = request.getSession(true);
         System.out.println("OK login comang " + session.getId());
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return PageConfigManager.getProperty("path.page.login");
+            return PageConfigManager.getProperty("path.page.index");
         }
 
         String sessionId = session.getId();

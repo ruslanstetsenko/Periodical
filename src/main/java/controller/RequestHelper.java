@@ -42,6 +42,8 @@ public final class RequestHelper {
         commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
         commands.put("selectSubsBillsUserWindow", new SelectSubsBillsUserWindowComand());
         commands.put("showAboutUser", new ShowAboutUserCommand());
+        commands.put("cancelEditUser", new CancelEditUserCommand());
+        commands.put("createUser", new CreateUserCommand());
 
     }
 
