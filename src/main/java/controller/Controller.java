@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "Controller", urlPatterns = {"/controller"})
+//@WebServlet(name = "Controller", urlPatterns = {"/"})
 public class Controller extends HttpServlet implements Servlet {
 
     RequestHelper requestHelper = RequestHelper.getInstance();

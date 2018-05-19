@@ -1,6 +1,6 @@
 package dao;
 
-import beens.UserRole;
+import beans.UserRole;
 
 import java.sql.*;
 import java.util.ArrayList;

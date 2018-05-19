@@ -1,7 +1,8 @@
 package commands;
 
-import beens.Publication;
-import beens.PublicationPeriodicityCost;
+import beans.Publication;
+import beans.PublicationPeriodicityCost;
+import resource.PageConfigManager;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,7 @@ public class SelectPublicationsCreateSubsWindowCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         int currentPubTypeId = Integer.valueOf(request.getParameter("currentPubTypeId"));
@@ -40,7 +41,6 @@ public class SelectPublicationsCreateSubsWindowCommand implements Command {
 //        session.setAttribute("publicationTypeList", arrLists[0]);
 //        session.setAttribute("publicationThemeList", arrLists[1]);
 
-
-        return "/jsps/createSubscription.jsp";
+        return PageConfigManager.getProperty("path.page.createSubscription");
     }
 }

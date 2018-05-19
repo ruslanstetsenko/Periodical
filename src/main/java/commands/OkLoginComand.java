@@ -1,5 +1,7 @@
 package commands;
 
+import beans.User;
+import resource.PageConfigManager;
 import service.*;
 
 import javax.servlet.ServletException;
@@ -13,9 +15,11 @@ public class OkLoginComand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
+        System.out.println("OK login comang " + session.getId());
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
+
         String sessionId = session.getId();
         int[] arr = new LoginService().enterInAccount(request.getParameter("login"), request.getParameter("password"));
         int role = arr[0];
@@ -29,14 +33,16 @@ public class OkLoginComand implements Command {
         if (role == 1) {
             session.setAttribute("sessionId", sessionId);
             List[] arrLists = new PublicationService().getAllPublication();
+            List<User> userList = new UserService().getAllUsers();
             session.setAttribute("publicationList", arrLists[0]);
             session.setAttribute("subscriptionBillList", arrLists[1]);
             session.setAttribute("publicationTypeList", arrLists[2]);
             session.setAttribute("publicationThemeList", arrLists[3]);
             session.setAttribute("publicationStatusList", arrLists[4]);
+            session.setAttribute("userList", userList);
+            session.setAttribute("loginFormAction", "admin");
 
-            return "/jsps/adminPage.jsp";
-
+            return PageConfigManager.getProperty("path.page.adminPage");
         } else if (role == 2) {
             session.setAttribute("sessionId", sessionId);
             UserWindowsService userWindowsService = new UserWindowsService();
@@ -46,9 +52,10 @@ public class OkLoginComand implements Command {
             session.setAttribute("mapPubNameSubscription", userWindowsService.loadUserWindow(userId)[0]);
             session.setAttribute("subscriptionBillList", userWindowsService.loadUserWindow(userId)[1]);
             session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
+            session.setAttribute("loginFormAction", "user");
 
-            return "/jsps/userPage.jsp";
+            return PageConfigManager.getProperty("path.page.userPage");
         }
-        return "/jsps/error.jsp";
+        return PageConfigManager.getProperty("path.page.users");
     }
 }

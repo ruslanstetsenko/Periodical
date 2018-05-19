@@ -1,6 +1,6 @@
 package dao;
 
-import beens.Subscription;
+import beans.Subscription;
 
 import java.sql.*;
 import java.util.*;

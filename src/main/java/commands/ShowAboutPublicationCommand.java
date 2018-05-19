@@ -1,5 +1,6 @@
 package commands;
 
+import resource.PageConfigManager;
 import service.PublicationService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,7 @@ public class ShowAboutPublicationCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 //        System.out.println("session id = " + session.getId());
 
@@ -32,6 +33,6 @@ public class ShowAboutPublicationCommand implements Command {
         session.setAttribute("publicationPeriodicityCostList", publication[4]);
         session.setAttribute("previousPage", "/jsps/adminPage.jsp");
 
-        return "/jsps/aboutPublication.jsp";
+        return PageConfigManager.getProperty("path.page.aboutPublication");
     }
 }

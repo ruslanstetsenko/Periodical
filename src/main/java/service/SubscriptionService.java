@@ -1,16 +1,15 @@
 package service;
 
-import beens.SubscriptionStatus;
+import beans.SubscriptionStatus;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.PublicationDao;
 import dao.SubscriptionDao;
-import beens.Publication;
-import beens.Subscription;
-import beens.User;
+import beans.Publication;
+import beans.Subscription;
+import beans.User;
 import dao.SubscriptionStatusDao;
 
-import javax.management.DescriptorAccess;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;

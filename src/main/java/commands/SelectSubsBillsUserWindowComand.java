@@ -1,5 +1,6 @@
 package commands;
 
+import resource.PageConfigManager;
 import service.UserWindowsService;
 
 //import javax.persistence.criteria.CriteriaBuilder;
@@ -14,7 +15,7 @@ public class SelectSubsBillsUserWindowComand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         int userId = (Integer) session.getAttribute("userId");
@@ -28,6 +29,6 @@ public class SelectSubsBillsUserWindowComand implements Command {
         session.setAttribute("mapPubNameSubscription", parameters[0]);
         session.setAttribute("subscriptionBillList", parameters[1]);
 
-        return "/jsps/userPage.jsp";
+        return PageConfigManager.getProperty("path.page.userPage");
     }
 }

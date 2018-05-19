@@ -1,5 +1,7 @@
 package commands;
 
+import resource.PageConfigManager;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +13,7 @@ public class BackPrevPageCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
         return null;
     }

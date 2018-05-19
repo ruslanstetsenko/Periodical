@@ -1,12 +1,13 @@
 package dao;
 
-import beens.Account;
+import beans.Account;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDaoImpl implements AccountDao {
+
 
     @Override
     public void create(Account account, Connection connection) throws SQLException {
@@ -17,16 +18,22 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public Account read(int id, Connection connection) throws SQLException {
+    public Account read(int id, Connection connection) {
         Account account = new Account();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT login, password FROM accounts WHERE id=?");
-        preparedStatement.setInt(1, id);
+        String sql = "SELECT login, password FROM accounts WHERE id=?";
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        account.setId(id);
-        account.setLogin(resultSet.getString("login"));
-        account.setPassword(resultSet.getString("password"));
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            account.setId(id);
+            account.setLogin(resultSet.getString("login"));
+            account.setPassword(resultSet.getString("password"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         return account;
     }

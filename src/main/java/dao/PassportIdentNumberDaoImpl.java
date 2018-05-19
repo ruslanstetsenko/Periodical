@@ -1,6 +1,6 @@
 package dao;
 
-import beens.PassportIdentNumber;
+import beans.PassportIdentNumber;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,20 +20,25 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
     }
 
     @Override
-    public PassportIdentNumber read(int id, Connection connection) throws SQLException {
+    public PassportIdentNumber read(int id, Connection connection) {
         PassportIdentNumber passportIdentNumber = new PassportIdentNumber();
+        String sql = "SELECT * FROM passport_ident_number WHERE id=?";
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select serial, number, date_of_issue, issued_by, id_number from passport_ident_number where id=?");
-        preparedStatement.setInt(1, id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        passportIdentNumber.setId(id);
-        passportIdentNumber.setSerial(resultSet.getString("serial"));
-        passportIdentNumber.setNumber(resultSet.getInt("number"));
-        passportIdentNumber.setDateOfIssue(resultSet.getDate("date_of_issue"));
-        passportIdentNumber.setIssuedBy(resultSet.getString("issued_by"));
-        passportIdentNumber.setIdNumber(resultSet.getInt("id_number"));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            passportIdentNumber.setId(id);
+            passportIdentNumber.setSerial(resultSet.getString("serial"));
+            passportIdentNumber.setNumber(resultSet.getInt("number"));
+            passportIdentNumber.setDateOfIssue(resultSet.getDate("date_of_issue"));
+            passportIdentNumber.setIssuedBy(resultSet.getString("issued_by"));
+            passportIdentNumber.setIdNumber(resultSet.getInt("id_number"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return passportIdentNumber;
     }

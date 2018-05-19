@@ -1,5 +1,7 @@
 package commands;
 
+import resource.PageConfigManager;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,12 +13,12 @@ public class CancelCreateSubscriptionCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         session.setAttribute("currentPubTypeId", 0);
         session.setAttribute("currentPubThemeId", 0);
 
-        return "/jsps/userPage.jsp";
+        return PageConfigManager.getProperty("path.page.userPage");
     }
 }

@@ -2,10 +2,6 @@ package service;
 
 import dao.DaoFactory;
 import dao.LivingAddressDao;
-import beens.LivingAddress;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class LivingAddressService {
 

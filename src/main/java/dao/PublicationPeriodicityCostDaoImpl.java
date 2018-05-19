@@ -1,6 +1,6 @@
 package dao;
 
-import beens.PublicationPeriodicityCost;
+import beans.PublicationPeriodicityCost;
 
 import java.sql.*;
 import java.util.ArrayList;

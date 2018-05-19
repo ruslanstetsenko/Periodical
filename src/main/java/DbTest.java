@@ -1,9 +1,9 @@
-import beens.ContactInfo;
-import beens.Publication;
-import beens.PublicationPeriodicityCost;
+import beans.ContactInfo;
+import beans.Publication;
+import beans.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.*;
-import beens.Account;
+import beans.Account;
 import service.PublicationService;
 
 import java.sql.Connection;

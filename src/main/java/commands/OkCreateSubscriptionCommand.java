@@ -1,8 +1,9 @@
 package commands;
 
-import beens.Publication;
-import beens.PublicationPeriodicityCost;
-import beens.Subscription;
+import beans.Publication;
+import beans.PublicationPeriodicityCost;
+import beans.Subscription;
+import resource.PageConfigManager;
 import service.*;
 
 import javax.servlet.ServletException;
@@ -14,12 +15,16 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OkCreateSubscriptionCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            return PageConfigManager.getProperty("path.page.login");
+        }
+
         PublicationPeriodicityCost costBean;
         Subscription subscription;
         PublicationPeriodicityCostService publicationPeriodicityCostService = new PublicationPeriodicityCostService();
@@ -27,11 +32,6 @@ public class OkCreateSubscriptionCommand implements Command {
         SubscriptionService subscriptionService = new SubscriptionService();
         List<PublicationPeriodicityCost> publicationPeriodicityCostList = new ArrayList<>();
         List<Publication> publicationList = new ArrayList<>();
-
-        HttpSession session = request.getSession(true);
-        if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
-        }
 
         int userId = (Integer) session.getAttribute("userId");
 
@@ -74,6 +74,6 @@ public class OkCreateSubscriptionCommand implements Command {
         session.setAttribute("mapPubNameSubscription", parameters[0]);
         session.setAttribute("subscriptionBillList", parameters[1]);
 
-        return "/jsps/userPage.jsp";
+        return PageConfigManager.getProperty("path.page.userPage");
     }
 }

@@ -1,7 +1,6 @@
 package dao;
 
-import beens.PublicationStatus;
-import connection.ConnectionPool;
+import beans.PublicationStatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;

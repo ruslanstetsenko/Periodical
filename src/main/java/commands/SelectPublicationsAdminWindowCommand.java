@@ -1,5 +1,6 @@
 package commands;
 
+import resource.PageConfigManager;
 import service.AdminWindowsService;
 import service.PublicationService;
 
@@ -14,7 +15,7 @@ public class SelectPublicationsAdminWindowCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
         System.out.println("session id = " + session.getId());
 
@@ -42,6 +43,6 @@ public class SelectPublicationsAdminWindowCommand implements Command {
         session.setAttribute("publicationThemeList", arr[3]);
         session.setAttribute("publicationStatusList", arr[4]);
 
-        return "/jsps/adminPage.jsp";
+        return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

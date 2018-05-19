@@ -1,8 +1,9 @@
 package service;
 
+import connection.ConnectionPool;
 import dao.AccountDao;
 import dao.DaoFactory;
-import beens.Account;
+import beans.Account;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,11 +22,8 @@ public class AccountService {
 
     public Account read(int id, Connection connection) {
         Account account = new Account();
-        try {
-            account = accountDao.read(id, connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        account = accountDao.read(id, connection);
+        ConnectionPool.closeConnection(connection);
         return account;
     }
 

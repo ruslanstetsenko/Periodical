@@ -1,6 +1,7 @@
 package commands;
 
-import beens.Publication;
+import beans.Publication;
+import resource.PageConfigManager;
 import service.PublicationService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,7 @@ public class EditPublicationCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         int publicationId = Integer.valueOf(request.getParameter("publicationId"));
@@ -37,6 +38,6 @@ public class EditPublicationCommand implements Command {
         session.setAttribute("selectedType", publication1.getPublicationTypeId());
         session.setAttribute("previousPage", "/jsps/adminPage.jsp");
 
-        return "/jsps/editPublication.jsp";
+        return PageConfigManager.getProperty("path.page.editPublication");
     }
 }

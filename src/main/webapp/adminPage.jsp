@@ -16,6 +16,13 @@
     <title>Admin page</title>
 </head>
 <body>
+
+<header>
+    <a href="">Періодичні видання</a>
+    <a href="">Рахунки</a>
+    <a href="users.jsp">Користувачі</a>
+</header>
+
 <div>
     <p>Перелік періодичних видань</p>
     <table>

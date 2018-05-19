@@ -1,6 +1,6 @@
 package dao;
 
-import beens.SubscriptionBill;
+import beans.SubscriptionBill;
 //import connection.ConnectionPool;
 //import javax.persistence.SqlResultSetMapping;
 import java.sql.Connection;

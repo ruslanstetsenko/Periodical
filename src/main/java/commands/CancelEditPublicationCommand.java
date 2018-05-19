@@ -1,5 +1,6 @@
 package commands;
 
+import resource.PageConfigManager;
 import service.AdminWindowsService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,7 @@ public class CancelEditPublicationCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 //        HttpSession session = request.getSession(true);
 //        System.out.println(session.getAttribute("currentPubTypeId"));
@@ -28,6 +29,6 @@ public class CancelEditPublicationCommand implements Command {
 //        session.setAttribute("publicationThemeList", arr[3]);
 //        session.setAttribute("publicationStatusList", arr[4]);
 
-        return "/jsps/adminPage.jsp";
+        return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

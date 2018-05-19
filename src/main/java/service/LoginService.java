@@ -4,8 +4,8 @@ import connection.ConnectionPool;
 import dao.AccountDao;
 import dao.DaoFactory;
 import dao.UserDao;
-import beens.Account;
-import beens.User;
+import beans.Account;
+import beans.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,6 +1,6 @@
 package dao;
 
-import beens.LivingAddress;
+import beans.LivingAddress;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,21 +21,25 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
     }
 
     @Override
-    public LivingAddress read(int id, Connection connection) throws SQLException {
+    public LivingAddress read(int id, Connection connection) {
         LivingAddress livingAddress = new LivingAddress();
+        String sql = "SELECT * FROM living_address WHERE id=?";
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select region, district, city, street, building, appartment from living_address where id=?");
-        preparedStatement.setInt(1, id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        livingAddress.setId(id);
-        livingAddress.setRegion(resultSet.getString("region"));
-        livingAddress.setDistrict(resultSet.getString("district"));
-        livingAddress.setCity(resultSet.getString("city"));
-        livingAddress.setStreet(resultSet.getString("street"));
-        livingAddress.setBuilding(resultSet.getString("building"));
-        livingAddress.setAppartment(resultSet.getString("appartment"));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            livingAddress.setId(id);
+            livingAddress.setRegion(resultSet.getString("region"));
+            livingAddress.setDistrict(resultSet.getString("district"));
+            livingAddress.setCity(resultSet.getString("city"));
+            livingAddress.setStreet(resultSet.getString("street"));
+            livingAddress.setBuilding(resultSet.getString("building"));
+            livingAddress.setAppartment(resultSet.getString("appartment"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return livingAddress;
     }

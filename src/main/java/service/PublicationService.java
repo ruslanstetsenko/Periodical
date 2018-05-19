@@ -2,7 +2,7 @@ package service;
 
 import connection.ConnectionPool;
 import dao.*;
-import beens.*;
+import beans.*;
 
 import java.sql.Connection;
 import java.sql.Date;

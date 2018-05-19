@@ -1,6 +1,6 @@
 package dao;
 
-import beens.PublicationTheme;
+import beans.PublicationTheme;
 
 import java.sql.Connection;
 import java.sql.SQLException;

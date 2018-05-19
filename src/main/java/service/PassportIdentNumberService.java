@@ -2,10 +2,6 @@ package service;
 
 import dao.DaoFactory;
 import dao.PassportIdentNumberDao;
-import beens.PassportIdentNumber;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class PassportIdentNumberService {
 

@@ -1,12 +1,11 @@
 package service;
 
-import beens.PublicationPeriodicityCost;
+import beans.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.SubscriptionBillDao;
-import beens.Subscription;
-import beens.SubscriptionBill;
-import beens.User;
+import beans.SubscriptionBill;
+import beans.User;
 import dao.SubscriptionDao;
 import dao.UserDao;
 

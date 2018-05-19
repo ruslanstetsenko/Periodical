@@ -1,7 +1,7 @@
 package commands;
 
-import beens.PublicationPeriodicityCost;
-import service.AdminWindowsService;
+import beans.PublicationPeriodicityCost;
+import resource.PageConfigManager;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -20,7 +20,7 @@ public class OkEditPublicationCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            return "/jsps/login.jsp";
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         int publicationId = (Integer) session.getAttribute("publicationId");
@@ -53,6 +53,6 @@ public class OkEditPublicationCommand implements Command {
         session.setAttribute("publicationThemeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
         session.setAttribute("publicationStatusList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
 
-        return "/jsps/adminPage.jsp";
+        return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

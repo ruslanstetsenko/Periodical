@@ -16,7 +16,7 @@
     <title>Login</title>
 </head>
 <body>
-    <form name="loginForm" method="get" action="controller">
+    <form name="loginForm" method="post" action="${loginFormAction}">
         <input type="hidden" name="command" value="okLogin">
         Login:
         <input type="text" name="login" placeholder="login" value=""><br/>

@@ -1,6 +1,6 @@
 package dao;
 
-import beens.Publication;
+import beans.Publication;
 
 import java.sql.Connection;
 import java.sql.Date;

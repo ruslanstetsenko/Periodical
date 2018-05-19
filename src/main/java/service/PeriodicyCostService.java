@@ -1,6 +1,6 @@
 package service;
 
-import beens.PublicationPeriodicityCost;
+import beans.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.PublicationPeriodicityCostDao;

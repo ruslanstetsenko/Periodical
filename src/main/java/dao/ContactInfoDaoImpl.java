@@ -1,6 +1,6 @@
 package dao;
 
-import beens.ContactInfo;
+import beans.ContactInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,17 +17,22 @@ public class ContactInfoDaoImpl implements ContactInfoDao{
     }
 
     @Override
-    public ContactInfo read(int id, Connection connection) throws SQLException {
+    public ContactInfo read(int id, Connection connection) {
         ContactInfo contactInfo = new ContactInfo();
+        String sql = "select phone, email from contact_info where id=?";
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select phone, email from contact_info where id=?");
-        preparedStatement.setInt(1, id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        contactInfo.setId(id);
-        contactInfo.setPhone(resultSet.getString("phone"));
-        contactInfo.setEmail(resultSet.getString("email"));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            contactInfo.setId(id);
+            contactInfo.setPhone(resultSet.getString("phone"));
+            contactInfo.setEmail(resultSet.getString("email"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return contactInfo;
     }

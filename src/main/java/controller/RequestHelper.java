@@ -41,6 +41,8 @@ public final class RequestHelper {
         commands.put("selectPublicationsCreateSubsWindow", new SelectPublicationsCreateSubsWindowCommand());
         commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
         commands.put("selectSubsBillsUserWindow", new SelectSubsBillsUserWindowComand());
+        commands.put("showAboutUser", new ShowAboutUserCommand());
+
     }
 
     public Command getCommand(HttpServletRequest request) {
