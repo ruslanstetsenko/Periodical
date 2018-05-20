@@ -6,10 +6,7 @@ import beans.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserWindowsService {
@@ -41,52 +38,21 @@ public class UserWindowsService {
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         Map<String, Subscription> map = new HashMap<>();
 
-        try {
-            subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
-            map = subscriptionDao.getSubscByUser(connection, userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+        map = subscriptionDao.getSubscByUser(connection, userId);
+
+        ConnectionPool.closeConnection(connection);
         return new Object[]{map, subscriptionBillList};
     }
 
-    public Object[] loadSelectedUserWindow(int userId, int currentSubStatusId, int currentBillPaidId) {
+    public Map<String, Subscription> loadSelectedUserWindow(int userId, int currentSubStatusId) {
         Connection connection = ConnectionPool.getConnection(true);
-        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-        Map<String, Subscription> map = new HashMap<>();
-
-//        if (currentBillPaidId == 0) {
-//            try {
-//                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        Map<String, Subscription> map = new LinkedHashMap<>();
 
         try {
-            if (currentSubStatusId == 0 && currentBillPaidId == 0) {
-                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+            if (currentSubStatusId == 0) {
                 map = subscriptionDao.getSubscByUser(connection, userId);
-            } else if (currentSubStatusId == 0) {
-                map = subscriptionDao.getSubscByUser(connection, userId);
-                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
-                        .stream()
-                        .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillPaidId)
-                        .collect(Collectors.toList());
-            } else if (currentBillPaidId == 0) {
-                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
-                map = subscriptionDao.getSubscByStatusByUser(connection, userId, currentSubStatusId);
             } else {
-                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
-                        .stream()
-                        .filter(subscriptionBill -> subscriptionBill.getPaid() == currentBillPaidId)
-                        .collect(Collectors.toList());
                 map = subscriptionDao.getSubscByStatusByUser(connection, userId, currentSubStatusId);
             }
         } catch (SQLException e) {
@@ -98,7 +64,7 @@ public class UserWindowsService {
                 e.printStackTrace();
             }
         }
-        return new Object[]{map, subscriptionBillList};
+        return map;
     }
 
     public List<Subscription> selectSubscByStatus(SubscriptionStatus status, User user) {
@@ -141,41 +107,25 @@ public class UserWindowsService {
     //subscribe window
     public void selectActivePublications() {
         Connection connection = ConnectionPool.getConnection(true);
-        try {
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication -> publication.getPublicationStatusId() == 1)
-                    .collect(Collectors.toList());
-            publicationsAmount = publicationList.size();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
+        publicationList = publicationDao.getAll(connection)
+                .stream()
+                .filter(publication -> publication.getPublicationStatusId() == 1)
+                .collect(Collectors.toList());
+        publicationsAmount = publicationList.size();
+        ConnectionPool.closeConnection(connection);
     }
 
     public void selectPublByTypeByTheme(Publication publication) {
         Connection connection = ConnectionPool.getConnection(true);
-        try {
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication1 -> publication1.getPublicationStatusId() == 1)
-                    .filter(publication1 -> publication1.getPublicationTypeId() == publication.getPublicationTypeId())
-                    .filter(publication1 -> publication1.getPublicationThemeId() == publication.getPublicationThemeId())
-                    .collect(Collectors.toList());
-            publicationsAmount = publicationList.size();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
+        publicationList = publicationDao.getAll(connection)
+                .stream()
+                .filter(publication1 -> publication1.getPublicationStatusId() == 1)
+                .filter(publication1 -> publication1.getPublicationTypeId() == publication.getPublicationTypeId())
+                .filter(publication1 -> publication1.getPublicationThemeId() == publication.getPublicationThemeId())
+                .collect(Collectors.toList());
+        publicationsAmount = publicationList.size();
+        ConnectionPool.closeConnection(connection);
     }
 }

@@ -18,18 +18,18 @@
 <body>
 <div>
      <form name="createUser" action="create_user" method="post">
-         <input type="hidden" name="command" value="editUser">
+         <input type="hidden" name="command" value="okCreateUser">
          <div>
              <p><b>Користувач</b></p>
              <table>
                  <tbody>
                  <tr>
                      <th align="left">Прізвище</th>
-                     <td><input type="text" name="userName"></td>
+                     <td><input type="text" name="userSurName"></td>
                  </tr>
                  <tr>
                      <th align="left">Імя</th>
-                     <td><input type="text" name="userSurName"></td>
+                     <td><input type="text" name="userName"></td>
                  </tr>
                  <tr>
                      <th align="left">По-батькові</th>
@@ -37,11 +37,11 @@
                  </tr>
                  <tr>
                      <th align="left">Дата народження</th>
-                     <td><input type="text" name="userBirthDate"></td>
+                     <td><input type="date" name="userBirthDate"></td>
                  </tr>
                  <tr>
                      <th align="left">Реєстрація в системі</th>
-                     <td><input type="text" name="userRegistrationDate"></td>
+                     <td><input type="date" name="userRegistrationDate"></td>
                  </tr>
                  </tbody>
              </table>
@@ -61,7 +61,7 @@
                  </tr>
                  <tr>
                      <th align="left">Дата видачі</th>
-                     <td><input type="text" name="passportDateOfIssue"></td>
+                     <td><input type="date" name="passportDateOfIssue"></td>
                  </tr>
                  <tr>
                      <th align="left">Ким виданий</th>
@@ -126,9 +126,9 @@
          <input type="submit" name="createUser" value="Створити користувача">
      </form>
 
-    <form name="createUser" method="post">
+    <form name="createUser" method="post" action="users">
         <input type="hidden" name="command" value="cancelEditUser">
-        <input type="submit" name="createUser" value="Відміна">
+        <input type="submit" name="cancelCreateUser" value="Відміна">
     </form>
 </div>
 </body>

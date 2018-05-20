@@ -9,19 +9,20 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
 
     @Override
-    public void create(User user, Connection connection) {
-        String sql = "INSERT INTO users (name, surname, last_name, birthday, registration_date, passport_ident_number_id, accounts_id, living_address_id, contact_info_id, user_role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void create(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, int passportId, int userRoleId, int addressId, int contactInfoId, int accountId, Connection connection) {
+        String sql = "INSERT INTO users (name, surname, last_name, birthday, registration_date, passport_ident_number_id, living_address_id, contact_info_id, user_role_id, accounts_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getSurname());
-            preparedStatement.setString(3, user.getLastName());
-            preparedStatement.setDate(4, user.getBirthday());
-            preparedStatement.setDate(5, user.getRegistrationDate());
-            preparedStatement.setInt(6, user.getPassportIdentNumberId());
-            preparedStatement.setInt(7, user.getAccountsId());
-            preparedStatement.setInt(8, user.getLivingAddressId());
-            preparedStatement.setInt(9, user.getContactInfoId());
-            preparedStatement.setInt(10, user.getUserRoleId());
+            preparedStatement.setString(1, userName);
+            preparedStatement.setString(2, userSurName);
+            preparedStatement.setString(3, userLastName);
+            preparedStatement.setDate(4, userBirthDate);
+            preparedStatement.setDate(5, userRegistrationDate);
+            preparedStatement.setInt(6, passportId);
+            preparedStatement.setInt(7, addressId);
+            preparedStatement.setInt(8, contactInfoId);
+            preparedStatement.setInt(9, userRoleId);
+            preparedStatement.setInt(10, accountId);
+
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,20 +59,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void update(User user, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET name=?, surname=?, last_name=?, birthday=?, registration_date=?, passport_ident_number_id=?, accounts_id=?, living_address_id=?, contact_info_id=?, user_role_id=? WHERE id=?");
-        preparedStatement.setString(1, user.getName());
-        preparedStatement.setString(2, user.getSurname());
-        preparedStatement.setString(3, user.getLastName());
-        preparedStatement.setDate(4, user.getBirthday());
-        preparedStatement.setDate(5, user.getRegistrationDate());
-        preparedStatement.setInt(6, user.getPassportIdentNumberId());
-        preparedStatement.setInt(7, user.getAccountsId());
-        preparedStatement.setInt(8, user.getLivingAddressId());
-        preparedStatement.setInt(9, user.getContactInfoId());
-        preparedStatement.setInt(10, user.getUserRoleId());
-        preparedStatement.setInt(11, user.getId());
-        preparedStatement.executeUpdate();
+    public void update(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, Connection connection) {
+        String sql = "UPDATE users SET name=?, surname=?, last_name=?, birthday=?, registration_date=? WHERE id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, userName);
+            preparedStatement.setString(2, userSurName);
+            preparedStatement.setString(3, userLastName);
+            preparedStatement.setDate(4, userBirthDate);
+            preparedStatement.setDate(5, userRegistrationDate);
+            preparedStatement.setInt(6, userId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -105,5 +105,19 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
         }
         return list;
+    }
+
+    @Override
+    public int getLastId(Connection connection) {
+        int id = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() AS lastId FROM users");
+            if (resultSet.next()) {
+                id = resultSet.getInt("lastId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

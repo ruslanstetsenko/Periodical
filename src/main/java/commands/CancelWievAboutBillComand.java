@@ -1,5 +1,6 @@
 package commands;
 
+import beans.User;
 import resource.PageConfigManager;
 
 import javax.servlet.ServletException;
@@ -16,9 +17,10 @@ public class CancelWievAboutBillComand implements Command {
             return PageConfigManager.getProperty("path.page.index");
         }
 
-        if ((Integer)session.getAttribute("userRole") == 1) {
-            return PageConfigManager.getProperty("path.page.adminPage");
+        User user = (User)session.getAttribute("currentUser");
+        if (user.getUserRoleId() == 1) {
+            return PageConfigManager.getProperty("path.page.adminPageBills");
         }
-        return PageConfigManager.getProperty("path.page.userPage");
+        return PageConfigManager.getProperty("path.page.userPageBills");
     }
 }

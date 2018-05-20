@@ -59,21 +59,23 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
     }
 
     @Override
-    public List<SubscriptionBill> getAll(Connection connection) throws SQLException {
+    public List<SubscriptionBill> getAll(Connection connection) {
         List<SubscriptionBill> list = new ArrayList<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM subscription_bills ORDER BY paid ASC ");
-
-        while (resultSet.next()) {
-            list.add(new SubscriptionBill.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setTotalCost(resultSet.getDouble("total_cost"))
-                    .setValidityPeriod(resultSet.getInt("validity_period"))
-                    .setPaid(resultSet.getByte("paid"))
-                    .setBillNumber(resultSet.getString("bill_nimber"))
-                    .setBillSetDay(resultSet.getDate("bill_set_day"))
-                    .setUserId(resultSet.getInt("user_id"))
-                    .build());
+        String sql = "SELECT * FROM subscription_bills ORDER BY paid ASC";
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                list.add(new SubscriptionBill.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setTotalCost(resultSet.getDouble("total_cost"))
+                        .setValidityPeriod(resultSet.getInt("validity_period"))
+                        .setPaid(resultSet.getByte("paid"))
+                        .setBillNumber(resultSet.getString("bill_nimber"))
+                        .setBillSetDay(resultSet.getDate("bill_set_day"))
+                        .setUserId(resultSet.getInt("user_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
@@ -87,43 +89,50 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
     }
 
     @Override
-    public List<SubscriptionBill> getByStatus(Connection connection, int paid) throws SQLException {
+    public List<SubscriptionBill> getByStatus(Connection connection, int paid) {
         List<SubscriptionBill> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM subscription_bills WHERE paid=? ORDER BY paid ASC ");
-        preparedStatement.setInt(1, paid);
+        String sql = "SELECT * FROM subscription_bills WHERE paid=? ORDER BY paid ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, paid);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new SubscriptionBill.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setTotalCost(resultSet.getDouble("total_cost"))
-                    .setValidityPeriod(resultSet.getInt("validity_period"))
-                    .setPaid(paid)
-                    .setBillNumber(resultSet.getString("bill_nimber"))
-                    .setBillSetDay(resultSet.getDate("bill_set_day"))
-                    .setUserId(resultSet.getInt("user_id"))
-                    .build());
+            while (resultSet.next()) {
+                list.add(new SubscriptionBill.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setTotalCost(resultSet.getDouble("total_cost"))
+                        .setValidityPeriod(resultSet.getInt("validity_period"))
+                        .setPaid(paid)
+                        .setBillNumber(resultSet.getString("bill_nimber"))
+                        .setBillSetDay(resultSet.getDate("bill_set_day"))
+                        .setUserId(resultSet.getInt("user_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<SubscriptionBill> getByUser(Connection connection, int userId) throws SQLException {
+    public List<SubscriptionBill> getByUser(Connection connection, int userId) {
         List<SubscriptionBill> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM subscription_bills WHERE user_id=?");
-        preparedStatement.setInt(1, userId);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new SubscriptionBill.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setTotalCost(resultSet.getDouble("total_cost"))
-                    .setValidityPeriod(resultSet.getInt("validity_period"))
-                    .setPaid(resultSet.getInt("paid"))
-                    .setBillNumber(resultSet.getString("bill_nimber"))
-                    .setBillSetDay(resultSet.getDate("bill_set_day"))
-                    .setUserId(userId)
-                    .build());
+        String sql = "SELECT * FROM subscription_bills WHERE user_id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new SubscriptionBill.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setTotalCost(resultSet.getDouble("total_cost"))
+                        .setValidityPeriod(resultSet.getInt("validity_period"))
+                        .setPaid(resultSet.getInt("paid"))
+                        .setBillNumber(resultSet.getString("bill_nimber"))
+                        .setBillSetDay(resultSet.getDate("bill_set_day"))
+                        .setUserId(userId)
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }

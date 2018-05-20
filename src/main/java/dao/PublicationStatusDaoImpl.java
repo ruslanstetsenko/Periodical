@@ -56,18 +56,19 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
     }
 
     @Override
-    public List<PublicationStatus> getAll(Connection connection) throws SQLException {
+    public List<PublicationStatus> getAll(Connection connection) {
         List<PublicationStatus> list = new ArrayList<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM publication_status ORDER BY id");
-
-        while (resultSet.next()) {
-            list.add(new PublicationStatus.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setStatusName(resultSet.getString("status_name"))
-                    .build());
+        String sql = "SELECT * FROM publication_status ORDER BY id";
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                list.add(new PublicationStatus.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setStatusName(resultSet.getString("status_name"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
         return list;
     }
 }

@@ -26,6 +26,7 @@ public final class RequestHelper {
         commands.put("editPublication", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
         commands.put("login", new LoginCommand());
+        commands.put("logout", new LogoutCommand());
         commands.put("NoCommand", new NoCommand());
         commands.put("okCreatePublication", new OkCreatePublicationCommand());
         commands.put("okCreateSubscription", new OkCreateSubscriptionCommand());
@@ -40,10 +41,14 @@ public final class RequestHelper {
         commands.put("selectPublicationsAdminWindow", new SelectPublicationsAdminWindowCommand());
         commands.put("selectPublicationsCreateSubsWindow", new SelectPublicationsCreateSubsWindowCommand());
         commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
-        commands.put("selectSubsBillsUserWindow", new SelectSubsBillsUserWindowComand());
+        commands.put("selectSubsUserWindow", new SelectSubsUserWindowComand());
         commands.put("showAboutUser", new ShowAboutUserCommand());
         commands.put("cancelEditUser", new CancelEditUserCommand());
         commands.put("createUser", new CreateUserCommand());
+        commands.put("okEditUser", new OkEditUserCommand());
+        commands.put("okCreateUser", new OkCreateUserCommand());
+        commands.put("selectBills", new SelectBillsCommand());
+        commands.put("resetBillList", new ResetBillListCommand());
 
     }
 

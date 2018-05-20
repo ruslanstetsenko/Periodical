@@ -32,7 +32,7 @@ public class SubscriptionBillService {
         SubscriptionBill subscriptionBill = new SubscriptionBill();
         subscriptionBill.setUserId(userId);
         subscriptionBill.setTotalCost(publicationPeriodicityCostList.stream().mapToDouble(PublicationPeriodicityCost::getCost).sum());
-        subscriptionBill.setBillNumber((new Date().getTime())%1_000_000 + "_" + userId);
+        subscriptionBill.setBillNumber((new Date().getTime()) % 1_000_000 + "_" + userId);
         int subscriptionBillId = 0;
         try {
             subscriptionBillDao.create(subscriptionBill, connection);
@@ -72,24 +72,30 @@ public class SubscriptionBillService {
         return bill;
     }
 
-    public List<SubscriptionBill> selectBillsByStatus(byte status) {
+    public List<SubscriptionBill> selectBillsByStatus(int status) {
+        Connection connection = ConnectionPool.getConnection(true);
+        List<SubscriptionBill> subscriptionBillList;
+        if (status == 0) {
+            subscriptionBillList = subscriptionBillDao.getAll(connection);
+        } else {
+            subscriptionBillList = subscriptionBillDao.getByStatus(connection, status);
+        }
+        return subscriptionBillList;
+    }
+
+    public List<SubscriptionBill> selectBillsByUserByStatus(int userId, int status) {
         Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-        subscriptionBillList = null;
-        try {
-            subscriptionBillList = subscriptionBillDao.getAll(connection)
+        if (status == 0) {
+            subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+        } else {
+            subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
                     .stream()
                     .filter(subscriptionBill -> subscriptionBill.getPaid() == status)
                     .collect(Collectors.toList());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+
+        ConnectionPool.closeConnection(connection);
         return subscriptionBillList;
     }
 

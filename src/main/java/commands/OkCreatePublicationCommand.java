@@ -1,5 +1,6 @@
 package commands;
 
+import beans.Publication;
 import beans.PublicationPeriodicityCost;
 import resource.PageConfigManager;
 import service.PublicationService;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class OkCreatePublicationCommand implements Command {
     @Override
@@ -61,14 +63,14 @@ public class OkCreatePublicationCommand implements Command {
         int currentPubTypeId = (Integer) session.getAttribute("currentPubTypeId");
         int currentPubThemeId = (Integer) session.getAttribute("currentPubThemeId");
         int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
-        int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
+//        int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
 //
-        Object[] arr = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId, currentBillPaidId);
-        session.setAttribute("publicationList", arr[0]);
-        session.setAttribute("subscriptionBillList", arr[1]);
-        session.setAttribute("publicationTypeList", arr[2]);
-        session.setAttribute("publicationThemeList", arr[3]);
-        session.setAttribute("publicationStatusList", arr[4]);
+        List<Publication> publicationList = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId);
+        session.setAttribute("publicationList", publicationList);
+//        session.setAttribute("subscriptionBillList", arr[1]);
+//        session.setAttribute("publicationTypeList", arr[2]);
+//        session.setAttribute("publicationThemeList", arr[3]);
+//        session.setAttribute("publicationStatusList", arr[4]);
 
         return PageConfigManager.getProperty("path.page.adminPage");
     }

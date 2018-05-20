@@ -35,7 +35,11 @@
         </tr>
         <tr>
             <th align="left">Статус:</th>
-            <td align="left"><c:out value="${subscriptionStatusId}"/></td>
+            <td align="left">
+                <c:forEach var="subsStatus" items="${subsStatusList}">
+                    <c:if test="${subsStatus.id == subscriptionStatusId}"><c:out value="${subsStatus.statusName}"/> </c:if>
+                </c:forEach>
+            </td>
         </tr>
         </tbody>
     </table>

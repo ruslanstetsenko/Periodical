@@ -13,48 +13,37 @@ import java.util.List;
 
 public class LoginService {
 
-    public int [] enterInAccount(String login, String password) {
-        int [] arr = new int[2];
+    public User enterInAccount(String login, String password) {
         AccountDao accountDao = DaoFactory.getAccountDao();
         UserDao userDao = DaoFactory.getUserDao();
         Connection connection = ConnectionPool.getConnection(true);
-        User user;
+        User user = new User();
         int accountId;
 
-        try {
-            List<Account> accountList = accountDao.getAll(connection);
-            for (Account account : accountList) {
-                if (login.equals(account.getLogin()) && password.equals(account.getPassword())) {
-                    List<User> userList = userDao.getAll(connection);
-                    accountId = account.getId();
-                    for (User user1 : userList) {
-                        if (accountId == user1.getAccountsId()) {
-                            user = user1;
-                            if (user.getUserRoleId() == 1) {
-                                arr[0] = 1;
-                                arr[1] = user.getId();
-                            } else {
-                                arr[0] = 2;
-                                arr[1] = user.getId();
-                            }
-                            break;
-                        }
+        List<Account> accountList = accountDao.getAll(connection);
+        for (Account account : accountList) {
+            if (login.equals(account.getLogin()) && password.equals(account.getPassword())) {
+                List<User> userList = userDao.getAll(connection);
+                accountId = account.getId();
+                for (User user1 : userList) {
+                    if (accountId == user1.getAccountsId()) {
+                        user = user1;
+//                            if (user.getUserRoleId() == 1) {
+//                                arr[0] = 1;
+//                                arr[1] = user.getId();
+//                            } else {
+//                                arr[0] = 2;
+//                                arr[1] = user.getId();
+//                            }
+                        break;
                     }
-                    break;
                 }
-                //wrong login or password
+                break;
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            //wrong login or password
         }
-        return arr;
+        ConnectionPool.closeConnection(connection);
+        return user;
     }
 //
 //    private void loadAdminWindow(Connection connection) throws SQLException {

@@ -13,6 +13,6 @@ public interface PublicationThemeDao {
     public int readByName(Connection connection, String themeName) throws SQLException;
     public void update(PublicationTheme publicationTheme, Connection connection) throws SQLException;
     public void delete(PublicationTheme publicationTheme, Connection connection) throws SQLException;
-    public List<PublicationTheme> getAll(Connection connection) throws SQLException;
+    public List<PublicationTheme> getAll(Connection connection);
 
 }

@@ -2,8 +2,12 @@ package commands;
 
 import beans.Publication;
 import beans.PublicationPeriodicityCost;
+import beans.Subscription;
+import beans.User;
 import resource.PageConfigManager;
 import service.PublicationService;
+import service.UserWindowsService;
+import wrappers.PublicThemeAndTypeWrapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +25,20 @@ public class CreateSubscriptionCommand implements Command {
             return PageConfigManager.getProperty("path.page.index");
         }
 
+        User user = (User) session.getAttribute("currentUser");
         PublicationService publicationService = new PublicationService();
         Map<Publication, List<PublicationPeriodicityCost>> map = publicationService.getPublicationWithCosts(0, 0, 1);
-        session.setAttribute("currentSubStatusId", 0);
-        session.setAttribute("currentBillPaidId", 0);
+        UserWindowsService userWindowsService = new UserWindowsService();
+        Map<String, Subscription> subscriptionMap = userWindowsService.loadSelectedUserWindow(user.getId(), 0);
+        session.setAttribute("mapAllPubNameSubscription", subscriptionMap);
 
-        List[] arrLists = publicationService.getPubThemesAndTypes();
+//        session.setAttribute("currentSubStatusId", 0);
+//        session.setAttribute("currentBillPaidId", 0);
+
+        PublicThemeAndTypeWrapper wrapper = publicationService.getPubThemesAndTypes();
         session.setAttribute("publicationListWithCost", map.entrySet());
-        session.setAttribute("publicationTypeList", arrLists[0]);
-        session.setAttribute("publicationThemeList", arrLists[1]);
+        session.setAttribute("publicationTypeList", wrapper.getPublicationTypes());
+        session.setAttribute("publicationThemeList", wrapper.getPublicationThemes());
 
         return PageConfigManager.getProperty("path.page.createSubscription");
     }

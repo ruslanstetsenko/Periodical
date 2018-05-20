@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface AccountDao {
 
-    public void create(Account account, Connection connection) throws SQLException;
+    public void create(String login, String password, Connection connection);
     public Account read(int id, Connection connection);
-    public void update(Account account, Connection connection) throws SQLException;
+    public void update(int id, String login, String password, Connection connection);
     public void delete(Account account, Connection connection) throws SQLException;
-    public List<Account> getAll(Connection connection) throws SQLException;
-
+    public List<Account> getAll(Connection connection);
+    public int getLastId(Connection connection);
 }

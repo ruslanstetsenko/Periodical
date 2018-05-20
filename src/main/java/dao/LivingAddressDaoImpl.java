@@ -9,15 +9,19 @@ import java.util.List;
 public class LivingAddressDaoImpl implements LivingAddressDao {
 
     @Override
-    public void create(LivingAddress livingAddress, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO living_address (region, district, city, street, building, appartment) VALUES (?, ?, ?, ?, ?, ?)");
-        preparedStatement.setString(1, livingAddress.getRegion());
-        preparedStatement.setString(2, livingAddress.getDistrict());
-        preparedStatement.setString(3, livingAddress.getCity());
-        preparedStatement.setString(4, livingAddress.getStreet());
-        preparedStatement.setString(5, livingAddress.getBuilding());
-        preparedStatement.setString(6, livingAddress.getAppartment());
-        preparedStatement.execute();
+    public void create(String region, String district, String city, String street, String building, String appartment, Connection connection) {
+        String sql = "INSERT INTO living_address (region, district, city, street, building, appartment) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, region);
+            preparedStatement.setString(2, district);
+            preparedStatement.setString(3, city);
+            preparedStatement.setString(4, street);
+            preparedStatement.setString(5, building);
+            preparedStatement.setString(6, appartment);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -45,16 +49,20 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
     }
 
     @Override
-    public void update(LivingAddress livingAddress, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE living_address SET region=?, district=?, city=?, street=?, building=?, appartment=? WHERE id=?");
-        preparedStatement.setString(1, livingAddress.getRegion());
-        preparedStatement.setString(2, livingAddress.getDistrict());
-        preparedStatement.setString(3, livingAddress.getCity());
-        preparedStatement.setString(4, livingAddress.getStreet());
-        preparedStatement.setString(5, livingAddress.getBuilding());
-        preparedStatement.setString(6, livingAddress.getAppartment());
-        preparedStatement.setInt(7, livingAddress.getId());
-        preparedStatement.executeUpdate();
+    public void update(int addressId, String region, String district, String city, String street, String building, String appartment, Connection connection) {
+        String sql = "UPDATE living_address SET region=?, district=?, city=?, street=?, building=?, appartment=? WHERE id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, region);
+            preparedStatement.setString(2, district);
+            preparedStatement.setString(3, city);
+            preparedStatement.setString(4, street);
+            preparedStatement.setString(5, building);
+            preparedStatement.setString(6, appartment);
+            preparedStatement.setInt(7, addressId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -82,4 +90,18 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
                     .build());
         }
         return list;    }
+
+    @Override
+    public int getLastId(Connection connection) {
+        int id = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() AS lastId FROM living_address");
+            if (resultSet.next()) {
+                id = resultSet.getInt("lastId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
 }

@@ -50,7 +50,7 @@
 
                     <td valign="center">
 
-                        <c:forEach var="subscription" items="${mapPubNameSubscription}">
+                        <c:forEach var="subscription" items="${mapAllPubNameSubscription}">
                             <c:if test="${publWithCost.key.id == subscription.value.publicationId && subscription.value.subscriptionStatusId != 2}">
                                 <c:set var="subscriptionExist" value="true"/>
                             </c:if>
@@ -58,8 +58,7 @@
                         <br>
 
                         <select size="1" name="curentCostId"
-                                <c:if test="${subscriptionExist}">DISABLED</c:if> >
-
+                                <c:if test="${subscriptionExist}">DISABLED</c:if>>
 
                             <option></option>
                             <c:forEach var="periodicyCost" items="${publWithCost.value}">

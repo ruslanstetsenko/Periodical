@@ -23,11 +23,11 @@
         <tbody>
         <tr>
             <th align="left">Прізвище</th>
-            <td><c:out value="${user.name}"/></td>
+            <td><c:out value="${user.surname}"/></td>
         </tr>
         <tr>
             <th align="left">Імя</th>
-            <td><c:out value="${user.surname}"/></td>
+            <td><c:out value="${user.name}"/></td>
         </tr>
         <tr>
             <th align="left">По-батькові</th>
@@ -111,11 +111,30 @@
     </table>
 </div>
 
-<div>
+<div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
+    <p><b>Параметри авторизації</b></p>
+    <table>
+        <tbody>
+        <tr>
+            <th align="left">Імя користувача</th>
+            <td><c:out value="${userAccount.login}"/></td>
+        </tr>
+        <tr>
+            <th align="left">Пароль</th>
+            <td><c:out value="${userAccount.password}"/></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div <c:if test="${currentUser.userRoleId == 2}">HIDDEN</c:if>>
     <a href="users.jsp">До переліку користувачів</a>
 </div>
 
-
+<div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
+    <a href="editUser.jsp">Редагувати інформацію</a><br>
+    <a href="userPageSubsc.jsp">До переліку підписок</a>
+</div>
 
 </body>
 </html>

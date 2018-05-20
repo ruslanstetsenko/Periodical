@@ -34,7 +34,19 @@
         </tr>
         <tr>
             <th align="left"><strong>Статус оплати:</strong></th>
-            <td><c:out value="${selectedBill.paid}"/></td>
+            <td>
+                <c:choose>
+                    <c:when test="${selectedBill.paid == 1}">
+                        новий
+                    </c:when>
+                    <c:when test="${selectedBill.paid == 2}">
+                        оплачений
+                    </c:when>
+                    <c:otherwise>
+                        не оплачений
+                    </c:otherwise>
+                </c:choose>
+            </td>
         </tr>
         </tbody>
     </table>

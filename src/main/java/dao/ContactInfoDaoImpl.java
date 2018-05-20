@@ -9,11 +9,16 @@ import java.util.List;
 public class ContactInfoDaoImpl implements ContactInfoDao{
 
     @Override
-    public void create(ContactInfo contactInfo, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO contact_info (phone, email) VALUES (?, ?)");
-        preparedStatement.setString(1, contactInfo.getPhone());
-        preparedStatement.setString(2, contactInfo.getEmail());
-        preparedStatement.execute();
+    public void create(String userPhoneNumber, String userEmail, Connection connection) {
+        String sql = "INSERT INTO contact_info (phone, email) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, userPhoneNumber);
+            preparedStatement.setString(2, userEmail);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -38,12 +43,16 @@ public class ContactInfoDaoImpl implements ContactInfoDao{
     }
 
     @Override
-    public void update(ContactInfo contactInfo, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE contact_info SET phone=?, email=? WHERE id=?");
-        preparedStatement.setString(1, contactInfo.getPhone());
-        preparedStatement.setString(2, contactInfo.getEmail());
-        preparedStatement.setInt(3, contactInfo.getId());
-        preparedStatement.executeUpdate();
+    public void update(int contactInfoId, String userPhoneNumber, String userEmail, Connection connection) {
+        String sql = "UPDATE contact_info SET phone=?, email=? WHERE id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, userPhoneNumber);
+            preparedStatement.setString(2, userEmail);
+            preparedStatement.setInt(3, contactInfoId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -67,5 +76,19 @@ public class ContactInfoDaoImpl implements ContactInfoDao{
                     .build());
         }
         return list;
+    }
+
+    @Override
+    public int getLastId(Connection connection) {
+        int id = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() AS lastId FROM contact_info");
+            if (resultSet.next()) {
+                id = resultSet.getInt("lastId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

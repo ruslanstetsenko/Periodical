@@ -10,11 +10,15 @@ public class AccountDaoImpl implements AccountDao {
 
 
     @Override
-    public void create(Account account, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accounts (login, password) VALUES (?, ?)");
-        preparedStatement.setString(1, account.getLogin());
-        preparedStatement.setString(2, account.getPassword());
-        preparedStatement.execute();
+    public void create(String login, String password, Connection connection) {
+        String sql = "INSERT INTO accounts (login, password) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -26,25 +30,28 @@ public class AccountDaoImpl implements AccountDao {
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            account.setId(id);
-            account.setLogin(resultSet.getString("login"));
-            account.setPassword(resultSet.getString("password"));
+            if (resultSet.next()) {
+                account.setId(id);
+                account.setLogin(resultSet.getString("login"));
+                account.setPassword(resultSet.getString("password"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         return account;
     }
 
     @Override
-    public void update(Account account, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE accounts SET login=?, password=? WHERE id=?");
-        preparedStatement.setString(1, account.getLogin());
-        preparedStatement.setString(2, account.getPassword());
-        preparedStatement.setInt(3, account.getId());
-        preparedStatement.executeUpdate();
+    public void update(int id, String login, String password, Connection connection) {
+        String sql = "UPDATE accounts SET login=?, password=? WHERE id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            preparedStatement.setInt(3, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -55,19 +62,37 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public List<Account> getAll(Connection connection) throws SQLException {
+    public List<Account> getAll(Connection connection) {
         List<Account> list = new ArrayList<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM accounts ORDER BY id");
+        String sql = "SELECT * FROM accounts ORDER BY id";
+        try (Statement statement = connection.createStatement()) {
 
-        while (resultSet.next()) {
-            list.add(new Account.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setLogin(resultSet.getString("login"))
-                    .setPassword(resultSet.getString("password"))
-                    .build());
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                list.add(new Account.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setLogin(resultSet.getString("login"))
+                        .setPassword(resultSet.getString("password"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
+    }
+
+    @Override
+    public int getLastId(Connection connection) {
+        int id = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() AS lastId FROM accounts");
+            if (resultSet.next()) {
+                id = resultSet.getInt("lastId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }
 

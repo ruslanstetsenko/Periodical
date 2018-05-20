@@ -9,14 +9,18 @@ import java.util.List;
 public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
 
     @Override
-    public void create(PassportIdentNumber passportIdentNumber, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO passport_ident_number (serial, number, date_of_issue, issued_by, id_number) VALUES (?, ?, ?, ?, ?)");
-        preparedStatement.setString(1, passportIdentNumber.getSerial());
-        preparedStatement.setInt(2, passportIdentNumber.getNumber());
-        preparedStatement.setDate(3, passportIdentNumber.getDateOfIssue());
-        preparedStatement.setString(4, passportIdentNumber.getIssuedBy());
-        preparedStatement.setInt(5, passportIdentNumber.getIdNumber());
-        preparedStatement.execute();
+    public void create(String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, Connection connection) {
+        String sql = "INSERT INTO passport_ident_number (serial, number, date_of_issue, issued_by, id_number) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, passportSerial);
+            preparedStatement.setInt(2, passportNumber);
+            preparedStatement.setDate(3, passportDateOfIssue);
+            preparedStatement.setString(4, passportIssuedBy);
+            preparedStatement.setInt(5, identNuber);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -44,14 +48,20 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
     }
 
     @Override
-    public void update(PassportIdentNumber passportIdentNumber, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE passport_ident_number SET serial=?, number=?, date_of_issue=?, issued_by=?, id_number=? WHERE id=?");
-        preparedStatement.setString(1, passportIdentNumber.getSerial());
-        preparedStatement.setInt(2, passportIdentNumber.getNumber());
-        preparedStatement.setDate(3, passportIdentNumber.getDateOfIssue());
-        preparedStatement.setString(4, passportIdentNumber.getIssuedBy());
-        preparedStatement.setInt(5, passportIdentNumber.getIdNumber());
-        preparedStatement.executeUpdate();
+    public void update(int passportId, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, Connection connection) {
+        String sql = "UPDATE passport_ident_number SET serial=?, number=?, date_of_issue=?, issued_by=?, id_number=? WHERE id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, passportSerial);
+            preparedStatement.setInt(2, passportNumber);
+            preparedStatement.setDate(3, passportDateOfIssue);
+            preparedStatement.setString(4, passportIssuedBy);
+            preparedStatement.setInt(5, identNuber);
+            preparedStatement.setInt(6, passportId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -78,5 +88,19 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
                     .build());
         }
         return list;
+    }
+
+    @Override
+    public int getLastId(Connection connection) {
+        int id = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID() AS lastId FROM passport_ident_number");
+            if (resultSet.next()) {
+                id = resultSet.getInt("lastId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

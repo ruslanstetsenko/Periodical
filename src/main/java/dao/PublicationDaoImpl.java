@@ -73,183 +73,215 @@ public class PublicationDaoImpl implements PublicationDao {
     }
 
     @Override
-    public List<Publication> getAll(Connection connection) throws SQLException {
+    public List<Publication> getAll(Connection connection) {
         List<Publication> list = new ArrayList<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM publication ORDER BY publication_status_id ASC ");
+        String sql = "SELECT * FROM publication ORDER BY publication_status_id ASC";
+        try (Statement statement = connection.createStatement()) {
 
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(resultSet.getInt("publication_type_id"))
-                    .setPublicationStatusId(resultSet.getInt("publication_status_id"))
-                    .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
-                    .build());
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(resultSet.getInt("publication_type_id"))
+                        .setPublicationStatusId(resultSet.getInt("publication_status_id"))
+                        .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Publication> getByTypeThemeStatus(Connection connection, int typeId, int themeId, int statusId) throws SQLException {
+    public List<Publication> getByTypeThemeStatus(Connection connection, int typeId, int themeId, int statusId) {
         List<Publication> list = new ArrayList<>();
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? AND publication_status_id=? ORDER BY publication_status_id ASC";
 //        System.out.println("typeId = " + typeId);
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? AND publication_status_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, typeId);
-        preparedStatement.setInt(2, themeId);
-        preparedStatement.setInt(3, statusId);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, typeId);
+            preparedStatement.setInt(2, themeId);
+            preparedStatement.setInt(3, statusId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(typeId)
-                    .setPublicationStatusId(statusId)
-                    .setPublicationThemeId(themeId)
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(typeId)
+                        .setPublicationStatusId(statusId)
+                        .setPublicationThemeId(themeId)
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 //        System.out.println(list);
         return list;
     }
 
     @Override
-    public List<Publication> getByType(Connection connection, int typeId) throws SQLException {
+    public List<Publication> getByType(Connection connection, int typeId) {
         List<Publication> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_type_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, typeId);
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? ORDER BY publication_status_id ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, typeId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(typeId)
-                    .setPublicationStatusId(resultSet.getInt("publication_status_id"))
-                    .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(typeId)
+                        .setPublicationStatusId(resultSet.getInt("publication_status_id"))
+                        .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Publication> getByTheme(Connection connection, int themeId) throws SQLException {
+    public List<Publication> getByTheme(Connection connection, int themeId) {
         List<Publication> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_theme_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, themeId);
+        String sql = "SELECT * FROM publication WHERE publication_theme_id=? ORDER BY publication_status_id ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, themeId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(resultSet.getInt("publication_type_id"))
-                    .setPublicationStatusId(resultSet.getInt("publication_status_id"))
-                    .setPublicationThemeId(themeId)
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(resultSet.getInt("publication_type_id"))
+                        .setPublicationStatusId(resultSet.getInt("publication_status_id"))
+                        .setPublicationThemeId(themeId)
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Publication> getByStatus(Connection connection, int statusId) throws SQLException {
+    public List<Publication> getByStatus(Connection connection, int statusId) {
         List<Publication> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_status_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, statusId);
+        String sql = "SELECT * FROM publication WHERE publication_status_id=? ORDER BY publication_status_id ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, statusId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(resultSet.getInt("publication_type_id"))
-                    .setPublicationStatusId(statusId)
-                    .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(resultSet.getInt("publication_type_id"))
+                        .setPublicationStatusId(statusId)
+                        .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Publication> getByTypeByTheme(Connection connection, int typeId, int themeId) throws SQLException {
+    public List<Publication> getByTypeByTheme(Connection connection, int typeId, int themeId) {
         List<Publication> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, typeId);
-        preparedStatement.setInt(2, themeId);
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? ORDER BY publication_status_id ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, typeId);
+            preparedStatement.setInt(2, themeId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(typeId)
-                    .setPublicationStatusId(resultSet.getInt("publication_status_id"))
-                    .setPublicationThemeId(themeId)
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(typeId)
+                        .setPublicationStatusId(resultSet.getInt("publication_status_id"))
+                        .setPublicationThemeId(themeId)
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Publication> getByTypeByStatus(Connection connection, int typeId, int statusId) throws SQLException {
+    public List<Publication> getByTypeByStatus(Connection connection, int typeId, int statusId) {
         List<Publication> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_type_id=? AND publication_status_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, typeId);
-        preparedStatement.setInt(2, statusId);
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_status_id=? ORDER BY publication_status_id ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, typeId);
+            preparedStatement.setInt(2, statusId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(typeId)
-                    .setPublicationStatusId(statusId)
-                    .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(typeId)
+                        .setPublicationStatusId(statusId)
+                        .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
 
     @Override
-    public List<Publication> getByThemeByStatus(Connection connection, int themeId, int statusId) throws SQLException {
+    public List<Publication> getByThemeByStatus(Connection connection, int themeId, int statusId) {
         List<Publication> list = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM publication WHERE publication_theme_id=? AND publication_status_id=? ORDER BY publication_status_id ASC ");
-        preparedStatement.setInt(1, themeId);
-        preparedStatement.setInt(2, statusId);
+        String sql = "SELECT * FROM publication WHERE publication_theme_id=? AND publication_status_id=? ORDER BY publication_status_id ASC";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, themeId);
+            preparedStatement.setInt(2, statusId);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            list.add(new Publication.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setName(resultSet.getString("name"))
-                    .setIssnNumber(resultSet.getInt("issn_number"))
-                    .setRegistrationDate(resultSet.getDate("registration_date"))
-                    .setWebsite(resultSet.getString("website"))
-                    .setPublicationTypeId(resultSet.getInt("publication_type_id"))
-                    .setPublicationStatusId(statusId)
-                    .setPublicationThemeId(themeId)
-                    .build());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(resultSet.getInt("publication_type_id"))
+                        .setPublicationStatusId(statusId)
+                        .setPublicationThemeId(themeId)
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }

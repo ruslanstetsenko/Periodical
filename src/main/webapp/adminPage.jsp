@@ -13,14 +13,16 @@
 
 <html>
 <head>
-    <title>Admin page</title>
+    <title>Periodical</title>
 </head>
 <body>
 
 <header>
-    <a href="">Періодичні видання</a>
-    <a href="">Рахунки</a>
+    <%--<a href="adminPage.jsp">Періодичні видання</a>--%>
+    <a href="adminPageBills.jsp">Рахунки</a>
     <a href="users.jsp">Користувачі</a>
+    <c:import url="headUserInfo.jsp"/>
+
 </header>
 
 <div>
@@ -63,42 +65,11 @@
 </div>
 
 <div>
-    <p>Перелік рахунків</p>
-    <table>
-        <thead>
-        <tr>
-            <th>Номер рахунку</th>
-            <th>Дата виставлення рахунку</th>
-            <th>Загальна вартість, грн</th>
-            <th>Статус</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="bill" items="${subscriptionBillList}">
-            <tr>
-                <td><c:out value="${bill.billNumber}"/></td>
-                <td align="right"><c:out value="${bill.billSetDay}"/></td>
-                <td align="right"><c:out value="${bill.totalCost}"/></td>
-                <td align="right"><c:out value="${bill.paid}"/></td>
-                <td>
-                    <form action="controller" method="get">
-                        <input type="hidden" name="command" value="showAboutBill">
-                        <button name="currentBillPaidId" value="${bill.id}" type="submit">Докладно</button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-    <p>кількість рахунків: ${fn:length(subscriptionBillList)}</p>
-</div>
-
-<div>
     <form name="publicationType" method="get" action="controller">
         <input type="hidden" name="command" value="selectPublicationsAdminWindow">
 
         <div>
-            <p><b>тип видання:</b></p>
+            <b>тип видання: </b>
             <select size="1" name="currentPubTypeId">
                 <option value="0" <c:if test="${currentPubTypeId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="type" items="${publicationTypeList}">
@@ -108,21 +79,8 @@
             </select>
         </div>
 
-        <%--<div>--%>
-        <%--<p><b>тип видання:</b></p>--%>
-        <%--<input type="radio" name="currentPubTypeId" value="0" <c:if test="${currentPubTypeId == 0}">CHECKED</c:if>/>показати--%>
-        <%--всі--%>
-        <%--<c:forEach var="type" items="${publicationTypeList}">--%>
-        <%--<p align="left">--%>
-        <%--<input type="radio" name="currentPubTypeId" value="${type.id}"--%>
-        <%--<c:if test="${currentPubTypeId == type.id}">CHECKED</c:if>/><c:out--%>
-        <%--value="${type.typeName}"/>--%>
-        <%--</p>--%>
-        <%--</c:forEach>--%>
-        <%--</div>--%>
-
         <div>
-            <p><b>тематика видання:</b></p>
+            <b>тематика видання: </b>
             <select size="1" name="currentPubThemeId">
                 <option value="0" <c:if test="${currentPubThemeId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="theme" items="${publicationThemeList}">
@@ -130,21 +88,10 @@
                             value="${theme.themeName}"/></option>
                 </c:forEach>
             </select>
-
-            <%--<input type="radio" name="currentPubThemeId" value="0" <c:if test="${currentPubThemeId == 0}">CHECKED</c:if>/>показати--%>
-            <%--всі--%>
-            <%--<c:forEach var="theme" items="${publicationThemeList}">--%>
-            <%--<p align="left">--%>
-            <%--<input type="radio" name="currentPubThemeId" value="${theme.id}"--%>
-            <%--<c:if test="${currentPubThemeId == theme.id}">CHECKED</c:if>/><c:out--%>
-            <%--value="${theme.themeName}"/>--%>
-            <%--</p>--%>
-            <%--</c:forEach>--%>
-
         </div>
 
         <div>
-            <p><b>статус видання:</b></p>
+            <b>статус видання: </b>
             <select size="1" name="currentPubStatusId">
                 <option value="0" <c:if test="${currentPubStatusId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="status" items="${publicationStatusList}">
@@ -153,36 +100,13 @@
                 </c:forEach>
             </select>
 
-            <%--<input type="radio" name="currentPubStatusId" value="0" <c:if test="${currentPubStatusId == 0}">CHECKED</c:if>/>показати--%>
-            <%--всі--%>
-            <%--<c:forEach var="status" items="${publicationStatusList}">--%>
-            <%--<p align="left">--%>
-            <%--<input type="radio" name="currentPubStatusId" value="${status.id}"--%>
-            <%--<c:if test="${currentPubStatusId == status.id}">CHECKED</c:if>/><c:out--%>
-            <%--value="${status.statusName}"/>--%>
-            <%--</p>--%>
-            <%--</c:forEach>--%>
-            <%----%>
         </div>
 
-        <div>
-            <p><b>статус рахунку</b></p>
-            <select size="1" name="currentBillPaidId">
-                <option value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>>показати всі</option>
-                <option value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>>новий</option>
-                <option value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>>оплачений</option>
-                <option value="3" <c:if test="${currentBillPaidId == 3}">SELECTED</c:if>>не оплачений</option>
-            </select>
-
-            <%--<p><input type="radio" name="currentBillPaidId" value="0" <c:if test="${currentBillPaidId == 0}">CHECKED</c:if>/>показати всі</p>--%>
-            <%--<p><input type="radio" name="currentBillPaidId" value="1" <c:if test="${currentBillPaidId == 1}">CHECKED</c:if>/>оплачений</p>--%>
-            <%--<p><input type="radio" name="currentBillPaidId" value="2" <c:if test="${currentBillPaidId == 2}">CHECKED</c:if>/>не оплачений</p>--%>
-        </div>
         <br>
         <input type="submit" name="useFilters" value="Задіяти фільтри">
     </form>
 
-    <form name="addpublication" method="post" action="controller">
+    <form name="addpublication" method="post" action="add_publication">
         <input type="hidden" name="command" value="createPublication">
         <input type="submit" name="createPublication" value="Додати нове видання">
     </form>

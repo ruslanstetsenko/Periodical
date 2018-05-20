@@ -23,7 +23,7 @@
         Password:
         <input type="password" name="password" placeholder="password" value=""><br/>
         ${errorLoginMessage}<br/>
-        ${incorrectActio}<br/>
+        ${incorrectAction}<br/>
         ${nullPage}<br/>
         <input type="submit" value="Log in">
     </form>

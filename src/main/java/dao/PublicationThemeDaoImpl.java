@@ -56,16 +56,18 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
     }
 
     @Override
-    public List<PublicationTheme> getAll(Connection connection) throws SQLException {
+    public List<PublicationTheme> getAll(Connection connection) {
         List<PublicationTheme> list = new ArrayList<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM publication_theme ORDER BY id");
-
-        while (resultSet.next()) {
-            list.add(new PublicationTheme.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setThemeName(resultSet.getString("theme_name"))
-                    .build());
+        String sql = "SELECT * FROM publication_theme ORDER BY id";
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                list.add(new PublicationTheme.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setThemeName(resultSet.getString("theme_name"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }

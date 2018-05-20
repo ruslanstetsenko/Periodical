@@ -45,13 +45,13 @@ public class OkEditPublicationCommand implements Command {
         int pubTypeId = (Integer) session.getAttribute("currentPubTypeId");
         int pubThemeId = (Integer) session.getAttribute("currentPubThemeId");
         int pubStatusId = (Integer) session.getAttribute("currentPubStatusId");
-        int billPaidId = (Integer) session.getAttribute("currentBillPaidId");
+//        int billPaidId = (Integer) session.getAttribute("currentBillPaidId");
 
-        session.setAttribute("publicationList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[0]);
-        session.setAttribute("subscriptionBillList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[1]);
-        session.setAttribute("publicationTypeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[2]);
-        session.setAttribute("publicationThemeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
-        session.setAttribute("publicationStatusList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
+        session.setAttribute("publicationList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId));
+//        session.setAttribute("subscriptionBillList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[1]);
+//        session.setAttribute("publicationTypeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[2]);
+//        session.setAttribute("publicationThemeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
+//        session.setAttribute("publicationStatusList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
 
         return PageConfigManager.getProperty("path.page.adminPage");
     }

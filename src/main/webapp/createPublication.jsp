@@ -33,31 +33,66 @@
             <tr>
                 <th align="left" valign="top"><strong>Тип видання:</strong></th>
                 <td>
-                    <c:forEach var="type" items="${publicationTypeList}">
-                        <p align="left">
-                            <input type="radio" name="type" value="${type.id}"/><c:out value="${type.typeName}"/>
-                        </p>
-                    </c:forEach>
+                    <%--<c:forEach var="type" items="${publicationTypeList}">--%>
+                        <%--<p align="left">--%>
+                            <%--<input type="radio" name="type" value="${type.id}"/><c:out value="${type.typeName}"/>--%>
+                        <%--</p>--%>
+                    <%--</c:forEach>--%>
+
+                    <select size="1" name="type">
+                        <option value="0"></option>
+                        <c:forEach var="type" items="${publicationTypeList}">
+                            <option value="${type.id}"><c:out
+                                    value="${type.typeName}"/></option>
+                        </c:forEach>
+                    </select>
                 </td>
             </tr>
+
+            <%--<div>--%>
+                <%--<p><b>тип видання:</b></p>--%>
+                <%--<select size="1" name="currentPubTypeId">--%>
+                    <%--<option value="0" <c:if test="${currentPubTypeId == 0}">SELECTED</c:if>>показати всі</option>--%>
+                    <%--<c:forEach var="type" items="${publicationTypeList}">--%>
+                        <%--<option value="${type.id}" <c:if test="${currentPubTypeId == type.id}">SELECTED</c:if>><c:out--%>
+                                <%--value="${type.typeName}"/></option>--%>
+                    <%--</c:forEach>--%>
+                <%--</select>--%>
+            <%--</div>--%>
             <tr>
                 <th align="left" valign="top"><strong>Статус:</strong></th>
                 <td>
-                    <c:forEach var="status" items="${publicationStatusList}">
-                        <p align="left">
-                            <input type="radio" name="status" value="${status.id}"/><c:out value="${status.statusName}"/>
-                        </p>
-                    </c:forEach>
+                    <%--<c:forEach var="status" items="${publicationStatusList}">--%>
+                        <%--<p align="left">--%>
+                            <%--<input type="radio" name="status" value="${status.id}"/><c:out value="${status.statusName}"/>--%>
+                        <%--</p>--%>
+                    <%--</c:forEach>--%>
+
+                    <select size="1" name="status">
+                        <option value="0"></option>
+                        <c:forEach var="status" items="${publicationStatusList}">
+                            <option value="${status.id}"><c:out
+                                    value="${status.statusName}"/></option>
+                        </c:forEach>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <th align="left" valign="top"><strong>Тематика:</strong></th>
                 <td>
-                    <c:forEach var="theme" items="${publicationThemeList}">
-                        <p align="left">
-                            <input type="radio" name="theme" value="${theme.id}"/><c:out value="${theme.themeName}"/>
-                        </p>
-                    </c:forEach>
+                    <%--<c:forEach var="theme" items="${publicationThemeList}">--%>
+                        <%--<p align="left">--%>
+                            <%--<input type="radio" name="theme" value="${theme.id}"/><c:out value="${theme.themeName}"/>--%>
+                        <%--</p>--%>
+                    <%--</c:forEach>--%>
+
+                    <select size="1" name="theme">
+                        <option value="0"></option>
+                        <c:forEach var="theme" items="${publicationThemeList}">
+                            <option value="${theme.id}"><c:out
+                                    value="${theme.themeName}"/></option>
+                        </c:forEach>
+                    </select>
                 </td>
             </tr>
             <tr>

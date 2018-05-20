@@ -56,16 +56,18 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
     }
 
     @Override
-    public List<PublicationType> getAll(Connection connection) throws SQLException {
+    public List<PublicationType> getAll(Connection connection) {
         List<PublicationType> list = new ArrayList<>();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM publication_type ORDER BY id");
-
-        while (resultSet.next()) {
-            list.add(new PublicationType.Builder()
-                    .setId(resultSet.getInt("id"))
-                    .setTypeName(resultSet.getString("type_name"))
-                    .build());
+        String sql = "SELECT * FROM publication_type ORDER BY id";
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                list.add(new PublicationType.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setTypeName(resultSet.getString("type_name"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }

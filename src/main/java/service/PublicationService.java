@@ -3,6 +3,7 @@ package service;
 import connection.ConnectionPool;
 import dao.*;
 import beans.*;
+import wrappers.PublicThemeAndTypeWrapper;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -176,80 +177,44 @@ public class PublicationService {
         List<PublicationTheme> publicationThemeList = new ArrayList<>();
         List<PublicationStatus> publicationStatusList = new ArrayList<>();
 
-        try {
-            publicationList = publicationDao.getAll(connection);
-            subscriptionBillList = subscriptionBillDao.getAll(connection);
-            publicationTypeList = publicationTypeDao.getAll(connection);
-            publicationThemeList = publicationThemeDao.getAll(connection);
-            publicationStatusList = publicationStatusDao.getAll(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        publicationList = publicationDao.getAll(connection);
+        subscriptionBillList = subscriptionBillDao.getAll(connection);
+        publicationTypeList = publicationTypeDao.getAll(connection);
+        publicationThemeList = publicationThemeDao.getAll(connection);
+        publicationStatusList = publicationStatusDao.getAll(connection);
+
+        ConnectionPool.closeConnection(connection);
+
         return new List[]{publicationList, subscriptionBillList, publicationTypeList, publicationThemeList, publicationStatusList};
     }
 
-    public List[] getPubThemesAndTypes() {
+    public PublicThemeAndTypeWrapper getPubThemesAndTypes() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<PublicationType> publicationTypeList = new ArrayList<>();
-        List<PublicationTheme> publicationThemeList = new ArrayList<>();
+        List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
+        List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
 
-        try {
-            publicationTypeList = publicationTypeDao.getAll(connection);
-            publicationThemeList = publicationThemeDao.getAll(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return new List[]{publicationTypeList, publicationThemeList};
+        ConnectionPool.closeConnection(connection);
+        return new PublicThemeAndTypeWrapper(publicationThemeList, publicationTypeList);
     }
 
-    public List[] getSelectedPublication(int pubTypeId, int pubThemeId, int pubStatusId, int billStatusId) {
+    public List<Publication> getSelectedPublication(int pubTypeId, int pubThemeId, int pubStatusId) {
         Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> publicationList = new ArrayList<>();
-        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-        List<PublicationType> publicationTypeList = new ArrayList<>();
-        List<PublicationTheme> publicationThemeList = new ArrayList<>();
-        List<PublicationStatus> publicationStatusList = new ArrayList<>();
+        List<Publication> publicationList;
+//        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
+//        List<PublicationType> publicationTypeList = new ArrayList<>();
+//        List<PublicationTheme> publicationThemeList = new ArrayList<>();
+//        List<PublicationStatus> publicationStatusList = new ArrayList<>();
 
-        try {
-            if (billStatusId == 0) {
-                subscriptionBillList = subscriptionBillDao.getAll(connection);
-                publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
-//                System.out.println(publicationList);
+//        publicationTypeList = publicationTypeDao.getAll(connection);
+//        publicationThemeList = publicationThemeDao.getAll(connection);
+//        publicationStatusList = publicationStatusDao.getAll(connection);
+        publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
+        ConnectionPool.closeConnection(connection);
 
-            } else {
-                subscriptionBillList = subscriptionBillDao.getByStatus(connection, billStatusId);
-                publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
-//                System.out.println(publicationList + "\n");
-
-            }
-            publicationTypeList = publicationTypeDao.getAll(connection);
-            publicationThemeList = publicationThemeDao.getAll(connection);
-            publicationStatusList = publicationStatusDao.getAll(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return new List[]{publicationList, subscriptionBillList, publicationTypeList, publicationThemeList, publicationStatusList};
+        return publicationList;
     }
 
-    private List<Publication> supportGetPubList(Connection connection, int pubTypeId, int pubThemeId, int pubStatusId) throws SQLException {
+    private List<Publication> supportGetPubList(Connection connection, int pubTypeId, int pubThemeId, int pubStatusId) {
         List<Publication> publicationList = new ArrayList<>();
         if (pubTypeId == 0 && pubThemeId == 0 && pubStatusId == 0) {
             publicationList = publicationDao.getAll(connection);
@@ -274,55 +239,40 @@ public class PublicationService {
     public List<Publication> selectPublicationsByTypeByTheme(int typeId, int themeId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
-        try {
-            publicationList = supportGetPubList(connection, themeId, themeId, 1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        publicationList = supportGetPubList(connection, typeId, themeId, 1);
+
+        ConnectionPool.closeConnection(connection);
         return publicationList;
     }
 
     public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
-        try {
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication -> publication.getPublicationStatusId() == status.getId())
-                    .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-                    .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
-                    .collect(Collectors.toList());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
+        publicationList = publicationDao.getAll(connection)
+                .stream()
+                .filter(publication -> publication.getPublicationStatusId() == status.getId())
+                .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
+                .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
+                .collect(Collectors.toList());
+
+        ConnectionPool.closeConnection(connection);
         return publicationList;
     }
 
     public List<Publication> selectPublicationsByTheme(PublicationTheme theme, int currentPubStatusId, int currentPubTypeId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
-        try {
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication -> publication.getPublicationThemeId() == theme.getId())
-                    .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-                    .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-                    .collect(Collectors.toList());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
+        publicationList = publicationDao.getAll(connection)
+                .stream()
+                .filter(publication -> publication.getPublicationThemeId() == theme.getId())
+                .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
+                .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
+                .collect(Collectors.toList());
+
+        ConnectionPool.closeConnection(connection);
         return publicationList;
     }
 
@@ -330,22 +280,14 @@ public class PublicationService {
     public List<Publication> selectPublicationsByType(PublicationType type, int currentPubStatusId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = new ArrayList<>();
-        try {
-            publicationList = publicationDao.getAll(connection)
-                    .stream()
-                    .filter(publication -> publication.getPublicationTypeId() == type.getId())
-                    .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-                    .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
-                    .collect(Collectors.toList());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+
+        publicationList = publicationDao.getAll(connection)
+                .stream()
+                .filter(publication -> publication.getPublicationTypeId() == type.getId())
+                .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
+                .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
+                .collect(Collectors.toList());
+        ConnectionPool.closeConnection(connection);
         return publicationList;
     }
 

@@ -17,6 +17,13 @@
 </head>
 <body>
 
+<header>
+    <c:import url="headUserInfo.jsp"/>
+    <a href="adminPage.jsp">Періодичні видання</a>
+    <a href="adminPageBills.jsp">Рахунки</a>
+    <%--<a href="users.jsp">Користувачі</a>--%>
+</header>
+
 <div>
     <p>Перелік користувачів</p>
     <table>
@@ -32,19 +39,19 @@
         <tbody>
         <c:forEach var="user" items="${userList}">
             <tr>
-                <td align="right"><c:out value="${user.name}"/></td>
                 <td align="right"><c:out value="${user.surname}"/></td>
+                <td align="right"><c:out value="${user.name}"/></td>
                 <td align="right"><c:out value="${user.lastName}"/></td>
                 <td align="right"><c:out value="${user.birthday}"/></td>
                 <td align="right"><c:out value="${user.registrationDate}"/></td>
                 <td valign="bottom ">
-                    <form name="showAboutUser" action="controller" method="get">
+                    <form name="showAboutUser" action="about_user" method="get">
                         <input type="hidden" name="command" value="showAboutUser">
                         <button name="currentUserId" value="${user.id}" type="submit">Докладно</button>
                     </form>
                 </td>
                 <td valign="bottom ">
-                    <form name="edutAboutUser" action="controller" method="get">
+                    <form name="editAboutUser" action="edit_user" method="post">
                         <input type="hidden" name="command" value="editUser">
                         <button name="currentUserId" value="${user.id}" type="submit">Редагувати</button>
                     </form>
@@ -55,7 +62,7 @@
     </table>
 </div>
 
-<form name="createUser" method="post">
+<form name="createUser" method="post" action="create_user">
     <input type="hidden" name="command" value="createUser">
     <input type="submit" name="createUser" value="Створити користувача">
 </form>
