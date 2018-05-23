@@ -4,7 +4,7 @@ import beans.Publication;
 import beans.PublicationPeriodicityCost;
 import beans.Subscription;
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.*;
 
 import javax.servlet.ServletException;
@@ -76,6 +76,7 @@ public class OkCreateSubscriptionCommand implements Command {
         session.setAttribute("mapPubNameSubscription", map);
 //        session.setAttribute("subscriptionBillList", parameters[1]);
 
+        session.setAttribute("currentPage", "path.page.userPageSubsc");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

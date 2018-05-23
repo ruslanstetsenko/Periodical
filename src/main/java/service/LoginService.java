@@ -1,50 +1,49 @@
 package service;
 
 import connection.ConnectionPool;
-import dao.AccountDao;
+import dao.interfaces.AccountDao;
 import dao.DaoFactory;
-import dao.UserDao;
+import dao.interfaces.UserDao;
 import beans.Account;
 import beans.User;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class LoginService {
 
-    public User enterInAccount(String login, String password) {
-        AccountDao accountDao = DaoFactory.getAccountDao();
-        UserDao userDao = DaoFactory.getUserDao();
-        Connection connection = ConnectionPool.getConnection(true);
-        User user = new User();
-        int accountId;
+    private AccountDao accountDao = DaoFactory.getAccountDao();
+    private UserDao userDao = DaoFactory.getUserDao();
 
+    public Account checkAccount(String login, String password) {
+        Connection connection = ConnectionPool.getConnection(true);
+//        boolean loginCheck = false;
+//        UserDao userDao = DaoFactory.getUserDao();
+//        User user = new User();
+//        int accountId;
         List<Account> accountList = accountDao.getAll(connection);
         for (Account account : accountList) {
             if (login.equals(account.getLogin()) && password.equals(account.getPassword())) {
-                List<User> userList = userDao.getAll(connection);
-                accountId = account.getId();
-                for (User user1 : userList) {
-                    if (accountId == user1.getAccountsId()) {
-                        user = user1;
-//                            if (user.getUserRoleId() == 1) {
-//                                arr[0] = 1;
-//                                arr[1] = user.getId();
-//                            } else {
-//                                arr[0] = 2;
-//                                arr[1] = user.getId();
-//                            }
-                        break;
-                    }
-                }
-                break;
+                return account;
             }
-            //wrong login or password
         }
         ConnectionPool.closeConnection(connection);
-        return user;
+        return null;
     }
+
+    public User getUser(Account account) {
+        Connection connection = ConnectionPool.getConnection(true);
+        List<User> userList = userDao.getAll(connection);
+        for (User user : userList) {
+            if (account.getId() == user.getAccountsId()) {
+                return user;
+            }
+        }
+        ConnectionPool.closeConnection(connection);
+        return null;
+    }
+
+
 //
 //    private void loadAdminWindow(Connection connection) throws SQLException {
 //        PublicationDao publicationDao = DaoFactory.getPublicationDao();
@@ -56,5 +55,6 @@ public class LoginService {
 //    private void loadUserWindow(Connection connection) {
 //
 //    }
+
 
 }

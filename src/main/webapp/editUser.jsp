@@ -7,68 +7,73 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
 
+<c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
+<c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
+<fmt:setBundle basename="pagecontent" var="rb"/>
+
 <html>
 <head>
-    <title>Edit User</title>
+    <c:set var="currentPage" value="path.page.editUser" scope="request"/>
+    <title><fmt:message key="aboutUser.editUserTitle" bundle="${rb}"/></title>
 </head>
 <body>
 <div>
     <form name="createUser" action="users" method="post">
         <input type="hidden" name="command" value="okEditUser">
         <div>
-            <p><b>Користувач</b></p>
+            <p><b><fmt:message key="aboutUser.user" bundle="${rb}"/></b></p>
             <table>
                 <tbody>
                 <tr>
-                    <th align="left">Прізвище</th>
+                    <th align="left"><fmt:message key="aboutUser.surname" bundle="${rb}"/></th>
                     <td><input type="text" name="userSurName" value="${user.surname}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Імя</th>
+                    <th align="left"><fmt:message key="aboutUser.name" bundle="${rb}"/></th>
                     <td><input type="text" name="userName" value="${user.name}"></td>
                 </tr>
                 <tr>
-                    <th align="left">По-батькові</th>
+                    <th align="left"><fmt:message key="aboutUser.lastName" bundle="${rb}"/></th>
                     <td><input type="text" name="userLastName" value="${user.lastName}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Дата народження</th>
-                    <td><input type="date" name="userBirthDate" value="${user.birthday}"></td>
+                    <th align="left"><fmt:message key="aboutUser.birthday" bundle="${rb}"/></th>
+                    <td><input type="date" name="userBirthDate" value="${user.birthday}" onkeydown="return false"></td>
                 </tr>
                 <tr>
-                    <th align="left">Реєстрація в системі</th>
-                    <td><input type="date" name="userRegistrationDate" value="${user.registrationDate}"></td>
+                    <th align="left"><fmt:message key="aboutUser.regDate" bundle="${rb}"/></th>
+                    <td><input type="date" name="userRegistrationDate" value="${user.registrationDate}" onkeydown="return false"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
         <div>
-            <p><b>Паспортні дані</b></p>
+            <p><b><fmt:message key="aboutUser.passportData" bundle="${rb}"/></b></p>
             <table>
                 <tbody>
                 <tr>
-                    <th align="left">Серія</th>
+                    <th align="left"><fmt:message key="aboutUser.passportSerial" bundle="${rb}"/></th>
                     <td><input type="text" name="passportSerial" value="${userPassportIdNumb.serial}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Номер</th>
+                    <th align="left"><fmt:message key="aboutUser.passportNumber" bundle="${rb}"/></th>
                     <td><input type="text" name="passportNumber" value="${userPassportIdNumb.number}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Дата видачі</th>
-                    <td><input type="date" name="passportDateOfIssue" value="${userPassportIdNumb.dateOfIssue}"></td>
+                    <th align="left"><fmt:message key="aboutUser.dateOfIssue" bundle="${rb}"/></th>
+                    <td><input type="date" name="passportDateOfIssue" value="${userPassportIdNumb.dateOfIssue}" onkeydown="return false"></td>
                 </tr>
                 <tr>
-                    <th align="left">Ким виданий</th>
+                    <th align="left"><fmt:message key="aboutUser.issuedBy" bundle="${rb}"/></th>
                     <td><input type="text" name="passportIssuedBy" value="${userPassportIdNumb.issuedBy}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Ідентифікаційний номер</th>
+                    <th align="left"><fmt:message key="aboutUser.identNumber" bundle="${rb}"/></th>
                     <td><input type="text" name="identNuber" value="${userPassportIdNumb.idNumber}"></td>
                 </tr>
                 </tbody>
@@ -76,31 +81,31 @@
         </div>
 
         <div>
-            <p><b>Адреса проживання</b></p>
+            <p><b><fmt:message key="aboutUser.address" bundle="${rb}"/></b></p>
             <table>
                 <tbody>
                 <tr>
-                    <td align="left">Область</td>
+                    <td align="left"><fmt:message key="aboutUser.region" bundle="${rb}"/></td>
                     <td><input type="text" name="region" value="${userLivingAddress.region}"></td>
                 </tr>
                 <tr>
-                    <td align="left">Район</td>
+                    <td align="left"><fmt:message key="aboutUser.district" bundle="${rb}"/></td>
                     <td><input type="text" name="district" value="${userLivingAddress.district}"></td>
                 </tr>
                 <tr>
-                    <td align="left">Населений пункт</td>
+                    <td align="left"><fmt:message key="aboutUser.city" bundle="${rb}"/></td>
                     <td><input type="text" name="city" value="${userLivingAddress.city}"></td>
                 </tr>
                 <tr>
-                    <td>Вулиця</td>
+                    <td><fmt:message key="aboutUser.street" bundle="${rb}"/></td>
                     <td><input type="text" name="street" value="${userLivingAddress.street}"></td>
                 </tr>
                 <tr>
-                    <td>Номер будинка</td>
+                    <td><fmt:message key="aboutUser.buildingNumber" bundle="${rb}"/></td>
                     <td><input type="text" name="building" value="${userLivingAddress.building}"></td>
                 </tr>
                 <tr>
-                    <td>Номер квартири</td>
+                    <td><fmt:message key="aboutUser.appartment" bundle="${rb}"/></td>
                     <td><input type="text" name="appartment" value="${userLivingAddress.appartment}"></td>
                 </tr>
                 </tbody>
@@ -108,15 +113,15 @@
         </div>
 
         <div>
-            <p><b>Контати</b></p>
+            <p><b><fmt:message key="aboutUser.contacts" bundle="${rb}"/></b></p>
             <table>
                 <tbody>
                 <tr>
-                    <th align="left">Телефон</th>
+                    <th align="left"><fmt:message key="aboutUser.phone" bundle="${rb}"/></th>
                     <td><input type="text" name="userPhoneNumber" value="${userContactInfo.phone}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Електронна адреса</th>
+                    <th align="left"><fmt:message key="aboutUser.email" bundle="${rb}"/></th>
                     <td><input type="text" name="userEmail" value="${userContactInfo.email}"></td>
                 </tr>
                 </tbody>
@@ -124,28 +129,28 @@
         </div>
 
         <div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
-            <p><b>Параметри авторизації</b></p>
+            <p><b><fmt:message key="aboutUser.authorizationOptions" bundle="${rb}"/></b></p>
             <table>
                 <tbody>
                 <tr>
-                    <th align="left">Імя користувача</th>
+                    <th align="left"><fmt:message key="aboutUser.login" bundle="${rb}"/></th>
                     <td><input type="text" name="login" value="${userAccount.login}"></td>
                 </tr>
                 <tr>
-                    <th align="left">Пароль</th>
+                    <th align="left"><fmt:message key="aboutUser.password" bundle="${rb}"/></th>
                     <td><input type="text" name="password" value="${userAccount.password}"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <input type="submit" name="createUser" value="Зберегти зміни">
+        <input type="submit" name="createUser" value="<fmt:message key="button.save" bundle="${rb}"/>">
     </form>
 
     <div>
         <form name="cancalEditUser" method="post" action="users">
             <input type="hidden" name="command" value="cancelEditUser">
-            <input type="submit" name="cancelEdit" value="Відміна">
+            <input type="submit" name="cancelEdit" value="<fmt:message key="button.cancel" bundle="${rb}"/>">
         </form>
     </div>
 

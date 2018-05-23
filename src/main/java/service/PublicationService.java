@@ -3,6 +3,9 @@ package service;
 import connection.ConnectionPool;
 import dao.*;
 import beans.*;
+import dao.interfaces.*;
+import wrappers.EditPublicationWrapper;
+import wrappers.FullPublicationInfoWrapper;
 import wrappers.PublicThemeAndTypeWrapper;
 
 import java.sql.Connection;
@@ -93,7 +96,7 @@ public class PublicationService {
         }
     }
 
-    public Object[] aboutPublication(int publicationId) {
+    public FullPublicationInfoWrapper aboutPublication(int publicationId) {
         Connection connection = ConnectionPool.getConnection(true);
         Publication publication = new Publication();
         PublicationType publicationType = new PublicationType();
@@ -116,10 +119,10 @@ public class PublicationService {
                 e.printStackTrace();
             }
         }
-        return new Object[]{publication, publicationType, publicationTheme, publicationStatus, publicationPeriodicityCostList};
+        return new FullPublicationInfoWrapper.Builder().setPublication(publication).setPublicationType(publicationType).setPublicationTheme(publicationTheme).setPublicationStatus(publicationStatus).setPublicationPeriodicityCostList(publicationPeriodicityCostList).build();
     }
 
-    public Object[] editPublication(int publicationId) {
+    public EditPublicationWrapper editPublication(int publicationId) {
         Connection connection = ConnectionPool.getConnection(true);
         Publication publication = new Publication();
         List<PublicationType> publicationTypeList = new ArrayList<>();
@@ -145,7 +148,7 @@ public class PublicationService {
                 e.printStackTrace();
             }
         }
-        return new Object[]{publication, publicationTypeList, publicationThemeList, publicationStatusList, publicationPeriodicityCostList};
+        return new EditPublicationWrapper(publication, publicationTypeList, publicationThemeList, publicationStatusList, publicationPeriodicityCostList);
     }
 
     public void deletePublication(Publication publication) {
@@ -169,23 +172,17 @@ public class PublicationService {
         }
     }
 
-    public List[] getAllPublication() {
+    public FullPublicationInfoWrapper getAllPublication() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> publicationList = new ArrayList<>();
-        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-        List<PublicationType> publicationTypeList = new ArrayList<>();
-        List<PublicationTheme> publicationThemeList = new ArrayList<>();
-        List<PublicationStatus> publicationStatusList = new ArrayList<>();
-
-        publicationList = publicationDao.getAll(connection);
-        subscriptionBillList = subscriptionBillDao.getAll(connection);
-        publicationTypeList = publicationTypeDao.getAll(connection);
-        publicationThemeList = publicationThemeDao.getAll(connection);
-        publicationStatusList = publicationStatusDao.getAll(connection);
+        List<Publication> publicationList = publicationDao.getAll(connection);
+        List<SubscriptionBill> subscriptionBillList = subscriptionBillDao.getAll(connection);
+        List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
+        List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
+        List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
 
         ConnectionPool.closeConnection(connection);
 
-        return new List[]{publicationList, subscriptionBillList, publicationTypeList, publicationThemeList, publicationStatusList};
+        return new FullPublicationInfoWrapper.Builder().setPublicationList(publicationList).setSubscriptionBillList(subscriptionBillList).setPublicationTypeList(publicationTypeList).setPublicationThemeList(publicationThemeList).setPublicationStatusList(publicationStatusList).build();
     }
 
     public PublicThemeAndTypeWrapper getPubThemesAndTypes() {
@@ -326,7 +323,6 @@ public class PublicationService {
             }
         }
     }
-
 
     public void deletePublication(int publicationId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
         Connection connection = ConnectionPool.getConnection(false);

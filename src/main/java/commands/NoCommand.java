@@ -1,6 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

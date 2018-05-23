@@ -7,27 +7,32 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
 
+<c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
+<c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
+<fmt:setBundle basename="pagecontent" var="rb"/>
+
 <html>
 <head>
-    <title>Create subscription</title>
+    <c:set var="currentPage" value="path.page.createSubscription" scope="request"/>
+    <title><fmt:message key="aboutSubscription.createTitle" bundle="${rb}"/></title>
 </head>
 <body>
 <div>
     <form name="createSubscription" method="post" action="controller">
         <input type="hidden" name="command" value="okCreateSubscription">
 
-        <p>Перелік періодичних видань</p>
+        <p><fmt:message key="aboutPublication.periodicalList" bundle="${rb}"/></p>
         <table>
             <thead>
             <tr>
-                <td></td>
-                <th>Найменування</th>
-                <th>Вебсайт</th>
-                <th>Варіанти підписки</th>
+                <%--<td></td>--%>
+                <th><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></th>
+                <th><fmt:message key="aboutPublication.publicationWebsite" bundle="${rb}"/></th>
+                <th><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></th>
             </tr>
             </thead>
 
@@ -62,8 +67,7 @@
 
                             <option></option>
                             <c:forEach var="periodicyCost" items="${publWithCost.value}">
-                                <option value="${periodicyCost.id}"><c:out value="${periodicyCost.cost}"/> грн. на
-                                    <c:out value="${periodicyCost.timesPerYear}"/> місяць/місяців
+                                <option value="${periodicyCost.id}"><c:out value="${periodicyCost.cost}"/> <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/> <c:out value="${periodicyCost.timesPerYear}"/> <fmt:message key="aboutPublication.subsCostHead" bundle="${rb}"/>
                                 </option>
                                 <c:set var="subscriptionExist" value="false"/>
                             </c:forEach>
@@ -78,8 +82,8 @@
             </tbody>
         </table>
 
-        <p>кількість видань: ${fn:length(publicationListWithCost)}</p>
-        <input type="submit" name="createSubscription" value="Оформити підписку">
+        <p><fmt:message key="aboutPublication.periodicalAmount" bundle="${rb}"/> ${fn:length(publicationListWithCost)}</p>
+        <input type="submit" name="createSubscription" value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
 
     </form>
 
@@ -87,7 +91,7 @@
         <input type="hidden" name="command" value="selectPublicationsCreateSubsWindow">
 
         <div>
-            <p><b>тип видання:</b></p>
+            <p><b><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></b></p>
             <select size="1" name="currentPubTypeId">
                 <option value="0" <c:if test="${currentPubTypeId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="type" items="${publicationTypeList}">
@@ -98,7 +102,7 @@
         </div>
 
         <div>
-            <p><b>тематика видання:</b></p>
+            <p><b><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></b></p>
             <select size="1" name="currentPubThemeId">
                 <option value="0" <c:if test="${currentPubThemeId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="theme" items="${publicationThemeList}">
@@ -108,7 +112,7 @@
             </select>
         </div>
         <br>
-        <input type="submit" name="useFilters" value="Задіяти фільтри">
+        <input type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
     </form>
 
 </div>
@@ -116,7 +120,7 @@
 <div id="publicationsList">
     <form name="cancelSubscription" method="get" action="controller">
         <input type="hidden" name="command" value="cancelCreateSubscription">
-        <input type="submit" name="showInfo" value="Відмінити оформлення">
+        <input type="submit" name="showInfo" value="<fmt:message key="button.cancel" bundle="${rb}"/>">
     </form>
 </div>
 

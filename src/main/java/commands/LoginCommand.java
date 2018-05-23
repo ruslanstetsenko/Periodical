@@ -1,6 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +15,7 @@ public class LoginCommand implements Command{
         session.setAttribute("sessionId", session.getId());
         System.out.println("login comang " + session.getId());
 
+        session.setAttribute("currentPage", "path.page.login");
         return PageConfigManager.getProperty("path.page.login");
     }
 }

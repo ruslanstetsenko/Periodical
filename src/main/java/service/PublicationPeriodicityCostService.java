@@ -2,7 +2,7 @@ package service;
 
 import connection.ConnectionPool;
 import dao.DaoFactory;
-import dao.PublicationPeriodicityCostDao;
+import dao.interfaces.PublicationPeriodicityCostDao;
 import beans.PublicationPeriodicityCost;
 
 import java.sql.Connection;
@@ -17,34 +17,17 @@ public class PublicationPeriodicityCostService {
     public PublicationPeriodicityCost getPubPeriodicyCost(int id) {
         Connection connection = ConnectionPool.getConnection(true);
         PublicationPeriodicityCost bean = new PublicationPeriodicityCost();
-        try {
-            bean = publicationPeriodicityCostDao.read(id, connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        bean = publicationPeriodicityCostDao.read(id, connection);
+
+        ConnectionPool.closeConnection(connection);
         return bean;
     }
 
     public double getCostValue(int costId) {
         Connection connection = ConnectionPool.getConnection(true);
         double value = 0.0;
-        try {
-            value = publicationPeriodicityCostDao.read(costId, connection).getCost();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        value = publicationPeriodicityCostDao.read(costId, connection).getCost();
+        ConnectionPool.closeConnection(connection);
         return value;
     }
 
@@ -89,7 +72,6 @@ public class PublicationPeriodicityCostService {
             }
         }
     }
-
 
 
     public void addToList(int timePerYears, double cost) {

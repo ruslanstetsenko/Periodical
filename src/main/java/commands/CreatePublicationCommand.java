@@ -1,6 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +15,8 @@ public class CreatePublicationCommand implements Command {
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             return PageConfigManager.getProperty("path.page.index");
         }
+
+        session.setAttribute("currentPage", "path.page.createPublication");
         return PageConfigManager.getProperty("path.page.createPublication");
     }
 }

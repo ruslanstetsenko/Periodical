@@ -1,6 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +15,7 @@ public class LogoutCommand implements Command{
         if (session != null) {
             session.invalidate();
         }
+
         return PageConfigManager.getProperty("path.page.index");
     }
 }

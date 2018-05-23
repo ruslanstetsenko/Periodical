@@ -49,6 +49,7 @@ public final class RequestHelper {
         commands.put("okCreateUser", new OkCreateUserCommand());
         commands.put("selectBills", new SelectBillsCommand());
         commands.put("resetBillList", new ResetBillListCommand());
+        commands.put("setLocale", new SetLocaleCommand());
 
     }
 

@@ -4,7 +4,7 @@ import beans.Publication;
 import beans.PublicationPeriodicityCost;
 import beans.Subscription;
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import service.UserWindowsService;
 import wrappers.PublicThemeAndTypeWrapper;
@@ -40,6 +40,7 @@ public class CreateSubscriptionCommand implements Command {
         session.setAttribute("publicationTypeList", wrapper.getPublicationTypes());
         session.setAttribute("publicationThemeList", wrapper.getPublicationThemes());
 
+        session.setAttribute("currentPage", "path.page.createSubscription");
         return PageConfigManager.getProperty("path.page.createSubscription");
     }
 }

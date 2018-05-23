@@ -7,31 +7,36 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
 
+<c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
+<c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
+<fmt:setBundle basename="pagecontent" var="rb"/>
+
 <html>
 <head>
-    <title>Create publication</title>
+    <c:set var="currentPage" value="path.page.createPublication" scope="request"/>
+    <title><fmt:message key="aboutPublication.title" bundle="${rb}"/></title>
 </head>
 <body>
 <div>
-    <p>Додавання нового видання до каталогу</p>
+    <p><fmt:message key="aboutPublication.createPublication" bundle="${rb}"/></p>
     <form name="createPublication" method="post" action="controller">
         <input type="hidden" name="command" value="okCreatePublication">
         <table>
             <tbody>
             <tr>
-                <th align="left"><strong>Найменування видання:</strong></th>
+                <th align="left"><strong><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></strong></th>
                 <td><input type="text" name="pubName" placeholder="найменування"></td>
             </tr>
             <tr>
-                <th align="left"><strong>ISSN номер видання:</strong></th>
+                <th align="left"><strong><fmt:message key="aboutPublication.publicationISSN" bundle="${rb}"/></strong></th>
                 <td><input type="text" name="ISSN" placeholder="ISSN"></td>
             </tr>
             <tr>
-                <th align="left" valign="top"><strong>Тип видання:</strong></th>
+                <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></strong></th>
                 <td>
                     <%--<c:forEach var="type" items="${publicationTypeList}">--%>
                         <%--<p align="left">--%>
@@ -60,7 +65,7 @@
                 <%--</select>--%>
             <%--</div>--%>
             <tr>
-                <th align="left" valign="top"><strong>Статус:</strong></th>
+                <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationStatus" bundle="${rb}"/></strong></th>
                 <td>
                     <%--<c:forEach var="status" items="${publicationStatusList}">--%>
                         <%--<p align="left">--%>
@@ -78,7 +83,7 @@
                 </td>
             </tr>
             <tr>
-                <th align="left" valign="top"><strong>Тематика:</strong></th>
+                <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></strong></th>
                 <td>
                     <%--<c:forEach var="theme" items="${publicationThemeList}">--%>
                         <%--<p align="left">--%>
@@ -96,20 +101,20 @@
                 </td>
             </tr>
             <tr>
-                <th align="left"><strong>Дата реєстрації:</strong></th>
-                <td><input type="date" name="setDate"></td>
+                <th align="left"><strong><fmt:message key="aboutPublication.publicationRegDate" bundle="${rb}"/></strong></th>
+                <td><input type="date" name="setDate" onkeydown="return false"></td>
             </tr>
             <tr>
-                <th align="left"><strong>Вебсайт:</strong></th>
+                <th align="left"><strong><fmt:message key="aboutPublication.publicationWebsite" bundle="${rb}"/></strong></th>
                 <td><input type="text" name="website"></td>
             </tr>
             <tr>
-                <th align="left" valign="top"><strong>Вартість передплати:</strong></th>
+                <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></strong></th>
                 <td>
-                    <p><input type="text" name="cost1Month" size="5" align="right"/> грн. на 1 місяць</p>
-                    <p><input type="text" name="cost3Months" size="5" align="right"/> грн. на 3 місяці</p>
-                    <p><input type="text" name="cost6Months" size="5" align="right"/> грн. на 6 місяців</p>
-                    <p><input type="text" name="cost12Months" size="5" align="right"/> грн. на 12 місяців</p>
+                    <p><input type="text" name="cost1Month" size="5" align="right"/> <fmt:message key="aboutPublication.cost1mohth" bundle="${rb}"/></p>
+                    <p><input type="text" name="cost3Months" size="5" align="right"/> <fmt:message key="aboutPublication.cost3mohth" bundle="${rb}"/></p>
+                    <p><input type="text" name="cost6Months" size="5" align="right"/> <fmt:message key="aboutPublication.cost6mohth" bundle="${rb}"/></p>
+                    <p><input type="text" name="cost12Months" size="5" align="right"/> <fmt:message key="aboutPublication.cost12mohth" bundle="${rb}"/></p>
                     <%--<c:out--%>
                     <%--value="${cost.timesPerYear}"/> міс/місяців
     <%--<c:forEach var="cost" items="${publicationPeriodicityCostList}">--%>
@@ -123,14 +128,14 @@
             </tr>
             </tbody>
         </table>
-        <input type="submit" name="saveNewPub" value="Додати публікацію">
+        <input type="submit" name="saveNewPub" value="<fmt:message key="aboutPublication.addPublication" bundle="${rb}"/>">
 
-        <input type="reset" name="clearForm" value="Очистити форму">
+        <input type="reset" name="clearForm" value="<fmt:message key="aboutPublication.clearForm" bundle="${rb}"/>">
     </form>
 
     <form name="cancelEditPublication" method="post" action="controller">
         <input type="hidden" name="command" value="cancelCreatePublication">
-        <input type="submit" name="cancel" value="Відміна">
+        <input type="submit" name="cancel" value="<fmt:message key="button.cancel" bundle="${rb}"/>">
     </form>
 </div>
 </body>

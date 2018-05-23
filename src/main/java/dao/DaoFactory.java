@@ -1,5 +1,8 @@
 package dao;
 
+import dao.implementations.*;
+import dao.interfaces.*;
+
 public class DaoFactory {
 
     public static AccountDao getAccountDao() {

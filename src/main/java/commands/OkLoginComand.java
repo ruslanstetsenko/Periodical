@@ -1,9 +1,13 @@
 package commands;
 
+import beans.Account;
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.MessageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.*;
 import wrappers.AboutUserWrapper;
+import wrappers.FullPublicationInfoWrapper;
+import wrappers.LoadUserWindowWrapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,53 +22,74 @@ public class OkLoginComand implements Command {
         HttpSession session = request.getSession(true);
         System.out.println("OK login comang " + session.getId());
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+
+            session.setAttribute("currentPage", "path.page.index");
             return PageConfigManager.getProperty("path.page.index");
         }
 
         String sessionId = session.getId();
-        User currentUser = new LoginService().enterInAccount(request.getParameter("login"), request.getParameter("password"));
+        LoginService loginService = new LoginService();
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        Account account = loginService.checkAccount(login, password);
+        User currentUser = new User();
 
-        session.setAttribute("currentUser", currentUser);
-//        session.setAttribute("userId", currentUser.getId());
-//        session.setAttribute("userRole", currentUser.getUserRoleId());
-        session.setAttribute("currentPubTypeId", 0);
-        session.setAttribute("currentPubThemeId", 0);
-        session.setAttribute("currentPubStatusId", 0);
-        session.setAttribute("currentBillPaidId", 0);
-        if (currentUser.getUserRoleId() == 1) {
-            session.setAttribute("sessionId", sessionId);
-            List[] arrLists = new PublicationService().getAllPublication();
-            List<User> userList = new UserService().getAllUsers();
-            session.setAttribute("publicationList", arrLists[0]);
-            session.setAttribute("subscriptionBillList", arrLists[1]);
-            session.setAttribute("publicationTypeList", arrLists[2]);
-            session.setAttribute("publicationThemeList", arrLists[3]);
-            session.setAttribute("publicationStatusList", arrLists[4]);
-            session.setAttribute("userList", userList);
-            session.setAttribute("loginFormAction", "admin");
-
-            return PageConfigManager.getProperty("path.page.adminPage");
-        } else if (currentUser.getUserRoleId() == 2) {
-            session.setAttribute("sessionId", sessionId);
-            UserWindowsService userWindowsService = new UserWindowsService();
-            SubscriptionService subscriptionService = new SubscriptionService();
-            session.setAttribute("currentSubStatusId", 0);
-            session.setAttribute("currentBillPaidId", 0);
-            session.setAttribute("mapPubNameSubscription", userWindowsService.loadUserWindow(currentUser.getId())[0]);
-            session.setAttribute("subscriptionBillList", userWindowsService.loadUserWindow(currentUser.getId())[1]);
-            session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
-
-            AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
-            session.setAttribute("user", wrapper.getUser());
-            session.setAttribute("userAccount", wrapper.getAccount());
-            session.setAttribute("userContactInfo", wrapper.getContactInfo());
-            session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
-            session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-
-            session.setAttribute("loginFormAction", "user");
-
-            return PageConfigManager.getProperty("path.page.userPageSubsc");
+        if (account != null) {
+            currentUser = loginService.getUser(account);
+        } else {
+            String errorMessage = MessageConfigManager.getProperty("message.errorLogin");
+            request.setAttribute("errorLoginMessage", errorMessage);
+//            session.setAttribute("login", login);
+//            session.setAttribute("password", password);
+            return PageConfigManager.getProperty("path.page.login");
         }
+
+        if (currentUser != null) {
+            session.setAttribute("currentUser", currentUser);
+            session.setAttribute("currentPubTypeId", 0);
+            session.setAttribute("currentPubThemeId", 0);
+            session.setAttribute("currentPubStatusId", 0);
+            session.setAttribute("currentBillPaidId", 0);
+            if (currentUser.getUserRoleId() == 1) {
+                session.setAttribute("sessionId", sessionId);
+                FullPublicationInfoWrapper wrapper = new PublicationService().getAllPublication();
+                List<User> userList = new UserService().getAllUsers();
+                session.setAttribute("publicationList", wrapper.getPublicationList());
+                session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
+                session.setAttribute("publicationTypeList", wrapper.getPublicationTypeList());
+                session.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
+                session.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
+                session.setAttribute("userList", userList);
+
+                session.setAttribute("loginFormAction", "admin");
+                session.setAttribute("currentPage", "path.page.adminPage");
+                return PageConfigManager.getProperty("path.page.adminPage");
+            } else if (currentUser.getUserRoleId() == 2) {
+                session.setAttribute("sessionId", sessionId);
+                LoadUserWindowWrapper wrapper = new UserWindowsService().loadUserWindow(currentUser.getId());
+                SubscriptionService subscriptionService = new SubscriptionService();
+                session.setAttribute("currentSubStatusId", 0);
+                session.setAttribute("currentBillPaidId", 0);
+                session.setAttribute("mapPubNameSubscription", wrapper.getMap());
+                session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
+                session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
+
+                AboutUserWrapper wrapper1 = new UserService().getUserInfo(currentUser.getId());
+                session.setAttribute("user", wrapper1.getUser());
+                session.setAttribute("userAccount", wrapper1.getAccount());
+                session.setAttribute("userContactInfo", wrapper1.getContactInfo());
+                session.setAttribute("userLivingAddress", wrapper1.getLivingAddress());
+                session.setAttribute("userPassportIdNumb", wrapper1.getPassportIdentNumber());
+
+                session.setAttribute("loginFormAction", "user");
+                session.setAttribute("currentPage", "path.page.userPageSubsc");
+                return PageConfigManager.getProperty("path.page.userPageSubsc");
+            }
+        }
+        String errorMessage = MessageConfigManager.getProperty("message.userNotFound");
+        request.setAttribute("errorFoundUser", errorMessage);
+
+        session.setAttribute("currentPage", "path.page.error");
         return PageConfigManager.getProperty("path.page.error");
     }
 }

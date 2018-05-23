@@ -3,6 +3,7 @@ package service;
 import beans.*;
 import connection.ConnectionPool;
 import dao.*;
+import dao.interfaces.*;
 import wrappers.AboutUserWrapper;
 
 import java.sql.Connection;

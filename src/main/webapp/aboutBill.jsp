@@ -7,43 +7,48 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
 
+<c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
+<c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
+<fmt:setBundle basename="pagecontent" var="rb"/>
+
 <html>
 <head>
-    <title>Bill information</title>
+    <c:set var="currentPage" value="path.page.aboutBill" scope="request"/>
+    <title><fmt:message key="aboutBill.billInfo" bundle="${rb}"/></title>
 </head>
 <body>
 <div>
-    <p><b>Інформація по рахунку</b></p>
+    <p><b><fmt:message key="aboutBill.aboutBill" bundle="${rb}"/></b></p>
     <table>
         <tbody>
         <tr>
-            <th align="left"><strong>Номер рахунку:</strong></th>
+            <th align="left"><strong><fmt:message key="aboutBill.billNumber" bundle="${rb}"/></strong></th>
             <td><c:out value="${selectedBill.billNumber}"/></td>
         </tr>
         <tr>
-            <th align="left"><strong>Дата складання:</strong></th>
+            <th align="left"><strong><fmt:message key="aboutBill.billingDate" bundle="${rb}"/></strong></th>
             <td><c:out value="${selectedBill.billSetDay}"/></td>
         </tr>
         <tr>
-            <th align="left"><strong>Загальна вартість:</strong></th>
+            <th align="left"><strong><fmt:message key="aboutBill.billingCost" bundle="${rb}"/></strong></th>
             <td><c:out value="${selectedBill.totalCost}"/></td>
         </tr>
         <tr>
-            <th align="left"><strong>Статус оплати:</strong></th>
+            <th align="left"><strong><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></strong></th>
             <td>
                 <c:choose>
                     <c:when test="${selectedBill.paid == 1}">
-                        новий
+                        <fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/>
                     </c:when>
                     <c:when test="${selectedBill.paid == 2}">
-                        оплачений
+                        <fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/>
                     </c:when>
                     <c:otherwise>
-                        не оплачений
+                        <fmt:message key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/>
                     </c:otherwise>
                 </c:choose>
             </td>
@@ -52,13 +57,13 @@
     </table>
 </div>
 <div>
-    <p><b>перелік підписок:</b></p>
+    <p><b><fmt:message key="aboutBill.subscriptionList" bundle="${rb}"/></b></p>
     <table>
         <thead>
         <tr>
-            <th>Назва видання</th>
-            <th>Вартість підписки</th>
-            <th>Дата оформлення підписки</th>
+            <th><fmt:message key="aboutSubscription.subscriptionTitle" bundle="${rb}"/></th>
+            <th><fmt:message key="aboutSubscription.subscrCost" bundle="${rb}"/></th>
+            <th><fmt:message key="aboutBill.subscriptionRegistration" bundle="${rb}"/></th>
         </tr>
         </thead>
         <tbody>
@@ -74,7 +79,7 @@
 </div>
 <form>
     <input type="hidden" name="command" value="cancelWievAboutBill">
-    <input type="submit" name="cancel" value="До вікна користувача">
+    <input type="submit" name="cancel" value="<fmt:message key="button.backToUserWindow" bundle="${rb}"/>">
 </form>
 
 </body>

@@ -1,7 +1,9 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
+import wrappers.FullPublicationInfoWrapper;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,14 +27,15 @@ public class ShowAboutPublicationCommand implements Command {
 //        System.out.println("currentBillPaidId " + session.getAttribute("currentBillPaidId"));
 //        System.out.println();
 
-        Object[] publication = new PublicationService().aboutPublication(publicationId);
-        session.setAttribute("publication", publication[0]);
-        session.setAttribute("publicationType", publication[1]);
-        session.setAttribute("publicationTheme", publication[2]);
-        session.setAttribute("publicationStatus", publication[3]);
-        session.setAttribute("publicationPeriodicityCostList", publication[4]);
-        session.setAttribute("previousPage", "/jsps/adminPage.jsp");
+        FullPublicationInfoWrapper wrapper = new PublicationService().aboutPublication(publicationId);
+        session.setAttribute("publication", wrapper.getPublication());
+        session.setAttribute("publicationType", wrapper.getPublicationType());
+        session.setAttribute("publicationTheme", wrapper.getPublicationTheme());
+        session.setAttribute("publicationStatus", wrapper.getPublicationStatus());
+        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicityCostList());
+//        session.setAttribute("previousPage", "/jsps/adminPage.jsp");
 
+        session.setAttribute("currentPage", "path.page.aboutPublication");
         return PageConfigManager.getProperty("path.page.aboutPublication");
     }
 }

@@ -2,7 +2,7 @@ package commands;
 
 import beans.Subscription;
 import beans.SubscriptionBill;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.SubscriptionBillService;
 import service.SubscriptionService;
 
@@ -29,6 +29,7 @@ public class ShowAboutBillCommand implements Command {
         session.setAttribute("mapSubscriptions", subscriptions);
         session.setAttribute("selectedBill", selectedBill);
 
+        session.setAttribute("currentPage", "path.page.aboutBill");
         return PageConfigManager.getProperty("path.page.aboutBill");
     }
 }

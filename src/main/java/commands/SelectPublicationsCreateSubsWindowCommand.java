@@ -2,7 +2,7 @@ package commands;
 
 import beans.Publication;
 import beans.PublicationPeriodicityCost;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -41,6 +41,7 @@ public class SelectPublicationsCreateSubsWindowCommand implements Command {
 //        session.setAttribute("publicationTypeList", arrLists[0]);
 //        session.setAttribute("publicationThemeList", arrLists[1]);
 
+        session.setAttribute("currentPage", "path.page.createSubscription");
         return PageConfigManager.getProperty("path.page.createSubscription");
     }
 }

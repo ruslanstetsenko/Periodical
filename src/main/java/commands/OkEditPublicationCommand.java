@@ -1,7 +1,7 @@
 package commands;
 
 import beans.PublicationPeriodicityCost;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -11,8 +11,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class OkEditPublicationCommand implements Command {
@@ -27,18 +25,19 @@ public class OkEditPublicationCommand implements Command {
         String pubName = request.getParameter("pubName");
         int issn = Integer.valueOf(request.getParameter("ISSN")) ;
         String website = request.getParameter("website");
-        Date setDate = new Date(1);
-        try {
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("setDate"));
-            setDate = new Date(utilDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Date setDate = Date.valueOf(request.getParameter("setDate"));
+//        try {
+//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("setDate"));
+//            setDate = new Date(utilDate.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
         int publicationType = Integer.valueOf(request.getParameter("type"));
         int publicationTheme = Integer.valueOf(request.getParameter("theme"));
         int publicationStatus = Integer.valueOf(request.getParameter("status"));
         List<PublicationPeriodicityCost> costBeens = (List<PublicationPeriodicityCost>) session.getAttribute("publicationPeriodicityCostList");
         String[] costs = request.getParameterValues("cost");
+
         new PublicationService().updatePublication(publicationId, pubName, issn, website, setDate, publicationType, publicationTheme, publicationStatus, costs, costBeens);
 
         PublicationService publicationService = new PublicationService();
@@ -53,6 +52,7 @@ public class OkEditPublicationCommand implements Command {
 //        session.setAttribute("publicationThemeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
 //        session.setAttribute("publicationStatusList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
 
+        session.setAttribute("currentPage", "path.page.adminPage");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

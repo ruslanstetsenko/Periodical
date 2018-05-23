@@ -3,12 +3,12 @@ package service;
 import beans.SubscriptionStatus;
 import connection.ConnectionPool;
 import dao.DaoFactory;
-import dao.PublicationDao;
-import dao.SubscriptionDao;
+import dao.interfaces.PublicationDao;
+import dao.interfaces.SubscriptionDao;
 import beans.Publication;
 import beans.Subscription;
 import beans.User;
-import dao.SubscriptionStatusDao;
+import dao.interfaces.SubscriptionStatusDao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -56,6 +56,7 @@ public class SubscriptionService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        ConnectionPool.closeConnection(connection);
         return subscription;
     }
 
@@ -75,6 +76,7 @@ public class SubscriptionService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        ConnectionPool.closeConnection(connection);
         return subscriptionList;
     }
 

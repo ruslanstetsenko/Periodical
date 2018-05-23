@@ -1,8 +1,9 @@
 package commands;
 
-import beans.Publication;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
+import wrappers.EditPublicationWrapper;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,19 +26,20 @@ public class EditPublicationCommand implements Command {
 //        session.setAttribute("currentPubStatusId", request.getParameter("currentPubStatusId"));
 //        session.setAttribute("currentBillPaidId", request.getParameter("currentBillPaidId"));
 
-        Object[] publication = new PublicationService().editPublication(publicationId);
+        EditPublicationWrapper wrapper = new PublicationService().editPublication(publicationId);
         session.setAttribute("publicationId", publicationId);
-        session.setAttribute("publication", publication[0]);
-        session.setAttribute("publicationTypeList", publication[1]);
-        session.setAttribute("publicationThemeList", publication[2]);
-        session.setAttribute("publicationStatusList", publication[3]);
+        session.setAttribute("publication", wrapper.getPublication());
+        session.setAttribute("publicationTypeList", wrapper.getPublicationTypeList());
+        session.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
+        session.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
 //        session.setAttribute("billPaid", Integer.valueOf(request.getParameter("billPaid")));
-        session.setAttribute("publicationPeriodicityCostList", publication[4]);
+        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicityCostList());
 
-        Publication publication1 = (Publication)publication[0];
-        session.setAttribute("selectedType", publication1.getPublicationTypeId());
-        session.setAttribute("previousPage", "/jsps/adminPage.jsp");
+//        Publication publication1 = wrapper.getPublication();
+//        session.setAttribute("selectedType", publication1.getPublicationTypeId());
+//        session.setAttribute("previousPage", "/jsps/adminPage.jsp");
 
+        session.setAttribute("currentPage", "path.page.editPublication");
         return PageConfigManager.getProperty("path.page.editPublication");
     }
 }

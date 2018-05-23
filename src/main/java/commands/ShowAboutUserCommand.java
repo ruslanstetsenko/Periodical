@@ -1,6 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.UserService;
 import wrappers.AboutUserWrapper;
 
@@ -26,6 +26,7 @@ public class ShowAboutUserCommand implements Command {
         session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
         session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
 
+        session.setAttribute("currentPage", "path.page.aboutUser");
         return PageConfigManager.getProperty("path.page.aboutUser");
     }
 }

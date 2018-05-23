@@ -1,7 +1,7 @@
 package commands;
 
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +21,8 @@ public class CancelEditUserCommand implements Command {
         if (user.getUserRoleId() == 1) {
             return PageConfigManager.getProperty("path.page.users");
         }
+
+        session.setAttribute("currentPage", "path.page.aboutUser");
         return PageConfigManager.getProperty("path.page.aboutUser");
     }
 }

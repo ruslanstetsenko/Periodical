@@ -1,7 +1,7 @@
 package commands;
 
 import beans.SubscriptionBill;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.SubscriptionBillService;
 
 import javax.servlet.ServletException;
@@ -22,6 +22,7 @@ public class ResetBillListCommand implements Command {
         List<SubscriptionBill> list = new SubscriptionBillService().selectBillsByStatus(0);
         session.setAttribute("subscriptionBillList", list);
 
+        session.setAttribute("currentPage", "path.page.adminPage");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

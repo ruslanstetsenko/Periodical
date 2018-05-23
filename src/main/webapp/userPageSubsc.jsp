@@ -7,31 +7,37 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" session="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
 
+<c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
+<c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
+<fmt:setBundle basename="pagecontent" var="rb"/>
+
 <html>
 <head>
-    <title>User Window</title>
+    <c:set var="currentPage" value="path.page.userPageSubsc" scope="request"/>
+    <title><fmt:message key="userPage.subsTitle" bundle="${rb}"/></title>
 </head>
 <body>
 
 <header>
+    <h3><fmt:message key="head.welcome" bundle="${rb}"/> <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>
+    <a href="userPageBills.jsp"><fmt:message key="userPage.billsTitle" bundle="${rb}"/></a>
+    <a href="aboutUser.jsp"><fmt:message key="userPage.aboutUser" bundle="${rb}"/></a>
     <c:import url="headUserInfo.jsp"/>
-    <a href="userPageBills.jsp">Рахунки</a>
-    <a href="aboutUser.jsp">Інформація про читача</a>
 </header>
 
 <div>
-    <p>Перелік підписок</p>
+    <p><fmt:message key="aboutSubscription.subsList" bundle="${rb}"/></p>
     <table>
         <thead>
         <tr>
-            <th>Найменування видання</th>
-            <th>Дата реєстрації</th>
-            <th>Вартість підписки</th>
-            <th>Статус</th>
+            <th><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></th>
+            <th><fmt:message key="aboutSubscription.registerDate" bundle="${rb}"/></th>
+            <th><fmt:message key="aboutSubscription.subscrCost" bundle="${rb}"/></th>
+            <th><fmt:message key="aboutSubscription.subscrStatus" bundle="${rb}"/></th>
         </tr>
         </thead>
         <tbody>
@@ -48,21 +54,21 @@
                 <td>
                     <form name="showSubscriptionIngo" action="controller" method="get">
                         <input type="hidden" name="command" value="showAboutSubscription">
-                        <button name="currentSubsId" value="${subscription.value.id}" type="submit">Докладно</button>
+                        <button name="currentSubsId" value="${subscription.value.id}" type="submit"><fmt:message key="aboutSubscription.details" bundle="${rb}"/></button>
                     </form>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
-    <p>кількість підписок: ${fn:length(mapPubNameSubscription)}</p>
+    <p><fmt:message key="aboutSubscription.subsAmount" bundle="${rb}"/> ${fn:length(mapPubNameSubscription)}</p>
 </div>
 
 <div>
     <form name="selectSubscriptions" method="get" action="subscriptions">
         <input type="hidden" name="command" value="selectSubsUserWindow">
         <div>
-            <b>статус підписки: </b>
+            <b><fmt:message key="aboutSubscription.subscrStatus" bundle="${rb}"/> </b>
             <%--<input type="radio" name="currentSubStatusId" value="0"--%>
                    <%--<c:if test="${currentSubStatusId == 0}">CHECKED</c:if>/>показати всі--%>
             <%--<c:forEach var="subStatus" items="${subsStatusList}">--%>
@@ -74,7 +80,7 @@
             <%--</c:forEach>--%>
 
             <select size="1" name="currentSubStatusId">
-                <option value="0" <c:if test="${currentSubStatusId == 0}">SELECTED</c:if>>показати всі</option>
+                <option value="0" <c:if test="${currentSubStatusId == 0}">SELECTED</c:if>><fmt:message key="aboutSubscription.showAll" bundle="${rb}"/></option>
                 <c:forEach var="subStatus" items="${subsStatusList}">
                     <option value="${subStatus.id}" <c:if test="${currentSubStatusId == subStatus.id}">SELECTED</c:if>><c:out
                             value="${subStatus.statusName}"/></option>
@@ -82,14 +88,14 @@
             </select>
         </div>
 
-        <input type="submit" name="useFilters" value="Задіяти фільтри">
+        <input type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
     </form>
 </div>
 
 <div>
     <form name="createSubscription" method="post" action="controller">
         <input type="hidden" name="command" value="createSubscription">
-        <input type="submit" name="create" value="Оформити підписку">
+        <input type="submit" name="create" value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
     </form>
 </div>
 

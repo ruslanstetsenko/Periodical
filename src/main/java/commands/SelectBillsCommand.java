@@ -2,7 +2,7 @@ package commands;
 
 import beans.SubscriptionBill;
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.SubscriptionBillService;
 
 import javax.servlet.ServletException;
@@ -35,6 +35,8 @@ public class SelectBillsCommand implements Command {
         if (user.getUserRoleId() == 1) {
             return PageConfigManager.getProperty("path.page.adminPageBills");
         }
+
+        session.setAttribute("currentPage", "path.page.userPageBills");
         return PageConfigManager.getProperty("path.page.userPageBills");
     }
 }

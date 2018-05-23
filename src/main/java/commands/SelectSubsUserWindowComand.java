@@ -2,7 +2,7 @@ package commands;
 
 import beans.Subscription;
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.UserWindowsService;
 
 //import javax.persistence.criteria.CriteriaBuilder;
@@ -30,6 +30,7 @@ public class SelectSubsUserWindowComand implements Command {
         Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(userId, currentSubStatusId);
         session.setAttribute("mapPubNameSubscription", map);
 
+        session.setAttribute("currentPage", "path.page.userPageSubsc");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

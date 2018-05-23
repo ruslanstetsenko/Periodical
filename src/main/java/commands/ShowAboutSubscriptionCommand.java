@@ -2,9 +2,10 @@ package commands;
 
 import beans.Publication;
 import beans.Subscription;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import service.SubscriptionService;
+import wrappers.FullPublicationInfoWrapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,13 +29,14 @@ public class ShowAboutSubscriptionCommand implements Command {
         session.setAttribute("subscriptionCost", subscription.getSubscriptionCost());
         session.setAttribute("subscriptionStatusId", subscription.getSubscriptionStatusId());
 
-        Object[] publicationParam = new PublicationService().aboutPublication(publication.getId());
-        session.setAttribute("publication", publicationParam[0]);
-        session.setAttribute("publicationType", publicationParam[1]);
-        session.setAttribute("publicationTheme", publicationParam[2]);
-        session.setAttribute("publicationStatus", publicationParam[3]);
-        session.setAttribute("publicationPeriodicityCostList", publicationParam[4]);
+        FullPublicationInfoWrapper wrapper = new PublicationService().aboutPublication(publication.getId());
+        session.setAttribute("publication", wrapper.getPublication());
+        session.setAttribute("publicationType", wrapper.getPublicationType());
+        session.setAttribute("publicationTheme", wrapper.getPublicationTheme());
+        session.setAttribute("publicationStatus", wrapper.getPublicationStatus());
+        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicityCostList());
 
+        session.setAttribute("currentPage", "path.page.aboutSubscription");
         return PageConfigManager.getProperty("path.page.aboutSubscription");
     }
 }

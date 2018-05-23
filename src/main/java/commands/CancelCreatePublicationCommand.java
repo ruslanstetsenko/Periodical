@@ -1,7 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
-import service.AdminWindowsService;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ public class CancelCreatePublicationCommand implements Command {
 //        session.setAttribute("publicationTypeList", arr[2]);
 //        session.setAttribute("publicationThemeList", arr[3]);
 //        session.setAttribute("publicationStatusList", arr[4]);
-
+        session.setAttribute("currentPage", "path.page.adminPage");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

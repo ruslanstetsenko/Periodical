@@ -2,7 +2,7 @@ package commands;
 
 import beans.Subscription;
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.UserWindowsService;
 
 import javax.servlet.ServletException;
@@ -28,6 +28,7 @@ public class CancelCreateSubscriptionCommand implements Command {
         Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(user.getId(), currentSubStatusId);
         session.setAttribute("mapPubNameSubscription", map);
 
+        session.setAttribute("currentPage", "path.page.userPageSubsc");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

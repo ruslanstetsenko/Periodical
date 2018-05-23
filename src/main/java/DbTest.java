@@ -4,6 +4,7 @@ import beans.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.*;
 import beans.Account;
+import dao.interfaces.*;
 import service.PublicationService;
 
 import java.sql.Connection;

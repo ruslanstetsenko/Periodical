@@ -1,6 +1,6 @@
 package commands;
 
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +19,7 @@ public class CancelEditSubscriptionCommand implements Command {
         session.setAttribute("currentPubTypeId", 0);
         session.setAttribute("currentPubThemeId", 0);
 
+        session.setAttribute("currentPage", "path.page.userPageSubsc");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

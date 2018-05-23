@@ -1,7 +1,7 @@
 package commands;
 
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.UserService;
 
 import javax.servlet.ServletException;
@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class OkCreateUserCommand implements Command {
@@ -46,6 +44,7 @@ public class OkCreateUserCommand implements Command {
         List<User> userList = new UserService().getAllUsers();
         session.setAttribute("userList", userList);
 
+        session.setAttribute("currentPage", "path.page.users");
         return PageConfigManager.getProperty("path.page.users");
     }
 }

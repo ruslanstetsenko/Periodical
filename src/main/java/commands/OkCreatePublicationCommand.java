@@ -2,7 +2,7 @@ package commands;
 
 import beans.Publication;
 import beans.PublicationPeriodicityCost;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.PublicationService;
 
 import javax.servlet.ServletException;
@@ -72,6 +72,7 @@ public class OkCreatePublicationCommand implements Command {
 //        session.setAttribute("publicationThemeList", arr[3]);
 //        session.setAttribute("publicationStatusList", arr[4]);
 
+        session.setAttribute("currentPage", "path.page.adminPage");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

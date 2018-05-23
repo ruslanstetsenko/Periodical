@@ -1,7 +1,7 @@
 package commands;
 
 import beans.User;
-import resource.PageConfigManager;
+import resourceBundle.PageConfigManager;
 import service.UserService;
 import wrappers.AboutUserWrapper;
 
@@ -39,6 +39,7 @@ public class EditUserCommand implements Command {
             session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
         }
 
+        session.setAttribute("currentPage", "path.page.editUser");
         return PageConfigManager.getProperty("path.page.editUser");
     }
 }

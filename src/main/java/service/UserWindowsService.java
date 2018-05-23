@@ -3,6 +3,8 @@ package service;
 import connection.ConnectionPool;
 import dao.*;
 import beans.*;
+import dao.interfaces.*;
+import wrappers.LoadUserWindowWrapper;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,7 +35,7 @@ public class UserWindowsService {
     private int subscriptionBillAmount;
     private int subscriptionAmount;
 
-    public Object[] loadUserWindow(int userId) {
+    public LoadUserWindowWrapper loadUserWindow(int userId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
         Map<String, Subscription> map = new HashMap<>();
@@ -42,7 +44,7 @@ public class UserWindowsService {
         map = subscriptionDao.getSubscByUser(connection, userId);
 
         ConnectionPool.closeConnection(connection);
-        return new Object[]{map, subscriptionBillList};
+        return new LoadUserWindowWrapper.Builder().setMap(map).setSubscriptionBillList(subscriptionBillList).build();
     }
 
     public Map<String, Subscription> loadSelectedUserWindow(int userId, int currentSubStatusId) {

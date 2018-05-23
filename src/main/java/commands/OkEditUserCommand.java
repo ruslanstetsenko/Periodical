@@ -1,9 +1,7 @@
 package commands;
 
-import beans.PublicationPeriodicityCost;
 import beans.User;
-import resource.PageConfigManager;
-import service.PublicationService;
+import resourceBundle.PageConfigManager;
 import service.UserService;
 import wrappers.AboutUserWrapper;
 
@@ -77,6 +75,8 @@ public class OkEditUserCommand implements Command {
         session.setAttribute("userContactInfo", wrapper.getContactInfo());
         session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
         session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
+
+        session.setAttribute("currentPage", "path.page.aboutUser");
         return PageConfigManager.getProperty("path.page.aboutUser");
     }
 }

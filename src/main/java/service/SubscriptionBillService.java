@@ -3,11 +3,11 @@ package service;
 import beans.PublicationPeriodicityCost;
 import connection.ConnectionPool;
 import dao.DaoFactory;
-import dao.SubscriptionBillDao;
+import dao.interfaces.SubscriptionBillDao;
 import beans.SubscriptionBill;
 import beans.User;
-import dao.SubscriptionDao;
-import dao.UserDao;
+import dao.interfaces.SubscriptionDao;
+import dao.interfaces.UserDao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -80,6 +80,7 @@ public class SubscriptionBillService {
         } else {
             subscriptionBillList = subscriptionBillDao.getByStatus(connection, status);
         }
+        ConnectionPool.closeConnection(connection);
         return subscriptionBillList;
     }
 
