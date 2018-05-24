@@ -11,18 +11,18 @@ public final class RequestHelper {
     HashMap<String, Command> commands = new HashMap<>();
 
     private RequestHelper() {
-        commands.put("addPublicationToSubscription", new AddPublicationToSubscriptionCommand());
-        commands.put("backPrevPage", new BackPrevPageCommand());
+//        commands.put("addPublicationToSubscription", new AddPublicationToSubscriptionCommand());
+//        commands.put("backPrevPage", new BackPrevPageCommand());
         commands.put("cancelCreatePublication", new CancelCreatePublicationCommand());
         commands.put("cancelEditPublication", new CancelEditPublicationCommand());
-        commands.put("cancelEditSubscription", new CancelEditSubscriptionCommand());
+        commands.put("cancelWievSubscription", new CancelWievSubscriptionCommand());
         commands.put("cancelLogin", new CancelLoginComand());
         commands.put("cancelWievAboutBill", new CancelWievAboutBillComand());
-        commands.put("confirmDelete", new ConfirmDeleteCommand());
+//        commands.put("confirmDelete", new ConfirmDeleteCommand());
         commands.put("createPublication", new CreatePublicationCommand());
         commands.put("createSubscription", new CreateSubscriptionCommand());
         commands.put("cancelCreateSubscription", new CancelCreateSubscriptionCommand());
-        commands.put("deleteBill", new DeleteBillCommand());
+//        commands.put("deleteBill", new DeleteBillCommand());
         commands.put("editPublication", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
         commands.put("login", new LoginCommand());
@@ -31,16 +31,16 @@ public final class RequestHelper {
         commands.put("okCreatePublication", new OkCreatePublicationCommand());
         commands.put("okCreateSubscription", new OkCreateSubscriptionCommand());
         commands.put("okEditPublication", new OkEditPublicationCommand());
-        commands.put("okEditSubscription", new OkEditSubscriptionCommand());
+//        commands.put("okEditSubscription", new OkEditSubscriptionCommand());
         commands.put("okLogin", new OkLoginComand());
         commands.put("showAboutBill", new ShowAboutBillCommand());
         commands.put("aboutPublication", new ShowAboutPublicationCommand());
         commands.put("showAboutSubscription", new ShowAboutSubscriptionCommand());
-        commands.put("selectBillsByStatusByUser", new SelectBillsByStatusByUserCommand());
-        commands.put("selectBillsByStatus", new SelectBillsByStatusCommand());
+//        commands.put("selectBillsByStatusByUser", new SelectBillsByStatusByUserCommand());
+//        commands.put("selectBillsByStatus", new SelectBillsByStatusCommand());
         commands.put("selectPublicationsAdminWindow", new SelectPublicationsAdminWindowCommand());
         commands.put("selectPublicationsCreateSubsWindow", new SelectPublicationsCreateSubsWindowCommand());
-        commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
+//        commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
         commands.put("selectSubsUserWindow", new SelectSubsUserWindowComand());
         commands.put("showAboutUser", new ShowAboutUserCommand());
         commands.put("cancelEditUser", new CancelEditUserCommand());

@@ -2,6 +2,8 @@ package commands;
 
 import beans.SubscriptionBill;
 import beans.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.SubscriptionBillService;
 
@@ -13,16 +15,20 @@ import java.io.IOException;
 import java.util.List;
 
 public class SelectBillsCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(SelectBillsCommand.class);
+private static final Logger logger = LogManager.getLogger(SelectBillsCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
         User user = (User) session.getAttribute("currentUser");
         int currentBillPaidId = Integer.valueOf(request.getParameter("currentBillPaidId"));
-        System.out.println("currentBillPaidId " + currentBillPaidId);
+//        System.out.println("currentBillPaidId " + currentBillPaidId);
         session.setAttribute("currentBillPaidId", currentBillPaidId);
         if (user.getUserRoleId() == 1) {
             List<SubscriptionBill> list = new SubscriptionBillService().selectBillsByStatus(currentBillPaidId);
@@ -36,7 +42,7 @@ public class SelectBillsCommand implements Command {
             return PageConfigManager.getProperty("path.page.adminPageBills");
         }
 
-        session.setAttribute("currentPage", "path.page.userPageBills");
+        logger.info("Bills selected");
         return PageConfigManager.getProperty("path.page.userPageBills");
     }
 }

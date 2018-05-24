@@ -1,7 +1,9 @@
 package commands;
 
 import beans.Publication;
-import beans.PublicationPeriodicityCost;
+import beans.PublicationPeriodicyCost;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 
@@ -11,49 +13,47 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class OkCreatePublicationCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(OkCreatePublicationCommand.class);
+private static final Logger logger = LogManager.getLogger(OkCreatePublicationCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
         String pubName = request.getParameter("pubName");
         int issn = Integer.valueOf(request.getParameter("ISSN"));
         String website = request.getParameter("website");
-        Date setDate = new Date(1);
-        try {
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("setDate"));
-            setDate = new Date(utilDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Date setDate = Date.valueOf(request.getParameter("setDate"));
+//        try {
+//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("setDate"));
+//            setDate = new Date(utilDate.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
         int pubType = Integer.valueOf(request.getParameter("type"));
         int pubStatus = Integer.valueOf(request.getParameter("status"));
         int pubTheme = Integer.valueOf(request.getParameter("theme"));
-
-        System.out.println("pubTheme " + pubTheme);
-        System.out.println("pubName " + pubName);
-
         double cost1M = Double.valueOf(request.getParameter("cost1Month"));
         double cost3M = Double.valueOf(request.getParameter("cost3Months"));
         double cost6M = Double.valueOf(request.getParameter("cost6Months"));
         double cost12M = Double.valueOf(request.getParameter("cost12Months"));
-        PublicationPeriodicityCost pubCost1M = new PublicationPeriodicityCost.Builder()
+        PublicationPeriodicyCost pubCost1M = new PublicationPeriodicyCost.Builder()
                 .setTimesPerYear(1).setCost(cost1M).build();
-        PublicationPeriodicityCost pubCost3M = new PublicationPeriodicityCost.Builder()
+        PublicationPeriodicyCost pubCost3M = new PublicationPeriodicyCost.Builder()
                 .setTimesPerYear(3).setCost(cost3M).build();
-        PublicationPeriodicityCost pubCost6M = new PublicationPeriodicityCost.Builder()
+        PublicationPeriodicyCost pubCost6M = new PublicationPeriodicyCost.Builder()
                 .setTimesPerYear(6).setCost(cost6M).build();
-        PublicationPeriodicityCost pubCost12M = new PublicationPeriodicityCost.Builder()
+        PublicationPeriodicyCost pubCost12M = new PublicationPeriodicyCost.Builder()
                 .setTimesPerYear(12).setCost(cost12M).build();
-        PublicationPeriodicityCost[] costs = new PublicationPeriodicityCost[4];
+        PublicationPeriodicyCost[] costs = new PublicationPeriodicyCost[4];
         costs[0] = pubCost1M;
         costs[1] = pubCost3M;
         costs[2] = pubCost6M;
@@ -64,15 +64,10 @@ public class OkCreatePublicationCommand implements Command {
         int currentPubThemeId = (Integer) session.getAttribute("currentPubThemeId");
         int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
 //        int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
-//
         List<Publication> publicationList = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId);
         session.setAttribute("publicationList", publicationList);
-//        session.setAttribute("subscriptionBillList", arr[1]);
-//        session.setAttribute("publicationTypeList", arr[2]);
-//        session.setAttribute("publicationThemeList", arr[3]);
-//        session.setAttribute("publicationStatusList", arr[4]);
 
-        session.setAttribute("currentPage", "path.page.adminPage");
+        logger.info("Publication " + pubName + " was created");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

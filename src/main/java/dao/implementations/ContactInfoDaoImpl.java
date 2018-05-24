@@ -1,13 +1,17 @@
 package dao.implementations;
 
 import beans.ContactInfo;
+import commands.CancelCreatePublicationCommand;
 import dao.interfaces.ContactInfoDao;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ContactInfoDaoImpl implements ContactInfoDao {
+    private static final Logger logger = LogManager.getLogger(ContactInfoDaoImpl.class);
 
     @Override
     public void create(String userPhoneNumber, String userEmail, Connection connection) {
@@ -18,7 +22,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.setString(2, userEmail);
             preparedStatement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't create user contact info in DB", e.getCause());
         }
 
     }
@@ -38,7 +42,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
                 contactInfo.setEmail(resultSet.getString("email"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't read user contact info  from DB", e.getCause());
         }
 
         return contactInfo;
@@ -54,7 +58,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.setInt(3, contactInfoId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't update user contact info in DB", e.getCause());
         }
     }
 
@@ -66,7 +70,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.setInt(1, contactInfo.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't delete user contact info in DB", e.getCause());
         }
     }
 
@@ -85,7 +89,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
                         .build());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't get user contacts info from DB", e.getCause());
         }
         return list;
     }
@@ -101,7 +105,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
                 id = resultSet.getInt("lastId");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't read last added user contact info from DB", e.getCause());
         }
         return id;
     }

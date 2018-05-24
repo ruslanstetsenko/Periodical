@@ -40,22 +40,14 @@ public class SubscriptionService {
                 e1.printStackTrace();
             }
         } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ConnectionPool.closeConnection(connection);
         }
     }
 
     public Subscription getSubscription(int subsId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Subscription subscription = new Subscription();
-        try {
-            subscription = subscriptionDao.read(subsId, connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Subscription subscription = subscriptionDao.read(subsId, connection);
+
         ConnectionPool.closeConnection(connection);
         return subscription;
     }
@@ -65,88 +57,53 @@ public class SubscriptionService {
         subscriptionList.add(new Subscription.Builder().setSubscriptionDate((Date) Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())).setSubscriptionType(subsType).setSubscriptionCost(cost).setPublicationId(publication.getId()).setSubscriptionStatusId(1).build());
     }
 
-    public List<Subscription> getSubscriptionsByBill(int billId) {
-        Connection connection = ConnectionPool.getConnection(true);
-        List<Subscription> subscriptionList = new ArrayList<>();
-        try {
-            subscriptionDao.getAll(connection)
-                    .stream()
-                    .filter(subscription -> subscription.getSubscriptionBillsId() == billId)
-                    .collect(Collectors.toList());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        ConnectionPool.closeConnection(connection);
-        return subscriptionList;
-    }
+//    public List<Subscription> getSubscriptionsByBill(int billId) {
+//        Connection connection = ConnectionPool.getConnection(true);
+//        List<Subscription> subscriptionList = new ArrayList<>();
+//
+//        subscriptionDao.getAll(connection)
+//                .stream()
+//                .filter(subscription -> subscription.getSubscriptionBillsId() == billId)
+//                .collect(Collectors.toList());
+//
+//        ConnectionPool.closeConnection(connection);
+//        return subscriptionList;
+//    }
 
     public Map<String, Subscription> getSubscByBillByUser(int userId, int billId) {
         Connection connection = ConnectionPool.getConnection(true);
         Map<String, Subscription> subscriptionMap = new LinkedHashMap<>();
-        try {
-            subscriptionMap = subscriptionDao.getSubscByBillByUser(connection, userId, billId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        subscriptionMap = subscriptionDao.getSubscByBillByUser(connection, userId, billId);
+
+        ConnectionPool.closeConnection(connection);
         return subscriptionMap;
     }
 
     public Map<String, Subscription> getSubscByBill(int billId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Map<String, Subscription> subscriptionMap = new LinkedHashMap<>();
-        try {
-            subscriptionMap = subscriptionDao.getSubscByBill(connection, billId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        Map<String, Subscription> subscriptionMap = subscriptionDao.getSubscByBill(connection, billId);
+
+        ConnectionPool.closeConnection(connection);
         return subscriptionMap;
     }
 
     public Map<String, Subscription> getSubscById(int subsId) {
         Connection connection = ConnectionPool.getConnection(true);
         Map<String, Subscription> subscriptionMap = new LinkedHashMap<>();
-        try {
-            Subscription subscription = subscriptionDao.read(subsId, connection);
-            Publication publication = publicationDao.read(subscription.getPublicationId(), connection);
-            subscriptionMap.put(publication.getName(), subscription);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        Subscription subscription = subscriptionDao.read(subsId, connection);
+        Publication publication = publicationDao.read(subscription.getPublicationId(), connection);
+        subscriptionMap.put(publication.getName(), subscription);
+
+        ConnectionPool.closeConnection(connection);
         return subscriptionMap;
     }
 
     public List<SubscriptionStatus> getSubsStatusList() {
         Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionStatus> subscriptionStatusList = new ArrayList<>();
-        try {
-            subscriptionStatusList = subscriptionStatusDao.getAll(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        subscriptionStatusList = subscriptionStatusDao.getAll(connection);
+
+        ConnectionPool.closeConnection(connection);
         return subscriptionStatusList;
     }
 }

@@ -117,7 +117,7 @@
                     <p><input type="text" name="cost12Months" size="5" align="right"/> <fmt:message key="aboutPublication.cost12mohth" bundle="${rb}"/></p>
                     <%--<c:out--%>
                     <%--value="${cost.timesPerYear}"/> міс/місяців
-    <%--<c:forEach var="cost" items="${publicationPeriodicityCostList}">--%>
+    <%--<c:forEach var="cost" items="${publicationPeriodicyCostList}">--%>
                         <%--<p align="left">--%>
                             <%--<input type="text" name="cost" size="5" align="right" value="${cost.cost}"/> грн. на--%>
                             <%--<c:out--%>

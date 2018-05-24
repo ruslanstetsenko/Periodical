@@ -1,14 +1,17 @@
 package dao.implementations;
 
 import beans.Account;
+import commands.CancelCreatePublicationCommand;
 import dao.interfaces.AccountDao;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDaoImpl implements AccountDao {
-
+    private static final Logger logger = LogManager.getLogger(AccountDaoImpl.class);
 
     @Override
     public void create(String login, String password, Connection connection) {
@@ -18,6 +21,7 @@ public class AccountDaoImpl implements AccountDao {
             preparedStatement.setString(2, password);
             preparedStatement.execute();
         } catch (SQLException e) {
+            logger.error("Can't create user account in DB", e.getCause());
             e.printStackTrace();
         }
     }
@@ -37,7 +41,7 @@ public class AccountDaoImpl implements AccountDao {
                 account.setPassword(resultSet.getString("password"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't read user account from DB", e.getCause());
         }
         return account;
     }
@@ -51,7 +55,7 @@ public class AccountDaoImpl implements AccountDao {
             preparedStatement.setInt(3, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't update user account in DB", e.getCause());
         }
     }
 
@@ -62,7 +66,7 @@ public class AccountDaoImpl implements AccountDao {
             preparedStatement.setInt(1, account.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't delete user account in DB", e.getCause());
         }
     }
 
@@ -81,7 +85,7 @@ public class AccountDaoImpl implements AccountDao {
                         .build());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't get accounts from DB", e.getCause());
         }
         return list;
     }
@@ -97,7 +101,7 @@ public class AccountDaoImpl implements AccountDao {
                 id = resultSet.getInt("lastId");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Can't get last added user account from DB", e.getCause());
         }
         return id;
     }

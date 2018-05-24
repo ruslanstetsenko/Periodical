@@ -38,13 +38,10 @@ public class UserService {
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+           ConnectionPool.transactionRollback(connection);
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
-        ConnectionPool.closeConnection(connection);
     }
 
     public void updateUser(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
@@ -65,8 +62,9 @@ public class UserService {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
-        ConnectionPool.closeConnection(connection);
     }
 
     public List<User> getAllUsers() {
@@ -84,8 +82,8 @@ public class UserService {
         PassportIdentNumber passportIdentNumber = passportIdentNumberDao.read(user.getPassportIdentNumberId(), connection);
         LivingAddress livingAddress = livingAddressDao.read(user.getLivingAddressId(), connection);
         ContactInfo contactInfo = contactInfoDao.read(user.getContactInfoId(), connection);
-        ConnectionPool.closeConnection(connection);
 
+        ConnectionPool.closeConnection(connection);
         return new AboutUserWrapper(account, passportIdentNumber, livingAddress, contactInfo, user);
     }
 }

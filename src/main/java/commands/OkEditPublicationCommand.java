@@ -1,6 +1,8 @@
 package commands;
 
-import beans.PublicationPeriodicityCost;
+import beans.PublicationPeriodicyCost;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 
@@ -14,10 +16,14 @@ import java.sql.Date;
 import java.util.List;
 
 public class OkEditPublicationCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(OkEditPublicationCommand.class);
+private static final Logger logger = LogManager.getLogger(OkEditPublicationCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
@@ -35,7 +41,7 @@ public class OkEditPublicationCommand implements Command {
         int publicationType = Integer.valueOf(request.getParameter("type"));
         int publicationTheme = Integer.valueOf(request.getParameter("theme"));
         int publicationStatus = Integer.valueOf(request.getParameter("status"));
-        List<PublicationPeriodicityCost> costBeens = (List<PublicationPeriodicityCost>) session.getAttribute("publicationPeriodicityCostList");
+        List<PublicationPeriodicyCost> costBeens = (List<PublicationPeriodicyCost>) session.getAttribute("publicationPeriodicityCostList");
         String[] costs = request.getParameterValues("cost");
 
         new PublicationService().updatePublication(publicationId, pubName, issn, website, setDate, publicationType, publicationTheme, publicationStatus, costs, costBeens);
@@ -52,7 +58,7 @@ public class OkEditPublicationCommand implements Command {
 //        session.setAttribute("publicationThemeList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[3]);
 //        session.setAttribute("publicationStatusList", publicationService.getSelectedPublication(pubTypeId, pubThemeId, pubStatusId, billPaidId)[4]);
 
-        session.setAttribute("currentPage", "path.page.adminPage");
+        logger.info("Publication " + pubName + " has updated");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }

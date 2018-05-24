@@ -2,16 +2,16 @@ package beans;
 
 import java.io.Serializable;
 
-public class PublicationPeriodicityCost implements Serializable {
+public class PublicationPeriodicyCost implements Serializable {
     private int id;
     private int timesPerYear;
     private double cost;
     private Integer publicationId;
 
-    public PublicationPeriodicityCost() {
+    public PublicationPeriodicyCost() {
     }
 
-    private PublicationPeriodicityCost(Builder builder) {
+    private PublicationPeriodicyCost(Builder builder) {
         this.id = builder.id;
         this.timesPerYear = builder.timesPerYear;
         this.cost = builder.cost;
@@ -55,7 +55,7 @@ public class PublicationPeriodicityCost implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PublicationPeriodicityCost that = (PublicationPeriodicityCost) o;
+        PublicationPeriodicyCost that = (PublicationPeriodicyCost) o;
 
         if (timesPerYear != that.timesPerYear) return false;
         return Double.compare(that.cost, cost) == 0;
@@ -73,7 +73,7 @@ public class PublicationPeriodicityCost implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("PublicationPeriodicityCost{");
+        final StringBuffer sb = new StringBuffer("PublicationPeriodicyCost{");
         sb.append("id=").append(id);
         sb.append(", timesPerYear=").append(timesPerYear);
         sb.append(", cost=").append(cost);
@@ -108,8 +108,8 @@ public class PublicationPeriodicityCost implements Serializable {
             return this;
         }
 
-        public PublicationPeriodicityCost build() {
-            return new PublicationPeriodicityCost(this);
+        public PublicationPeriodicyCost build() {
+            return new PublicationPeriodicyCost(this);
         }
     }
 }

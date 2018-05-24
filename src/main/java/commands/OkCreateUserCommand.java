@@ -1,6 +1,8 @@
 package commands;
 
 import beans.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.UserService;
 
@@ -13,10 +15,14 @@ import java.sql.Date;
 import java.util.List;
 
 public class OkCreateUserCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(OkCreateUserCommand.class);
+private static final Logger logger = LogManager.getLogger(OkCreateUserCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
@@ -44,7 +50,7 @@ public class OkCreateUserCommand implements Command {
         List<User> userList = new UserService().getAllUsers();
         session.setAttribute("userList", userList);
 
-        session.setAttribute("currentPage", "path.page.users");
+        logger.info("User " + userSurName + " " + userName + " " + userLastName + " has created");
         return PageConfigManager.getProperty("path.page.users");
     }
 }

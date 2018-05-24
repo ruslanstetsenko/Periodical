@@ -17,7 +17,7 @@ public class FullPublicationInfoWrapper {
     private List<PublicationType> publicationTypeList;
     private List<PublicationTheme> publicationThemeList;
     private List<PublicationStatus> publicationStatusList;
-    private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
+    private List<PublicationPeriodicyCost> publicationPeriodicyCostList;
 
     public FullPublicationInfoWrapper() {
     }
@@ -32,7 +32,7 @@ public class FullPublicationInfoWrapper {
         this.publicationTypeList = builder.publicationTypeList;
         this.publicationThemeList = builder.publicationThemeList;
         this.publicationStatusList = builder.publicationStatusList;
-        this.publicationPeriodicityCostList = builder.publicationPeriodicityCostList;
+        this.publicationPeriodicyCostList = builder.publicationPeriodicyCostList;
     }
 
     public Publication getPublication() {
@@ -71,8 +71,8 @@ public class FullPublicationInfoWrapper {
         return publicationStatusList;
     }
 
-    public List<PublicationPeriodicityCost> getPublicationPeriodicityCostList() {
-        return publicationPeriodicityCostList;
+    public List<PublicationPeriodicyCost> getPublicationPeriodicyCostList() {
+        return publicationPeriodicyCostList;
     }
 
     public static class Builder {
@@ -87,7 +87,7 @@ public class FullPublicationInfoWrapper {
         private List<PublicationType> publicationTypeList;
         private List<PublicationTheme> publicationThemeList;
         private List<PublicationStatus> publicationStatusList;
-        private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
+        private List<PublicationPeriodicyCost> publicationPeriodicyCostList;
 
         public Builder setPublication(Publication publication) {
             this.publication = publication;
@@ -134,8 +134,8 @@ public class FullPublicationInfoWrapper {
             return this;
         }
 
-        public Builder setPublicationPeriodicityCostList(List<PublicationPeriodicityCost> publicationPeriodicityCostList) {
-            this.publicationPeriodicityCostList = publicationPeriodicityCostList;
+        public Builder setPublicationPeriodicyCostList(List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
+            this.publicationPeriodicyCostList = publicationPeriodicyCostList;
             return this;
         }
 

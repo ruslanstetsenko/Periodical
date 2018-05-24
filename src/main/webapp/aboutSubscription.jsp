@@ -99,7 +99,7 @@
     </table>
 
     <form name="backPrevPage" method="post" action="controller">
-        <input type="hidden" name="command" value="cancelEditSubscription">
+        <input type="hidden" name="command" value="cancelWievSubscription">
         <input type="submit" name="cancel" value="<fmt:message key="button.backToUserWindow" bundle="${rb}"/>">
     </form>
 </div>

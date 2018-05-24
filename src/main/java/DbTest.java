@@ -1,6 +1,6 @@
 import beans.ContactInfo;
 import beans.Publication;
-import beans.PublicationPeriodicityCost;
+import beans.PublicationPeriodicyCost;
 import connection.ConnectionPool;
 import dao.*;
 import beans.Account;
@@ -160,7 +160,7 @@ public class DbTest {
     }
 
     private static void testPublicService() {
-        Map<Publication, List<PublicationPeriodicityCost>> map = new PublicationService().getPublicationWithCosts(1, 0, 1);
+        Map<Publication, List<PublicationPeriodicyCost>> map = new PublicationService().getPublicationWithCosts(1, 0, 1);
         System.out.println(map);
         System.out.println("amount: " + map.size());
 

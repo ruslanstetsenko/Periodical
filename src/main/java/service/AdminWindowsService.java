@@ -14,7 +14,7 @@ public class AdminWindowsService {
 //    private SubscriptionBillDao subscriptionBillDao = DaoFactory.getSubscriptionBillDao();
 //    private PublicationStatusDao publicationStatusDao = DaoFactory.getPublicationStatusDao();
 //
-//    private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
+//    private List<PublicationPeriodicyCost> publicationPeriodicityCostList;
 //    private List<User> userList;
 //
 //    private int publicationsAmount;

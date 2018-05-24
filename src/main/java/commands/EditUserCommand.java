@@ -1,6 +1,8 @@
 package commands;
 
 import beans.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.UserService;
 import wrappers.AboutUserWrapper;
@@ -12,10 +14,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class EditUserCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(EditUserCommand.class);
+    private static final Logger logger = LogManager.getLogger(EditUserCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
         User currentUser = (User) session.getAttribute("currentUser");
@@ -28,7 +34,7 @@ public class EditUserCommand implements Command {
             session.setAttribute("userContactInfo", wrapper.getContactInfo());
             session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
             session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-
+            logger.info("Edit user: " + wrapper.getUser().getSurname() + " " + wrapper.getUser().getName() + " " + wrapper.getUser().getLastName());
         } else {
             session.setAttribute("currentUserId", currentUser.getId());
             AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
@@ -37,9 +43,9 @@ public class EditUserCommand implements Command {
             session.setAttribute("userContactInfo", wrapper.getContactInfo());
             session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
             session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
+            logger.info("Edit user: " + wrapper.getUser().getSurname() + " " + wrapper.getUser().getName() + " " + wrapper.getUser().getLastName());
         }
 
-        session.setAttribute("currentPage", "path.page.editUser");
         return PageConfigManager.getProperty("path.page.editUser");
     }
 }

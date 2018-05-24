@@ -1,6 +1,8 @@
 package commands;
 
 import beans.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.UserService;
 import wrappers.AboutUserWrapper;
@@ -16,10 +18,14 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class OkEditUserCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(OkEditUserCommand.class);
+private static final Logger logger = LogManager.getLogger(OkEditUserCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
@@ -48,19 +54,19 @@ public class OkEditUserCommand implements Command {
         String userEmail = request.getParameter("userEmail");
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        Date userBirthDate = new Date(1);
+        Date userBirthDate = Date.valueOf(request.getParameter("userBirthDate"));
         Date userRegistrationDate = Date.valueOf(request.getParameter("userRegistrationDate"));
         Date passportDateOfIssue = Date.valueOf(request.getParameter("passportDateOfIssue"));
-        try {
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("userBirthDate"));
-            userBirthDate = new Date(utilDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("userBirthDate"));
+//            userBirthDate = new Date(utilDate.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
-        System.out.println(userSurName);
-        System.out.println(userName);
-        System.out.println(userLastName);
+//        System.out.println(userSurName);
+//        System.out.println(userName);
+//        System.out.println(userLastName);
         new UserService().updateUser(userId, userName, userSurName, userLastName, userBirthDate, userRegistrationDate, passportSerial, passportNumber, passportDateOfIssue, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
 
 
@@ -76,7 +82,7 @@ public class OkEditUserCommand implements Command {
         session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
         session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
 
-        session.setAttribute("currentPage", "path.page.aboutUser");
+        logger.info("User " + userSurName + " " + userName + " " + userLastName + " has updated");
         return PageConfigManager.getProperty("path.page.aboutUser");
     }
 }

@@ -9,14 +9,14 @@ public class EditPublicationWrapper {
     private List<PublicationType> publicationTypeList;
     private List<PublicationTheme> publicationThemeList;
     private List<PublicationStatus> publicationStatusList;
-    private List<PublicationPeriodicityCost> publicationPeriodicityCostList;
+    private List<PublicationPeriodicyCost> publicationPeriodicyCostList;
 
-    public EditPublicationWrapper(Publication publication, List<PublicationType> publicationTypeList, List<PublicationTheme> publicationThemeList, List<PublicationStatus> publicationStatusList, List<PublicationPeriodicityCost> publicationPeriodicityCostList) {
+    public EditPublicationWrapper(Publication publication, List<PublicationType> publicationTypeList, List<PublicationTheme> publicationThemeList, List<PublicationStatus> publicationStatusList, List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
         this.publication = publication;
         this.publicationTypeList = publicationTypeList;
         this.publicationThemeList = publicationThemeList;
         this.publicationStatusList = publicationStatusList;
-        this.publicationPeriodicityCostList = publicationPeriodicityCostList;
+        this.publicationPeriodicyCostList = publicationPeriodicyCostList;
     }
 
     public Publication getPublication() {
@@ -35,7 +35,7 @@ public class EditPublicationWrapper {
         return publicationStatusList;
     }
 
-    public List<PublicationPeriodicityCost> getPublicationPeriodicityCostList() {
-        return publicationPeriodicityCostList;
+    public List<PublicationPeriodicyCost> getPublicationPeriodicyCostList() {
+        return publicationPeriodicyCostList;
     }
 }

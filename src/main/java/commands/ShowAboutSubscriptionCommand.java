@@ -2,6 +2,8 @@ package commands;
 
 import beans.Publication;
 import beans.Subscription;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import service.SubscriptionService;
@@ -14,10 +16,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class ShowAboutSubscriptionCommand implements Command {
+//    private static final Logger logger = Logger.getLogger(ShowAboutSubscriptionCommand.class);
+private static final Logger logger = LogManager.getLogger(ShowAboutSubscriptionCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
         int currentSubsId = Integer.valueOf(request.getParameter("currentSubsId"));
@@ -34,9 +40,9 @@ public class ShowAboutSubscriptionCommand implements Command {
         session.setAttribute("publicationType", wrapper.getPublicationType());
         session.setAttribute("publicationTheme", wrapper.getPublicationTheme());
         session.setAttribute("publicationStatus", wrapper.getPublicationStatus());
-        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicityCostList());
+        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicyCostList());
 
-        session.setAttribute("currentPage", "path.page.aboutSubscription");
+        logger.info("Show about subscription " + wrapper.getPublication().getName());
         return PageConfigManager.getProperty("path.page.aboutSubscription");
     }
 }

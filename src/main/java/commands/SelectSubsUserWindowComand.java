@@ -2,6 +2,8 @@ package commands;
 
 import beans.Subscription;
 import beans.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.UserWindowsService;
 
@@ -14,10 +16,14 @@ import java.io.IOException;
 import java.util.Map;
 
 public class SelectSubsUserWindowComand implements Command {
+//    private static final Logger logger = Logger.getLogger(SelectSubsUserWindowComand.class);
+private static final Logger logger = LogManager.getLogger(SelectSubsUserWindowComand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
@@ -30,7 +36,7 @@ public class SelectSubsUserWindowComand implements Command {
         Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(userId, currentSubStatusId);
         session.setAttribute("mapPubNameSubscription", map);
 
-        session.setAttribute("currentPage", "path.page.userPageSubsc");
+        logger.info("Subscription selected");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

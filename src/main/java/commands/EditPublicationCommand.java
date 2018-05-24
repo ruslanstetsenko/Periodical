@@ -1,5 +1,7 @@
 package commands;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import wrappers.EditPublicationWrapper;
@@ -11,10 +13,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class EditPublicationCommand implements Command {
+//    private static final Logger logger = Logger.getLogger("LoginComand");
+private static final Logger logger = LogManager.getLogger(EditPublicationCommand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
@@ -33,13 +39,12 @@ public class EditPublicationCommand implements Command {
         session.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
         session.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
 //        session.setAttribute("billPaid", Integer.valueOf(request.getParameter("billPaid")));
-        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicityCostList());
+        session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicyCostList());
 
 //        Publication publication1 = wrapper.getPublication();
 //        session.setAttribute("selectedType", publication1.getPublicationTypeId());
 //        session.setAttribute("previousPage", "/jsps/adminPage.jsp");
-
-        session.setAttribute("currentPage", "path.page.editPublication");
+        logger.info("Edit publication " + wrapper.getPublication().getName());
         return PageConfigManager.getProperty("path.page.editPublication");
     }
 }

@@ -2,6 +2,8 @@ package commands;
 
 import beans.Account;
 import beans.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.*;
@@ -17,13 +19,20 @@ import java.io.IOException;
 import java.util.List;
 
 public class OkLoginComand implements Command {
+    //    private static final Logger logger = Logger.getLogger(OkLoginComand.class);
+//    static {
+//        System.setProperty("log4j2.configurationFile", "resources/log4j2.xml");
+//    }
+
+    private static final Logger logger = LogManager.getLogger(OkLoginComand.class);
+
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        System.out.println("OK login comang " + session.getId());
+//        System.out.println("OK login comang " + session.getId());
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-
             session.setAttribute("currentPage", "path.page.index");
+            logger.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.index");
         }
 
@@ -32,11 +41,13 @@ public class OkLoginComand implements Command {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         Account account = loginService.checkAccount(login, password);
-        User currentUser = new User();
+        User currentUser;
 
         if (account != null) {
             currentUser = loginService.getUser(account);
+            logger.info("Account was found");
         } else {
+            logger.info("Account was not found");
             String errorMessage = MessageConfigManager.getProperty("message.errorLogin");
             request.setAttribute("errorLoginMessage", errorMessage);
 //            session.setAttribute("login", login);
@@ -63,6 +74,8 @@ public class OkLoginComand implements Command {
 
                 session.setAttribute("loginFormAction", "admin");
                 session.setAttribute("currentPage", "path.page.adminPage");
+
+                logger.info("Admin logined successful");
                 return PageConfigManager.getProperty("path.page.adminPage");
             } else if (currentUser.getUserRoleId() == 2) {
                 session.setAttribute("sessionId", sessionId);
@@ -83,6 +96,8 @@ public class OkLoginComand implements Command {
 
                 session.setAttribute("loginFormAction", "user");
                 session.setAttribute("currentPage", "path.page.userPageSubsc");
+
+                logger.info("User " + currentUser.getSurname() + " " + currentUser.getName() + " logined successful");
                 return PageConfigManager.getProperty("path.page.userPageSubsc");
             }
         }
@@ -90,6 +105,7 @@ public class OkLoginComand implements Command {
         request.setAttribute("errorFoundUser", errorMessage);
 
         session.setAttribute("currentPage", "path.page.error");
+        logger.info("Unsuccessful authorization");
         return PageConfigManager.getProperty("path.page.error");
     }
 }
