@@ -24,7 +24,7 @@ private static final Logger logger = LogManager.getLogger(ShowAboutSubscriptionC
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
         int currentSubsId = Integer.valueOf(request.getParameter("currentSubsId"));
 

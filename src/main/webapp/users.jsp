@@ -69,10 +69,10 @@
     </table>
 </div>
 
-<form name="createUser" method="post" action="create_user">
-    <input type="hidden" name="command" value="createUser">
-    <input type="submit" name="createUser" value="<fmt:message key="aboutUser.createUser" bundle="${rb}"/>">
-</form>
+<%--<form name="createUser" method="post" action="create_user">--%>
+    <%--<input type="hidden" name="command" value="createUser">--%>
+    <%--<input type="submit" name="createUser" value="<fmt:message key="aboutUser.createUser" bundle="${rb}"/>">--%>
+<%--</form>--%>
 
 <%--<div>--%>
     <%--<a href="adminPage.jsp"><fmt:message key="button.goMainPage" bundle="${rb}"/></a>--%>

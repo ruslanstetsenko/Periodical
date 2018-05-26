@@ -14,8 +14,9 @@ public class PublicationDaoImpl implements PublicationDao {
     private static final Logger logger = LogManager.getLogger(PublicationDaoImpl.class);
 
     @Override
-    public void create(Publication publication, Connection connection) {
+    public int create(Publication publication, Connection connection) {
         String sql = "INSERT INTO publication (name, issn_number, registration_date, website, publication_type_id, publication_status_id, publication_theme_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, publication.getName());
@@ -25,11 +26,17 @@ public class PublicationDaoImpl implements PublicationDao {
             preparedStatement.setInt(5, publication.getPublicationTypeId());
             preparedStatement.setInt(6, publication.getPublicationStatusId());
             preparedStatement.setInt(7, publication.getPublicationThemeId());
-
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.error("Can't create publication in DB", e.getCause());
         }
+        return id;
     }
 
     @Override

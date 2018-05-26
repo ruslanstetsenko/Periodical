@@ -21,7 +21,7 @@ private static final Logger logger = LogManager.getLogger(ShowAboutPublicationCo
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
 //        System.out.println("session id = " + session.getId());
 

@@ -14,6 +14,7 @@
 <c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
 <c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
 <fmt:setBundle basename="pagecontent" var="rb"/>
+<fmt:setBundle basename="message" var="validation"/>
 
 <html>
 <head>
@@ -29,13 +30,21 @@
             <tbody>
             <tr>
                 <th align="left"><strong><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></strong></th>
-                <th><input type="text" name="pubName" value="${publication.name}"></th>
-                <th>${incorrectPubName}</th>
+                <td><input type="text" name="pubName" value="${pubName}"></td>
+                <td>
+                    <c:if test="${incorectName}">
+                        <fmt:message key="validation.publication.name" bundle="${validation}"/>
+                    </c:if>
+                </td>
             </tr>
             <tr>
                 <th align="left"><strong><fmt:message key="aboutPublication.publicationISSN" bundle="${rb}"/></strong></th>
-                <th><input type="text" name="ISSN" value="${publication.issnNumber}"></th>
-                <th>${incorrectPubISSN}</th>
+                <td><input type="text" name="ISSN" value="${ISSN}"></td>
+                <td>
+                    <c:if test="${incorectISSN}">
+                        <fmt:message key="validation.publication.ISSN" bundle="${validation}"/>
+                    </c:if>
+                </td>
             </tr>
             <tr>
                 <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></strong></th>
@@ -54,6 +63,11 @@
                                     value="${type.typeName}"/></option>
                         </c:forEach>
                     </select>
+                </td>
+                <td>
+                    <c:if test="${incorectPubType}">
+                        <fmt:message key="validation.publication.pubType" bundle="${validation}"/>
+                    </c:if>
                 </td>
             </tr>
             <tr>
@@ -74,6 +88,11 @@
                         </c:forEach>
                     </select>
                 </td>
+                <td>
+                    <c:if test="${incorectPubStatus}">
+                        <fmt:message key="validation.publication.pubStatus" bundle="${validation}"/>
+                    </c:if>
+                </td>
             </tr>
             <tr>
                 <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></strong></th>
@@ -93,29 +112,75 @@
                         </c:forEach>
                     </select>
                 </td>
+                <td>
+                    <c:if test="${incorectPubTheme}">
+                        <fmt:message key="validation.publication.pubTheme" bundle="${validation}"/>
+                    </c:if>
+                </td>
             </tr>
             <tr>
                 <th align="left"><strong><fmt:message key="aboutPublication.publicationRegDate" bundle="${rb}"/></strong></th>
-                <td><input type="date" onkeydown="return false" name="setDate" value="${publication.registrationDate}"></td>
-                <th>${incorrectPubRegName}</th>
+                <td><input type="date" onkeydown="return false" name="setDate" value="${setDate}"></td>
+                <td>
+                    <c:if test="${incorectSetDate}">
+                        <fmt:message key="validation.publication.setDate" bundle="${validation}"/>
+                    </c:if>
+                </td>
             </tr>
             <tr>
                 <th align="left"><strong><fmt:message key="aboutPublication.publicationWebsite" bundle="${rb}"/></strong></th>
-                <td><input type="text" name="website" value="${publication.website}"></td>
-                <th>${incorrectPubWebsite}</th>
-            </tr>
-            <tr>
-                <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></strong></th>
+                <td><input type="text" name="website" value="${website}"></td>
                 <td>
-                    <c:forEach var="cost" items="${publicationPeriodicityCostList}">
-                        <p align="left">
-                            <input type="text" name="cost" size="5" align="right" value="${cost.cost}"/> <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/>
-                            <c:out
-                                    value="${cost.timesPerYear}"/> <fmt:message key="aboutPublication.subsCostHead" bundle="${rb}"/>
-                        </p>
-                    </c:forEach>
+                    <c:if test="${incorectWebsite}">
+                        <fmt:message key="validation.publication.website" bundle="${validation}"/>
+                    </c:if>
                 </td>
-                <th>${incorrectPubCost}</th>
+            </tr>
+            <%--<tr>--%>
+                <%--<th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></strong></th>--%>
+                <%--<td>--%>
+                    <%--<c:forEach var="cost" items="${publicationPeriodicityCostList}">--%>
+                        <%--<p align="left">--%>
+                            <%--<input type="text" name="cost" size="5" align="right" value="${cost.cost}"/> <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/>--%>
+                            <%--<c:out value="${cost.timesPerYear}"/> <fmt:message key="aboutPublication.subsCostHead" bundle="${rb}"/>--%>
+                        <%--</p>--%>
+                    <%--</c:forEach>--%>
+                <%--</td>--%>
+                <%--<td>--%>
+                    <%--<c:if test="${incorectCost}">--%>
+                        <%--<fmt:message key="validation.publication.cost" bundle="${validation}"/>--%>
+                    <%--</c:if>--%>
+                <%--</td>--%>
+            <%--</tr>--%>
+            <tr>
+                <th align="left" valign="top"><strong><fmt:message key="aboutPublication.publicationCost"
+                                                                   bundle="${rb}"/></strong></th>
+                <td>
+                    <p><input type="text" name="cost1Month" size="5" align="right" value="${cost1Month}"/>
+                        <fmt:message key="aboutPublication.cost1mohth" bundle="${rb}"/>
+                        <c:if test="${incorectCost1M}">
+                            <fmt:message key="validation.publication.cost" bundle="${validation}"/>
+                        </c:if>
+                    </p>
+                    <p><input type="text" name="cost3Months" size="5" align="right" value="${cost3Months}"/>
+                        <fmt:message key="aboutPublication.cost3mohth" bundle="${rb}"/>
+                        <c:if test="${incorectCost3M}">
+                            <fmt:message key="validation.publication.cost" bundle="${validation}"/>
+                        </c:if>
+                    </p>
+                    <p><input type="text" name="cost6Months" size="5" align="right" value="${cost6Months}"/>
+                        <fmt:message key="aboutPublication.cost6mohth" bundle="${rb}"/>
+                        <c:if test="${incorectCost6M}">
+                            <fmt:message key="validation.publication.cost" bundle="${validation}"/>
+                        </c:if>
+                    </p>
+                    <p><input type="text" name="cost12Months" size="5" align="right" value="${cost12Months}"/>
+                        <fmt:message key="aboutPublication.cost12mohth" bundle="${rb}"/>
+                        <c:if test="${incorectCost12M}">
+                            <fmt:message key="validation.publication.cost" bundle="${validation}"/>
+                        </c:if>
+                    </p>
+                </td>
             </tr>
             </tbody>
         </table>

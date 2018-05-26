@@ -16,24 +16,26 @@
     <%--<title>Title</title>--%>
 </head>
 <body>
-<a href="Controller?command=logout">Logout</a>
+<c:if test="${currentPage ne path.page.login}"><a href="Controller?command=logout">Logout</a></c:if>
+
 <%--<h3>Вітаємо, <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>--%>
 <%--<a href="controller?command=setLocale" name="locale">English</a>--%>
 <%--<a href="controller?command=setLocale">Українська</a>--%>
 
-<form name="setLocaleEN" method="get" action="123">
+<form name="setLocaleEN" method="get" action="controller">
     <input type="hidden" name="command" value="setLocale">
     <c:set var="currentPage" value="${currentPage}" scope="request"/>
     <input type="hidden" name="currentPage" value="${currentPage}">
-    <button type="submit" name="locale" value="1">EN</button>
+    <button type="submit" name="locale" value="1">English</button>
+    <button type="submit" name="locale" value="2">Українська</button>
 </form>
 
-<form name="setLocaleUA" method="get" action="123">
-    <input type="hidden" name="command" value="setLocale">
-    <c:set var="currentPage" value="${currentPage}" scope="request"/>
-    <input type="hidden" name="currentPage" value="${currentPage}">
-    <button type="submit" name="locale" value="2">UA</button>
-</form>
+<%--<form name="setLocaleUA" method="get" action="controller">--%>
+    <%--<input type="hidden" name="command" value="setLocale">--%>
+    <%--<c:set var="currentPage" value="${currentPage}" scope="request"/>--%>
+    <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
+    <%--<button type="submit" name="locale" value="2">Українська</button>--%>
+<%--</form>--%>
 
 <%--<select name="locale">--%>
     <%--<option value="en_us"><a href="controller?command=setLocale"></a>English</option>--%>

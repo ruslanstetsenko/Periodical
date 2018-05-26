@@ -22,6 +22,6 @@ private static final Logger logger = LogManager.getLogger(LogoutCommand.class);
         logger.info("User " + user.getSurname() + " " + user.getName() + " " + user.getLastName() + " log out");
         session.invalidate();
 
-        return PageConfigManager.getProperty("path.page.index");
+        return PageConfigManager.getProperty("path.page.login");
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PublicationDao {
 
-    void create(Publication publication, Connection connection);
+    int create(Publication publication, Connection connection);
     Publication read(int id, Connection connection);
     int getLastPublicationId(Connection connection);
     void update(int publicationId, String pubName, int issn, String website, Date setDate, int publicationType, int publicationTheme, int publicationStatus, Connection connection);

@@ -32,7 +32,7 @@
         <a href="users.jsp"><fmt:message key="aboutUser.goToUsers" bundle="${rb}"/></a>
     </div>
     <div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
-        <a href="editUser.jsp"><fmt:message key="aboutUser.editUser" bundle="${rb}"/></a><br>
+        <a href="controller?command=editUser"><fmt:message key="aboutUser.editUser" bundle="${rb}"/></a><br>
         <%--<a href="userPageSubsc.jsp"><fmt:message key="aboutUser.backToSubs" bundle="${rb}"/></a>--%>
     </div>
     <c:import url="headUserInfo.jsp"/>

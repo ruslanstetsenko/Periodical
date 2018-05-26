@@ -23,6 +23,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
             preparedStatement.setInt(3, publicationPeriodicyCost.getPublicationId());
             preparedStatement.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.error("Can't create periodicy cost in DB", e.getCause());
         }
 

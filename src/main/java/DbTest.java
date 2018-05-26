@@ -8,6 +8,7 @@ import dao.interfaces.*;
 import service.PublicationService;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,8 @@ public class DbTest {
 //        testSubscription();
 //        testPublicationType();
 //        testPublicationTheme();
-//        testPublication();
-        testPublicService();
+        testPublication();
+//        testPublicService();
 //        testPubPeriodCost();
     }
 
@@ -96,16 +97,16 @@ public class DbTest {
         contactInfo3.setEmail("gergb@ukr.net");
 
 //        try {
-            contactInfoDao.create("063 292 44 45", "arslan@ukr.net", connection);
-            contactInfoDao.create("096 834 40 66", "r.stetsenko@gmail.com", connection);
-            contactInfoDao.create("044 234 32 32", "gergb@ukr.net", connection);
-            connection.commit();
+        contactInfoDao.create("063 292 44 45", "arslan@ukr.net", connection);
+        contactInfoDao.create("096 834 40 66", "r.stetsenko@gmail.com", connection);
+        contactInfoDao.create("044 234 32 32", "gergb@ukr.net", connection);
+        connection.commit();
 
-            list = contactInfoDao.getAll(connection);
+        list = contactInfoDao.getAll(connection);
 
-            System.out.println(contactInfoDao.read(list.get(0).getId(), connection));
-            System.out.println(contactInfoDao.read(list.get(1).getId(), connection));
-            System.out.println(contactInfoDao.read(list.get(2).getId(), connection));
+        System.out.println(contactInfoDao.read(list.get(0).getId(), connection));
+        System.out.println(contactInfoDao.read(list.get(1).getId(), connection));
+        System.out.println(contactInfoDao.read(list.get(2).getId(), connection));
 
 //            ContactInfo contactInfoUpdate = contactInfoDao.read(list.get(0).getId(), connection);
 //            contactInfoUpdate.setEmail("123@123");
@@ -139,7 +140,7 @@ public class DbTest {
         System.out.println(subscriptionDao.getSubscByBill(connection, 4));
     }
 
-    private static void testPublicationType() throws SQLException{
+    private static void testPublicationType() throws SQLException {
         Connection connection = ConnectionPool.getConnection(true);
         PublicationTypeDao publicationTypeDao = DaoFactory.getPublicationTypeDao();
         System.out.println(publicationTypeDao.read(4, connection));
@@ -152,11 +153,21 @@ public class DbTest {
 
     }
 
-    private static void testPublication() throws SQLException {
-        Connection connection = ConnectionPool.getConnection(true);
+    private static void testPublication() {
+        Connection connection = ConnectionPool.getConnection(false);
         PublicationDao publicationDao = DaoFactory.getPublicationDao();
-        System.out.println(publicationDao.getByTypeThemeStatus(connection, 2, 5, 1));
-        System.out.println("last pubId = " + publicationDao.getLastPublicationId(connection));
+//        System.out.println(publicationDao.getByTypeThemeStatus(connection, 2, 5, 1));
+//        System.out.println("last pubId = " + publicationDao.getLastPublicationId(connection));
+        System.out.println(publicationDao.create(new Publication.Builder()
+                .setName("123")
+                .setIssnNumber(11111111)
+                .setRegistrationDate(Date.valueOf("1999-12-12"))
+                .setWebsite("wwwwwwww")
+                .setPublicationTypeId(1)
+                .setPublicationStatusId(1)
+                .setPublicationThemeId(4)
+                .build(), connection));
+        ConnectionPool.closeConnection(connection);
     }
 
     private static void testPublicService() {

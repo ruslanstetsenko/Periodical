@@ -22,7 +22,7 @@ private static final Logger logger = LogManager.getLogger(ResetBillListCommand.c
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
         session.setAttribute("currentBillPaidId", 0);
         List<SubscriptionBill> list = new SubscriptionBillService().selectBillsByStatus(0);

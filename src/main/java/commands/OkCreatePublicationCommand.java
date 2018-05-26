@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
+import validate.PublicationValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 public class OkCreatePublicationCommand implements Command {
 //    private static final Logger logger = Logger.getLogger(OkCreatePublicationCommand.class);
@@ -24,50 +26,50 @@ private static final Logger logger = LogManager.getLogger(OkCreatePublicationCom
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         String pubName = request.getParameter("pubName");
-        int issn = Integer.valueOf(request.getParameter("ISSN"));
+        String issn = request.getParameter("ISSN");
         String website = request.getParameter("website");
-        Date setDate = Date.valueOf(request.getParameter("setDate"));
-//        try {
-//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("setDate"));
-//            setDate = new Date(utilDate.getTime());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        String setDate = request.getParameter("setDate");
+        String publicationType = request.getParameter("type");
+        String publicationTheme = request.getParameter("theme");
+        String publicationStatus = request.getParameter("status");
+        String cost1M = request.getParameter("cost1Month");
+        String cost3M = request.getParameter("cost3Months");
+        String cost6M = request.getParameter("cost6Months");
+        String cost12M = request.getParameter("cost12Months");
 
-        int pubType = Integer.valueOf(request.getParameter("type"));
-        int pubStatus = Integer.valueOf(request.getParameter("status"));
-        int pubTheme = Integer.valueOf(request.getParameter("theme"));
-        double cost1M = Double.valueOf(request.getParameter("cost1Month"));
-        double cost3M = Double.valueOf(request.getParameter("cost3Months"));
-        double cost6M = Double.valueOf(request.getParameter("cost6Months"));
-        double cost12M = Double.valueOf(request.getParameter("cost12Months"));
-        PublicationPeriodicyCost pubCost1M = new PublicationPeriodicyCost.Builder()
-                .setTimesPerYear(1).setCost(cost1M).build();
-        PublicationPeriodicyCost pubCost3M = new PublicationPeriodicyCost.Builder()
-                .setTimesPerYear(3).setCost(cost3M).build();
-        PublicationPeriodicyCost pubCost6M = new PublicationPeriodicyCost.Builder()
-                .setTimesPerYear(6).setCost(cost6M).build();
-        PublicationPeriodicyCost pubCost12M = new PublicationPeriodicyCost.Builder()
-                .setTimesPerYear(12).setCost(cost12M).build();
-        PublicationPeriodicyCost[] costs = new PublicationPeriodicyCost[4];
-        costs[0] = pubCost1M;
-        costs[1] = pubCost3M;
-        costs[2] = pubCost6M;
-        costs[3] = pubCost12M;
-        new PublicationService().createPublication(pubName, issn, website, setDate, pubType, pubStatus, pubTheme, costs);
+        Map<String, Boolean> map = PublicationValidator.validate(pubName, issn, website, setDate, publicationType, publicationStatus, publicationTheme, cost1M, cost3M, cost6M, cost12M);
 
-        int currentPubTypeId = (Integer) session.getAttribute("currentPubTypeId");
-        int currentPubThemeId = (Integer) session.getAttribute("currentPubThemeId");
-        int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
-//        int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
-        List<Publication> publicationList = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId);
-        session.setAttribute("publicationList", publicationList);
+        if (map.isEmpty()) {
+            new PublicationService().createPublication(pubName, issn, website, setDate, publicationType, publicationStatus, publicationTheme, cost1M, cost3M, cost6M, cost12M);
 
-        logger.info("Publication " + pubName + " was created");
-        return PageConfigManager.getProperty("path.page.adminPage");
+            int currentPubTypeId = (Integer) session.getAttribute("currentPubTypeId");
+            int currentPubThemeId = (Integer) session.getAttribute("currentPubThemeId");
+            int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
+            List<Publication> publicationList = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId);
+            session.setAttribute("publicationList", publicationList);
+
+            logger.info("Publication " + pubName + " was created");
+            return PageConfigManager.getProperty("path.page.adminPage");
+        } else {
+            for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+                request.setAttribute(entry.getKey(), entry.getValue());
+            }
+            request.setAttribute("pubName", pubName);
+            request.setAttribute("ISSN", issn);
+            request.setAttribute("website", website);
+            request.setAttribute("setDate", setDate);
+            request.setAttribute("cost1Month", cost1M);
+            request.setAttribute("cost3Months", cost3M);
+            request.setAttribute("cost6Months", cost6M);
+            request.setAttribute("cost12Months", cost12M);
+
+            logger.info("Publication " + pubName + " was not created. Try again");
+            return PageConfigManager.getProperty("path.page.createPublication");
+        }
+
     }
 }

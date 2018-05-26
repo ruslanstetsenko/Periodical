@@ -30,6 +30,7 @@ public class UserDaoImpl implements UserDao {
 
             preparedStatement.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.error("Can't create user in DB", e.getCause());
         }
 
@@ -57,6 +58,7 @@ public class UserDaoImpl implements UserDao {
             user.setContactInfoId(resultSet.getInt("contact_info_id"));
             user.setUserRoleId(resultSet.getInt("user_role_id"));
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.error("Can't read user from DB", e.getCause());
         }
 
@@ -64,15 +66,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void update(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, Connection connection) {
-        String sql = "UPDATE users SET name=?, surname=?, last_name=?, birthday=?, registration_date=? WHERE id=?";
+    public void update(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, Connection connection) {
+        String sql = "UPDATE users SET name=?, surname=?, last_name=?, birthday=? WHERE id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, userSurName);
             preparedStatement.setString(3, userLastName);
             preparedStatement.setDate(4, userBirthDate);
-            preparedStatement.setDate(5, userRegistrationDate);
-            preparedStatement.setInt(6, userId);
+            preparedStatement.setInt(5, userId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user in DB", e.getCause());

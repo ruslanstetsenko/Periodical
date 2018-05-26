@@ -19,7 +19,7 @@ public class UserService {
     private LivingAddressDao livingAddressDao = DaoFactory.getLivingAddressDao();
     private ContactInfoDao contactInfoDao = DaoFactory.getContactInfoDao();
 
-    public void createUser(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail) {
+    public void createUser(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
         Connection connection = ConnectionPool.getConnection(false);
         try {
             passportIdentNumberDao.create(passportSerial, passportNumber, passportDateOfIssue, passportIssuedBy, identNuber, connection);
@@ -31,20 +31,20 @@ public class UserService {
             contactInfoDao.create(userPhoneNumber, userEmail, connection);
             int contactInfoId = contactInfoDao.getLastId(connection);
 
-            accountDao.create("user", "user", connection);
+            accountDao.create(login, password, connection);
             int accountId = accountDao.getLastId(connection);
 
             userDao.create(userName, userSurName, userLastName, userBirthDate, userRegistrationDate, passportId, 2, addressId, contactInfoId, accountId, connection);
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-           ConnectionPool.transactionRollback(connection);
+            ConnectionPool.transactionRollback(connection);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
     }
 
-    public void updateUser(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
+    public void updateUser(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
         Connection connection = ConnectionPool.getConnection(false);
         try {
             User user = userDao.read(userId, connection);
@@ -53,7 +53,7 @@ public class UserService {
             contactInfoDao.update(user.getContactInfoId(), userPhoneNumber, userEmail, connection);
             accountDao.update(user.getAccountsId(), login, password, connection);
 //            connection.commit();
-            userDao.update(userId, userName, userSurName, userLastName, userBirthDate, userRegistrationDate, connection);
+            userDao.update(userId, userName, userSurName, userLastName, userBirthDate, connection);
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,5 +85,13 @@ public class UserService {
 
         ConnectionPool.closeConnection(connection);
         return new AboutUserWrapper(account, passportIdentNumber, livingAddress, contactInfo, user);
+    }
+
+    public User getLastAddedUser() {
+        Connection connection = ConnectionPool.getConnection(true);
+        int userId = userDao.getLastId(connection);
+        User user = userDao.read(userId, connection);
+
+        return user;
     }
 }

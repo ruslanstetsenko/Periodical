@@ -1,13 +1,10 @@
 package service;
 
-import beans.SubscriptionStatus;
+import beans.*;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.interfaces.PublicationDao;
 import dao.interfaces.SubscriptionDao;
-import beans.Publication;
-import beans.Subscription;
-import beans.User;
 import dao.interfaces.SubscriptionStatusDao;
 
 import java.sql.Connection;
@@ -15,10 +12,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SubscriptionService {
@@ -27,18 +21,37 @@ public class SubscriptionService {
     private SubscriptionStatusDao subscriptionStatusDao = DaoFactory.getSubscriptionStatusDao();
     private PublicationDao publicationDao = DaoFactory.getPublicationDao();
 
-    public void createSubscription(Subscription subscription) {
+    public void createSubscription(int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList, List<Publication> publicationList, List<Integer> periodicyCostId) {
         Connection connection = ConnectionPool.getConnection(false);
+        Subscription subscription;
+        PublicationPeriodicyCost costBean;
+        PublicationPeriodicityCostService costService = new PublicationPeriodicityCostService();
+        PublicationService publicationService = new PublicationService();
+
+        for (Integer costId : periodicyCostId) {
+            costBean = costService.getPubPeriodicyCost(costId);
+            publicationPeriodicyCostList.add(costBean);
+            publicationList.add(publicationService.getPublication(costBean.getPublicationId()));
+        }
+
         try {
-            subscriptionDao.create(subscription, connection);
+
+            int billId = new SubscriptionBillService().createBill(connection, userId, publicationPeriodicyCostList);
+
+            for (int i = 0; i < publicationList.size(); i++) {
+                subscription = new Subscription.Builder()
+                        .setSubscriptionDate(new Date(new java.util.Date().getTime()))
+                        .setSubscriptionCost(publicationPeriodicyCostList.get(i).getCost())
+                        .setPublicationId(publicationList.get(i).getId())
+                        .setSubscriptionStatusId(3)
+                        .setSubscriptionBillsId(billId)
+                        .setUsersId(userId)
+                        .build();
+                subscriptionDao.create(subscription, connection);
+            }
             connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            ConnectionPool.transactionRollback(connection);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -52,9 +65,9 @@ public class SubscriptionService {
         return subscription;
     }
 
-    public void addSubscriptionToList(User user, Publication publication, String subsType, Double cost) {
+    public void addSubscriptionToList(User user, Publication publication, Double cost) {
         List<Subscription> subscriptionList = new ArrayList<>();
-        subscriptionList.add(new Subscription.Builder().setSubscriptionDate((Date) Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())).setSubscriptionType(subsType).setSubscriptionCost(cost).setPublicationId(publication.getId()).setSubscriptionStatusId(1).build());
+        subscriptionList.add(new Subscription.Builder().setSubscriptionDate((Date) Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())).setSubscriptionCost(cost).setPublicationId(publication.getId()).setSubscriptionStatusId(1).build());
     }
 
 //    public List<Subscription> getSubscriptionsByBill(int billId) {

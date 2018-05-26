@@ -16,6 +16,7 @@
 <body>
 <h2>Hello World!</h2>
 <form name="indexPage" method="post" action="login">
+
     <input type="hidden" name="command" value="login">
     <input type="submit"  value="go">
 

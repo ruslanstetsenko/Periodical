@@ -16,16 +16,17 @@ public final class RequestHelper {
         commands.put("cancelCreatePublication", new CancelCreatePublicationCommand());
         commands.put("cancelEditPublication", new CancelEditPublicationCommand());
         commands.put("cancelWievSubscription", new CancelWievSubscriptionCommand());
-        commands.put("cancelLogin", new CancelLoginComand());
+//        commands.put("cancelLogin", new CancelLoginComand());
         commands.put("cancelWievAboutBill", new CancelWievAboutBillComand());
 //        commands.put("confirmDelete", new ConfirmDeleteCommand());
         commands.put("createPublication", new CreatePublicationCommand());
         commands.put("createSubscription", new CreateSubscriptionCommand());
         commands.put("cancelCreateSubscription", new CancelCreateSubscriptionCommand());
+        commands.put("cancelCreareUser", new CancelCreareUserCommand());
 //        commands.put("deleteBill", new DeleteBillCommand());
         commands.put("editPublication", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
-        commands.put("login", new LoginCommand());
+//        commands.put("login", new LoginCommand());
         commands.put("logout", new LogoutCommand());
         commands.put("NoCommand", new NoCommand());
         commands.put("okCreatePublication", new OkCreatePublicationCommand());
@@ -50,7 +51,6 @@ public final class RequestHelper {
         commands.put("selectBills", new SelectBillsCommand());
         commands.put("resetBillList", new ResetBillListCommand());
         commands.put("setLocale", new SetLocaleCommand());
-
     }
 
     public Command getCommand(HttpServletRequest request) {

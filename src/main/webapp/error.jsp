@@ -19,6 +19,7 @@
 <head>
     <c:set var="currentPage" value="path.page.error" scope="request"/>
     <title><fmt:message key="errorPage.title" bundle="${rb}"/></title>
+
 </head>
 <body>
 ${errorFoundUser}<br/>

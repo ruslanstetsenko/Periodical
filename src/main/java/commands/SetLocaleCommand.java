@@ -19,15 +19,13 @@ private static final Logger logger = LogManager.getLogger(SetLocaleCommand.class
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
+
         String key = request.getParameter("currentPage");
-//        String key = (String) session.getAttribute("currentPage");
         String locale = request.getParameter("locale");
         session.setAttribute("locale", locale);
-//        System.out.println("key " + key);
-//        System.out.println("page " + PageConfigManager.getProperty(key));
-//        System.out.println("locale " + locale);
+
         if (locale.equals("1")) {
             logger.info("Locale EN was setted");
         } else {

@@ -6,7 +6,7 @@ import java.sql.Date;
 public class Subscription implements Serializable {
     private int id;
     private Date subscriptionDate;
-    private String subscriptionType;
+//    private String subscriptionType;
     private double subscriptionCost;
     private Integer publicationId;
     private Integer subscriptionStatusId;
@@ -19,7 +19,7 @@ public class Subscription implements Serializable {
     private Subscription(Builder builder) {
         this.id = builder.id;
         this.subscriptionDate = builder.subscriptionDate;
-        this.subscriptionType = builder.subscriptionType;
+//        this.subscriptionType = builder.subscriptionType;
         this.subscriptionCost = builder.subscriptionCost;
         this.publicationId = builder.publicationId;
         this.subscriptionStatusId = builder.subscriptionStatusId;
@@ -41,14 +41,6 @@ public class Subscription implements Serializable {
 
     public void setSubscriptionDate(Date subscriptionDate) {
         this.subscriptionDate = subscriptionDate;
-    }
-
-    public String getSubscriptionType() {
-        return subscriptionType;
-    }
-
-    public void setSubscriptionType(String subscriptionType) {
-        this.subscriptionType = subscriptionType;
     }
 
     public double getSubscriptionCost() {
@@ -98,23 +90,25 @@ public class Subscription implements Serializable {
 
         Subscription that = (Subscription) o;
 
+        if (id != that.id) return false;
         if (Double.compare(that.subscriptionCost, subscriptionCost) != 0) return false;
         if (subscriptionDate != null ? !subscriptionDate.equals(that.subscriptionDate) : that.subscriptionDate != null)
             return false;
-        if (subscriptionType != null ? !subscriptionType.equals(that.subscriptionType) : that.subscriptionType != null)
+        if (publicationId != null ? !publicationId.equals(that.publicationId) : that.publicationId != null)
             return false;
-        return publicationId != null ? publicationId.equals(that.publicationId) : that.publicationId == null;
+        return subscriptionStatusId != null ? subscriptionStatusId.equals(that.subscriptionStatusId) : that.subscriptionStatusId == null;
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        result = subscriptionDate != null ? subscriptionDate.hashCode() : 0;
-        result = 31 * result + (subscriptionType != null ? subscriptionType.hashCode() : 0);
+        result = id;
+        result = 31 * result + (subscriptionDate != null ? subscriptionDate.hashCode() : 0);
         temp = Double.doubleToLongBits(subscriptionCost);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (publicationId != null ? publicationId.hashCode() : 0);
+        result = 31 * result + (subscriptionStatusId != null ? subscriptionStatusId.hashCode() : 0);
         return result;
     }
 
@@ -123,7 +117,6 @@ public class Subscription implements Serializable {
         final StringBuffer sb = new StringBuffer("Subscription{");
         sb.append("id=").append(id);
         sb.append(", subscriptionDate=").append(subscriptionDate);
-        sb.append(", subscriptionType='").append(subscriptionType).append('\'');
         sb.append(", subscriptionCost=").append(subscriptionCost);
         sb.append(", publicationId=").append(publicationId);
         sb.append(", subscriptionStatusId=").append(subscriptionStatusId);
@@ -136,7 +129,6 @@ public class Subscription implements Serializable {
     public static class Builder {
         private int id;
         private Date subscriptionDate;
-        private String subscriptionType;
         private double subscriptionCost;
         private Integer publicationId;
         private Integer subscriptionStatusId;
@@ -150,11 +142,6 @@ public class Subscription implements Serializable {
 
         public Builder setSubscriptionDate(Date subscriptionDate) {
             this.subscriptionDate = subscriptionDate;
-            return this;
-        }
-
-        public Builder setSubscriptionType(String subscriptionType) {
-            this.subscriptionType = subscriptionType;
             return this;
         }
 

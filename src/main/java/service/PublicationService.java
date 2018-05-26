@@ -30,52 +30,95 @@ public class PublicationService {
         return publication;
     }
 
-    public void createPublication(String pubName, int issn, String website, Date setDate, int pubType, int pubStatus, int pubTheme, PublicationPeriodicyCost[] costs) {
+    public void createPublication(String pubName, String issn, String website, String setDate, String pubType, String pubStatus, String pubTheme, String cost1M, String cost3M, String cost6M, String cost12M) {
         Connection connection = ConnectionPool.getConnection(false);
+        List<PublicationPeriodicyCost> list = new ArrayList<>();
+
+        PublicationPeriodicyCost pubCost1M = new PublicationPeriodicyCost.Builder()
+                .setTimesPerYear(1)
+                .setCost(Double.valueOf(cost1M))
+                .build();
+        PublicationPeriodicyCost pubCost3M = new PublicationPeriodicyCost.Builder()
+                .setTimesPerYear(3)
+                .setCost(Double.valueOf(cost3M))
+                .build();
+        PublicationPeriodicyCost pubCost6M = new PublicationPeriodicyCost.Builder()
+                .setTimesPerYear(6)
+                .setCost(Double.valueOf(cost6M))
+                .build();
+        PublicationPeriodicyCost pubCost12M = new PublicationPeriodicyCost.Builder()
+                .setTimesPerYear(12)
+                .setCost(Double.valueOf(cost12M))
+                .build();
+
+        list.add(pubCost1M);
+        list.add(pubCost3M);
+        list.add(pubCost6M);
+        list.add(pubCost12M);
+
+        int issn1 = Integer.valueOf(issn);
+        Date setDate1 = Date.valueOf(setDate);
+        int pubType1 = Integer.valueOf(pubType);
+        int pubStatus1 = Integer.valueOf(pubStatus);
+        int pubTheme1 = Integer.valueOf(pubTheme);
+
         Publication publication = new Publication.Builder()
                 .setName(pubName)
-                .setIssnNumber(issn)
+                .setIssnNumber(issn1)
                 .setWebsite(website)
-                .setRegistrationDate(setDate)
-                .setPublicationTypeId(pubType)
-                .setPublicationStatusId(pubStatus)
-                .setPublicationThemeId(pubTheme)
+                .setRegistrationDate(setDate1)
+                .setPublicationTypeId(pubType1)
+                .setPublicationStatusId(pubStatus1)
+                .setPublicationThemeId(pubTheme1)
                 .build();
         try {
-            publicationDao.create(publication, connection);
-//            connection.commit();
-            int publicationId = publicationDao.getLastPublicationId(connection);
-            for (PublicationPeriodicyCost cost : costs) {
+            int publicationId = publicationDao.create(publication, connection);
+
+//            int publicationId = publicationDao.getLastPublicationId(connection);
+            for (PublicationPeriodicyCost cost : list) {
                 cost.setPublicationId(publicationId);
+                System.out.println("publicationId " + publicationId);
                 publicationPeriodicityCostDao.create(cost, connection);
             }
             connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            ConnectionPool.transactionRollback(connection);
         } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ConnectionPool.closeConnection(connection);
         }
     }
 
-    public void updatePublication(int publicationId, String pubName, int issn, String website, Date setDate, int publicationType, int publicationTheme, int publicationStatus, String[] costs, List<PublicationPeriodicyCost> costBeens) {
+    public void updatePublication(int publicationId, String pubName, String issn, String website, String setDate, String publicationType, String publicationTheme, String publicationStatus, Map<Integer, String> costs, List<PublicationPeriodicyCost> costBeens) {
         Connection connection = ConnectionPool.getConnection(false);
 
+        int issn1 = Integer.valueOf(issn);
+        Date setDate1 = Date.valueOf(setDate);
+        int publicationType1 = Integer.valueOf(publicationType);
+        int publicationTheme1 = Integer.valueOf(publicationTheme);
+        int publicationStatus1 = Integer.valueOf(publicationStatus);
         try {
-            publicationDao.update(publicationId, pubName, issn, website, setDate, publicationType, publicationTheme, publicationStatus, connection);
-            for (int i = 0; i < costs.length; i++) {
-                PublicationPeriodicyCost publicationPeriodicyCost = costBeens.get(i);
-                publicationPeriodicyCost.setCost(Double.valueOf(costs[i]));
-                publicationPeriodicityCostDao.update(publicationPeriodicyCost, connection);
+            publicationDao.update(publicationId, pubName, issn1, website, setDate1, publicationType1, publicationTheme1, publicationStatus1, connection);
+            for (Map.Entry<Integer, String> entry : costs.entrySet()) {
+                for (int i = 0; i < costs.size(); i++) {
+                    PublicationPeriodicyCost publicationPeriodicyCost = costBeens.get(i);
+                    if (publicationPeriodicyCost.getTimesPerYear() == entry.getKey()) {
+                        if (entry.getValue() != null) {
+                            publicationPeriodicyCost.setCost(Double.valueOf(entry.getValue()));
+                        } else {
+                            publicationPeriodicyCost.setCost(0.0);
+                        }
+                        publicationPeriodicityCostDao.update(publicationPeriodicyCost, connection);
+                        break;
+                    }
+                }
             }
+
+//            for (int i = 0; i < costs.size(); i++) {
+//                PublicationPeriodicyCost publicationPeriodicyCost = costBeens.get(i);
+//                if (costs.)
+//                publicationPeriodicyCost.setCost(Double.valueOf(costs[i]));
+//                publicationPeriodicityCostDao.update(publicationPeriodicyCost, connection);
+//            }
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -22,6 +22,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.setString(2, userEmail);
             preparedStatement.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.error("Can't create user contact info in DB", e.getCause());
         }
 

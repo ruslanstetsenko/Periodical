@@ -29,11 +29,9 @@ public class OkLoginComand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-//        System.out.println("OK login comang " + session.getId());
-        if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            session.setAttribute("currentPage", "path.page.index");
-            logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+        if (session.getAttribute("sessionId") == null) {
+            session.setAttribute("sessionId", session.getId());
+            logger.info("Session " + session.getId() + " has started");
         }
 
         String sessionId = session.getId();
@@ -48,8 +46,8 @@ public class OkLoginComand implements Command {
             logger.info("Account was found");
         } else {
             logger.info("Account was not found");
-            String errorMessage = MessageConfigManager.getProperty("message.errorLogin");
-            request.setAttribute("errorLoginMessage", errorMessage);
+//            String errorMessage = MessageConfigManager.getProperty("message.errorLogin");
+            request.setAttribute("errorLoginMessage", true);
 //            session.setAttribute("login", login);
 //            session.setAttribute("password", password);
             return PageConfigManager.getProperty("path.page.login");
@@ -73,7 +71,7 @@ public class OkLoginComand implements Command {
                 session.setAttribute("userList", userList);
 
                 session.setAttribute("loginFormAction", "admin");
-                session.setAttribute("currentPage", "path.page.adminPage");
+//                session.setAttribute("currentPage", "path.page.adminPage");
 
                 logger.info("Admin logined successful");
                 return PageConfigManager.getProperty("path.page.adminPage");
@@ -101,8 +99,8 @@ public class OkLoginComand implements Command {
                 return PageConfigManager.getProperty("path.page.userPageSubsc");
             }
         }
-        String errorMessage = MessageConfigManager.getProperty("message.userNotFound");
-        request.setAttribute("errorFoundUser", errorMessage);
+//        String errorMessage = MessageConfigManager.getProperty("message.userNotFound");
+        request.setAttribute("errorLoginMessage", true);
 
         session.setAttribute("currentPage", "path.page.error");
         logger.info("Unsuccessful authorization");

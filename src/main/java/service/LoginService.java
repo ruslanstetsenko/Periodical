@@ -31,6 +31,18 @@ public class LoginService {
         return null;
     }
 
+    public boolean checkLogin(String login) {
+        Connection connection = ConnectionPool.getConnection(true);
+        List<Account> accountList = accountDao.getAll(connection);
+        for (Account account : accountList) {
+            if (login.equals(account.getLogin())) {
+                return true;
+            }
+        }
+        ConnectionPool.closeConnection(connection);
+        return false;
+    }
+
     public User getUser(Account account) {
         Connection connection = ConnectionPool.getConnection(true);
         List<User> userList = userDao.getAll(connection);

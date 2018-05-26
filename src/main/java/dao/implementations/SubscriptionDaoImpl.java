@@ -13,16 +13,15 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
 
     @Override
     public void create(Subscription subscription, Connection connection) {
-        String sql = "INSERT INTO subscription (subscription_date, subscription_type, subscription_cost, publication_id, subscription_status_id, users_id, subscription_bills_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO subscription (subscription_date, subscription_cost, publication_id, subscription_status_id, users_id, subscription_bills_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setDate(1, subscription.getSubscriptionDate());
-            preparedStatement.setString(2, subscription.getSubscriptionType());
-            preparedStatement.setDouble(3, subscription.getSubscriptionCost());
-            preparedStatement.setInt(4, subscription.getPublicationId());
-            preparedStatement.setInt(5, subscription.getSubscriptionStatusId());
-            preparedStatement.setInt(6, subscription.getUsersId());
-            preparedStatement.setInt(7, subscription.getSubscriptionBillsId());
+            preparedStatement.setDouble(2, subscription.getSubscriptionCost());
+            preparedStatement.setInt(3, subscription.getPublicationId());
+            preparedStatement.setInt(4, subscription.getSubscriptionStatusId());
+            preparedStatement.setInt(5, subscription.getUsersId());
+            preparedStatement.setInt(6, subscription.getSubscriptionBillsId());
             preparedStatement.execute();
         } catch (SQLException e) {
             logger.error("Can't create subscription in DB", e.getCause());
@@ -33,7 +32,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public Subscription read(int id, Connection connection) {
         Subscription subscription = new Subscription();
-        String sql = "SELECT subscription_date, subscription_type, subscription_cost, publication_id,subscription_status_id,users_id, subscription_bills_id FROM subscription WHERE id=?";
+        String sql = "SELECT subscription_date, subscription_cost, publication_id,subscription_status_id,users_id, subscription_bills_id FROM subscription WHERE id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
@@ -42,7 +41,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             if (resultSet.next()) {
                 subscription.setId(id);
                 subscription.setSubscriptionDate(resultSet.getDate("subscription_date"));
-                subscription.setSubscriptionType(resultSet.getString("subscription_type"));
                 subscription.setSubscriptionCost(resultSet.getDouble("subscription_cost"));
                 subscription.setPublicationId(resultSet.getInt("publication_id"));
                 subscription.setSubscriptionStatusId(resultSet.getInt("subscription_status_id"));
@@ -58,7 +56,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public Subscription readByBill(int subscBillId, Connection connection) {
         Subscription subscription = new Subscription();
-        String sql = "SELECT id, subscription_date, subscription_type, subscription_cost, publication_id,subscription_status_id,users_id, subscription_bills_id FROM subscription WHERE subscription_bills_id=?";
+        String sql = "SELECT id, subscription_date, subscription_cost, publication_id,subscription_status_id,users_id, subscription_bills_id FROM subscription WHERE subscription_bills_id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, subscBillId);
@@ -67,7 +65,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             if (resultSet.next()) {
                 subscription.setId(resultSet.getInt("id"));
                 subscription.setSubscriptionDate(resultSet.getDate("subscription_date"));
-                subscription.setSubscriptionType(resultSet.getString("subscription_type"));
                 subscription.setSubscriptionCost(resultSet.getDouble("subscription_cost"));
                 subscription.setPublicationId(resultSet.getInt("publication_id"));
                 subscription.setSubscriptionStatusId(resultSet.getInt("subscription_status_id"));
@@ -82,17 +79,16 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
 
     @Override
     public void update(Subscription subscription, Connection connection) {
-        String sql = "UPDATE subscription SET subscription_date=?, subscription_type=?, subscription_cost=?, publication_id=?, subscription_status_id=?, users_id=?, subscription_bills_id=? WHERE id=?";
+        String sql = "UPDATE subscription SET subscription_date=?, subscription_cost=?, publication_id=?, subscription_status_id=?, users_id=?, subscription_bills_id=? WHERE id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setDate(1, subscription.getSubscriptionDate());
-            preparedStatement.setString(2, subscription.getSubscriptionType());
-            preparedStatement.setDouble(3, subscription.getSubscriptionCost());
-            preparedStatement.setInt(4, subscription.getPublicationId());
-            preparedStatement.setInt(5, subscription.getSubscriptionStatusId());
-            preparedStatement.setInt(6, subscription.getUsersId());
-            preparedStatement.setInt(7, subscription.getSubscriptionBillsId());
-            preparedStatement.setInt(8, subscription.getId());
+            preparedStatement.setDouble(2, subscription.getSubscriptionCost());
+            preparedStatement.setInt(3, subscription.getPublicationId());
+            preparedStatement.setInt(4, subscription.getSubscriptionStatusId());
+            preparedStatement.setInt(5, subscription.getUsersId());
+            preparedStatement.setInt(6, subscription.getSubscriptionBillsId());
+            preparedStatement.setInt(7, subscription.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update subscription in DB", e.getCause());
@@ -122,7 +118,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 list.add(new Subscription.Builder()
                         .setId(resultSet.getInt("id"))
                         .setSubscriptionDate(resultSet.getDate("subscription_date"))
-                        .setSubscriptionType(resultSet.getString("subscription_type"))
                         .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
                         .setPublicationId(resultSet.getInt("publication_id"))
                         .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))
@@ -150,7 +145,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 map.put(resultSet.getString("name"), new Subscription.Builder()
                         .setId(resultSet.getInt("id"))
                         .setSubscriptionDate(resultSet.getDate("subscription_date"))
-                        .setSubscriptionType(resultSet.getString("subscription_type"))
                         .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
                         .setPublicationId(resultSet.getInt("publication_id"))
                         .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))
@@ -176,7 +170,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 map.put(resultSet.getString("name"), new Subscription.Builder()
                         .setId(resultSet.getInt("id"))
                         .setSubscriptionDate(resultSet.getDate("subscription_date"))
-                        .setSubscriptionType(resultSet.getString("subscription_type"))
                         .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
                         .setPublicationId(resultSet.getInt("publication_id"))
                         .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))
@@ -203,7 +196,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 map.put(resultSet.getString("name"), new Subscription.Builder()
                         .setId(resultSet.getInt("id"))
                         .setSubscriptionDate(resultSet.getDate("subscription_date"))
-                        .setSubscriptionType(resultSet.getString("subscription_type"))
                         .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
                         .setPublicationId(resultSet.getInt("publication_id"))
                         .setSubscriptionStatusId(subsStatus)
@@ -229,7 +221,6 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 map.put(resultSet.getString("name"), new Subscription.Builder()
                         .setId(resultSet.getInt("id"))
                         .setSubscriptionDate(resultSet.getDate("subscription_date"))
-                        .setSubscriptionType(resultSet.getString("subscription_type"))
                         .setSubscriptionCost(resultSet.getDouble("subscription_cost"))
                         .setPublicationId(resultSet.getInt("publication_id"))
                         .setSubscriptionStatusId(resultSet.getInt("subscription_status_id"))

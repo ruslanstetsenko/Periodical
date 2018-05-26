@@ -23,7 +23,7 @@ private static final Logger logger = LogManager.getLogger(SelectBillsCommand.cla
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
 
         User user = (User) session.getAttribute("currentUser");

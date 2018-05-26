@@ -22,27 +22,15 @@ public class SubscriptionBillService {
 
 
     //create biil and subscription
-    public int createBill(int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
-        Connection connection = ConnectionPool.getConnection(false);
+    public int createBill(Connection connection, int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
         SubscriptionBill subscriptionBill = new SubscriptionBill();
         subscriptionBill.setUserId(userId);
         subscriptionBill.setTotalCost(publicationPeriodicyCostList.stream().mapToDouble(PublicationPeriodicyCost::getCost).sum());
         subscriptionBill.setBillNumber((new Date().getTime()) % 1_000_000 + "_" + userId);
-        int subscriptionBillId = 0;
-        try {
-            subscriptionBillDao.create(subscriptionBill, connection);
-            connection.commit();
-            subscriptionBillId = subscriptionBillDao.readLastId(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        } finally {
-            ConnectionPool.closeConnection(connection);
-        }
+        int subscriptionBillId;
+        subscriptionBillDao.create(subscriptionBill, connection);
+//            connection.commit();
+        subscriptionBillId = subscriptionBillDao.readLastId(connection);
         return subscriptionBillId;
     }
 

@@ -20,7 +20,7 @@ public class CancelEditPublicationCommand implements Command {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
             logger.info("Session " + session.getId() + " has finished");
-            return PageConfigManager.getProperty("path.page.index");
+            return PageConfigManager.getProperty("path.page.login");
         }
 //        HttpSession session = request.getSession(true);
 //        System.out.println(session.getAttribute("currentPubTypeId"));
@@ -36,7 +36,8 @@ public class CancelEditPublicationCommand implements Command {
 //        session.setAttribute("publicationThemeList", arr[3]);
 //        session.setAttribute("publicationStatusList", arr[4]);
         Publication publication = (Publication) session.getAttribute("publication");
-        logger.info("Cancel edit publivation " + publication.getName());
+//        logger.info("Cancel edit publivation " + publication.getName());
+        logger.info("Cancel edit publivation ");
         return PageConfigManager.getProperty("path.page.adminPage");
     }
 }
