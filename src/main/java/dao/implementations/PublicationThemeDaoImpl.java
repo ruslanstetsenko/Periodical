@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.PublicationTheme;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PublicationThemeDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,16 +15,23 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
     private static final Logger logger = LogManager.getLogger(PublicationThemeDaoImpl.class);
 
     @Override
-    public void create(PublicationTheme publicationTheme, Connection connection) {
+    public int create(PublicationTheme publicationTheme, Connection connection) {
         String sql = "INSERT INTO publication_theme (theme_name) VALUE ?";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, publicationTheme.getThemeName());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create publication theme in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
-
+        return id;
     }
 
     @Override
@@ -41,9 +49,8 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication theme from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
-
-
         return publicationTheme;
     }
 
@@ -61,6 +68,7 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication theme by name from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return id;
     }
@@ -75,6 +83,7 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update publication theme in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
     }
 
@@ -87,6 +96,7 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete publication theme in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
     }
 
@@ -103,6 +113,7 @@ public class PublicationThemeDaoImpl implements PublicationThemeDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication themes from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return list;
     }

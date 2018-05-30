@@ -42,7 +42,7 @@ public final class ConnectionPool {
             dataSource.setMaxIdle(100);
 
         } catch (IOException e) {
-            logger.error("Cant load connection pool", e);
+//            logger.error("Cant load connection pool", e);
         }
     }
 
@@ -53,9 +53,18 @@ public final class ConnectionPool {
             connection.setAutoCommit(autocommit);
             return connection;
         } catch (SQLException e) {
-            logger.error("Cant get connection from pool", e.getCause());
+//            logger.error("Cant get connection from pool", e.getCause());
         }
         return connection;
+    }
+
+    public static void commitTransaction(Connection connection) {
+        try {
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void closeConnection(Connection connection) {
@@ -64,7 +73,7 @@ public final class ConnectionPool {
                 connection.setAutoCommit(true);
                 connection.close();
             } catch (SQLException e) {
-                logger.error("Cant close connection", e.getCause());
+//                logger.error("Cant close connection", e.getCause());
             }
         }
     }
@@ -75,7 +84,7 @@ public final class ConnectionPool {
                 connection.setAutoCommit(true);
                 connection.rollback();
             } catch (SQLException e) {
-                logger.error("Cant rollback transaction", e.getCause());
+//                logger.error("Cant rollback transaction", e.getCause());
             }
         }
     }

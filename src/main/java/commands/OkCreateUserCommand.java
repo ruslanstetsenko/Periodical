@@ -1,11 +1,11 @@
 package commands;
 
-import beans.Account;
 import beans.User;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
-import service.LoginService;
 import service.UserService;
 import validate.UserValidator;
 import wrappers.AboutUserWrapper;
@@ -20,14 +20,14 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public class OkCreateUserCommand implements Command {
-    //    private static final Logger logger = Logger.getLogger(OkCreateUserCommand.class);
-    private static final Logger logger = LogManager.getLogger(OkCreateUserCommand.class);
+    //    private static final Logger LOGGER = Logger.getLogger(OkCreateUserCommand.class);
+    private static final Logger LOGGER = LogManager.getLogger(OkCreateUserCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
@@ -47,42 +47,39 @@ public class OkCreateUserCommand implements Command {
         String userPhoneNumber = request.getParameter("userPhoneNumber");
         String userEmail = request.getParameter("userEmail");
         String userBirthDate = request.getParameter("userBirthDate");
-//        String userRegistrationDate = request.getParameter("userRegistrationDate");
         String passportDateOfIssue = request.getParameter("passportDateOfIssue");
         String login = (String) session.getAttribute("login");
         String password = (String) session.getAttribute("password");
-//        System.out.println(login);
-//        System.out.println(password);
         UserService userService = new UserService();
 
         Map<String, Boolean> map = UserValidator.validate(userSurName, userName, userLastName, passportSerial, passportNumber, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, userBirthDate, passportDateOfIssue);
         if (map.isEmpty()) {
             int passportNumber1 = Integer.valueOf(passportNumber);
-            int identNuber1 = Integer.valueOf(identNuber);
             Date userBirthDate1 = Date.valueOf(userBirthDate);
             Date userRegistrationDate1 = Date.valueOf(LocalDate.now());
             Date passportDateOfIssue1 = Date.valueOf(passportDateOfIssue);
-
-            userService.createUser(userName, userSurName, userLastName, userBirthDate1, userRegistrationDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber1, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
-
-//            LoginService loginService = new LoginService();
-//            Account account = loginService.checkAccount(login, password);
-//            if (account != null) {
-//                User currentUser = loginService.getUser(account);
-//                session.setAttribute("currentUser", currentUser);
-//
-//            }
-            User currentUser = userService.getLastAddedUser();
-            session.setAttribute("currentUser", currentUser);
-            session.setAttribute("currentUserId", currentUser.getId());
-            AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
-            session.setAttribute("user", wrapper.getUser());
-            session.setAttribute("userAccount", wrapper.getAccount());
-            session.setAttribute("userContactInfo", wrapper.getContactInfo());
-            session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
-            session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-
-            logger.info("User " + userSurName + " " + userName + " " + userLastName + " has created");
+            try {
+                int currentUserId = userService.createUser(userName, userSurName, userLastName, userBirthDate1, userRegistrationDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
+                User currentUser = userService.read(currentUserId);
+                if (currentUser != null) {
+                    AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
+                    if (wrapper != null) {
+                        session.setAttribute("currentUser", currentUser);
+                        session.setAttribute("currentUserId", currentUser.getId());
+                        session.setAttribute("user", wrapper.getUser());
+                        session.setAttribute("userAccount", wrapper.getAccount());
+                        session.setAttribute("userContactInfo", wrapper.getContactInfo());
+                        session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
+                        session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
+                    }
+                }
+            } catch (DataBaseWorkException e) {
+                request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("New user was not created. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            }
+            LOGGER.info("User " + userSurName + " " + userName + " " + userLastName + " has created");
             return PageConfigManager.getProperty("path.page.userPageSubsc");
         } else {
             for (Map.Entry<String, Boolean> entry : map.entrySet()) {
@@ -108,11 +105,8 @@ public class OkCreateUserCommand implements Command {
             request.setAttribute("login", login);
             request.setAttribute("password", password);
 
-            logger.info("Can't create user. Incorrect data");
+            LOGGER.info("Can't create user. Incorrect data");
             return PageConfigManager.getProperty("path.page.createUser");
         }
-//        List<User> userList = new UserService().getAllUsers();
-//        session.setAttribute("userList", userList);
-
     }
 }

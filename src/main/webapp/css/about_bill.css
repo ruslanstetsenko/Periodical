@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
+article {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.global_div
+.about_bill {
+    display: flex;
+    flex-wrap: wrap;
+}
+h3 {
+    width: 100%;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    margin: 1em;
+}
+.about_bill_table {
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    width: 80%;
+
+}
+th {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    line-height: 3em;
+}
+td {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    line-height: 3em;
+}
+h4 {
+    width: 100%;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: underline;
+    text-align: left;
+    margin: 1em;
+}
+.about_subscriptions {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+.about_subscriptions_table {
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    width: 80%;
+}
+.form {
+    width: 100%;
+    justify-content: center;
+}
+.button {
+    margin: 0.5em;
+    width: 12em;
+    height: 2.5em;
+}

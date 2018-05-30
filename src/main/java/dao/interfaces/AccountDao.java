@@ -1,17 +1,17 @@
 package dao.interfaces;
 
 import beans.Account;
+import exceptions.DataBaseWorkException;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface AccountDao {
 
-    void create(String login, String password, Connection connection);
-    Account read(int id, Connection connection);
-    void update(int id, String login, String password, Connection connection);
-    void delete(Account account, Connection connection);
-    List<Account> getAll(Connection connection);
-    int getLastId(Connection connection);
+    int create(String login, String password, Connection connection) throws DataBaseWorkException;
+    Account read(int id, Connection connection) throws DataBaseWorkException;
+    void update(int id, String login, String password, Connection connection) throws DataBaseWorkException;
+    void delete(Account account, Connection connection) throws DataBaseWorkException;
+    List<Account> getAll(Connection connection) throws DataBaseWorkException;
+//    int getLastId(Connection connection) throws DataBaseWorkException;
 }

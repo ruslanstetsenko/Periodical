@@ -1,0 +1,74 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
+article {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.about_table1 {
+    display: flex;
+    flex-wrap: wrap;
+}
+.about_table2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    border-collapse: collapse;
+
+}
+.parameneter_title {
+    /*line-height: 2em;*/
+    /*vertical-align: center;*/
+}
+.parameter_value {
+    width: 63%;
+    /*text-indent: 2em;*/
+    /*line-height: 2em;*/
+    /*vertical-align: center;*/
+}
+th {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    line-height: 3em;
+}
+td {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    line-height: 3em;
+}
+
+.about_table2 {
+    border-collapse: collapse;
+}
+th {
+
+    /*vertical-align: center;*/
+}
+td {
+    /*padding-left: 1em;*/
+
+    /*vertical-align: center;*/
+}
+h3 {
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    margin: 1em;
+}
+.button_back {
+    margin: 0.5em;
+    width: 12em;
+    height: 2.5em;
+}

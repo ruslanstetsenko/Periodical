@@ -1,7 +1,11 @@
 package commands;
 
 import beans.Account;
+import beans.Publication;
 import beans.User;
+import dao.implementations.PublicationDaoImpl;
+import exceptions.DataBaseWorkException;
+import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
@@ -38,18 +42,22 @@ public class OkLoginComand implements Command {
         LoginService loginService = new LoginService();
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        Account account = loginService.checkAccount(login, password);
+        Account account;
         User currentUser;
+        try {
+            account = loginService.checkAccount(login, password);
+        } catch (DataBaseWorkException e) {
+            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            request.setAttribute("previousPage", "path.page.login");
+            return PageConfigManager.getProperty("path.page.error");
+        }
 
         if (account != null) {
             currentUser = loginService.getUser(account);
             logger.info("Account was found");
         } else {
             logger.info("Account was not found");
-//            String errorMessage = MessageConfigManager.getProperty("message.errorLogin");
             request.setAttribute("errorLoginMessage", true);
-//            session.setAttribute("login", login);
-//            session.setAttribute("password", password);
             return PageConfigManager.getProperty("path.page.login");
         }
 
@@ -59,6 +67,7 @@ public class OkLoginComand implements Command {
             session.setAttribute("currentPubThemeId", 0);
             session.setAttribute("currentPubStatusId", 0);
             session.setAttribute("currentBillPaidId", 0);
+
             if (currentUser.getUserRoleId() == 1) {
                 session.setAttribute("sessionId", sessionId);
                 FullPublicationInfoWrapper wrapper = new PublicationService().getAllPublication();
@@ -69,12 +78,11 @@ public class OkLoginComand implements Command {
                 session.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
                 session.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
                 session.setAttribute("userList", userList);
-
                 session.setAttribute("loginFormAction", "admin");
-//                session.setAttribute("currentPage", "path.page.adminPage");
 
                 logger.info("Admin logined successful");
                 return PageConfigManager.getProperty("path.page.adminPage");
+
             } else if (currentUser.getUserRoleId() == 2) {
                 session.setAttribute("sessionId", sessionId);
                 LoadUserWindowWrapper wrapper = new UserWindowsService().loadUserWindow(currentUser.getId());
@@ -91,7 +99,6 @@ public class OkLoginComand implements Command {
                 session.setAttribute("userContactInfo", wrapper1.getContactInfo());
                 session.setAttribute("userLivingAddress", wrapper1.getLivingAddress());
                 session.setAttribute("userPassportIdNumb", wrapper1.getPassportIdentNumber());
-
                 session.setAttribute("loginFormAction", "user");
                 session.setAttribute("currentPage", "path.page.userPageSubsc");
 
@@ -99,7 +106,6 @@ public class OkLoginComand implements Command {
                 return PageConfigManager.getProperty("path.page.userPageSubsc");
             }
         }
-//        String errorMessage = MessageConfigManager.getProperty("message.userNotFound");
         request.setAttribute("errorLoginMessage", true);
 
         session.setAttribute("currentPage", "path.page.error");

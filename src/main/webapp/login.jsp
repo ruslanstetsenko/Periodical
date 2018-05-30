@@ -20,49 +20,67 @@
 <head>
     <c:set var="currentPage" value="path.page.login" scope="request"/>
     <title><fmt:message key="login.title" bundle="${rb}"/></title>
+    <%--<link rel="stylesheet" type="text/css" href="css/login.css"/>--%>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/login.css' %>
+    </style>
 </head>
-<body>
-
-<header>
+<body class="login_body">
+<header class="header">
     <c:import url="headUserInfo.jsp"/>
 </header>
-<div>
-    <form name="loginForm" method="post" action="1234">
-        <%--<input type="hidden" name="command" value="okLogin">--%>
-        <fmt:message key="login.login" bundle="${rb}"/>
-        <input type="text" name="login" placeholder="login"><c:if test="${incorectLogin}"><fmt:message
-            key="validation.login" bundle="${validation}"/></c:if><br/>
-        <fmt:message key="login.password" bundle="${rb}"/>
-        <input type="password" name="password" placeholder="password"><c:if test="${incorectPassword}"><fmt:message
-            key="validation.password" bundle="${validation}"/></c:if><br/>
-        <c:if test="${errorLoginMessage}"><fmt:message key="message.errorLogin" bundle="${validation}"/></c:if>
-        <c:if test="${dublicateAccount}"><fmt:message key="message.dublicateAccount" bundle="${validation}"/></c:if>
-        <c:if test="${nullPage}"><fmt:message key="message.nullPage" bundle="${validation}"/></c:if>
 
-        <div>
-            <button type="submit" name="command" value="okLogin"><fmt:message key="login.okLogin"
-                                                                              bundle="${rb}"/></button>
-            <button type="submit" name="command" value="createUser"><fmt:message key="aboutUser.createUser"
-                                                                                 bundle="${rb}"/></button>
+<article class="login_form">
+    <form name="loginForm" method="post" action="create_user">
+        <div class="login_form_element">
+            <p class="input_elem_text">
+                <fmt:message key="login.login" bundle="${rb}"/>
+            </p>
+            <input class="login_input" type="text" name="login" placeholder="login">
         </div>
 
-        <%--<input type="submit" value="<fmt:message key="login.okLogin" bundle="${rb}"/>">--%>
+        <div class="login_form_element">
+            <p class="input_elem_text">
+                <fmt:message key="login.password" bundle="${rb}"/>
+            </p>
+            <input class="login_input" type="password" name="password" placeholder="password">
+        </div>
+
+        <div class="login_form_element">
+            <button class="login_button" type="submit" name="command" value="okLogin">
+                <fmt:message key="login.okLogin" bundle="${rb}"/>
+            </button>
+            <button class="login_button" type="submit" name="command" value="createUser">
+                <fmt:message key="aboutUser.createUser" bundle="${rb}"/>
+            </button>
+        </div>
+
+        <div class="login_errors">
+            <c:if test="${errorLoginMessage}">
+                <fmt:message key="message.errorLogin" bundle="${validation}"/>
+            </c:if>
+            <c:if test="${dublicateAccount}">
+                <fmt:message key="message.dublicateAccount" bundle="${validation}"/>
+            </c:if>
+            <c:if test="${nullPage}">
+                <fmt:message key="message.nullPage" bundle="${validation}"/>
+            </c:if>
+            <c:if test="${incorectLogin}">
+                <fmt:message key="validation.login" bundle="${validation}"/>
+            </c:if><br/>
+            <c:if test="${incorectPassword}">
+                <fmt:message key="validation.password" bundle="${validation}"/>
+            </c:if>
+
+        </div>
     </form>
-</div>
 
-<%--<c:set var="login1" value="${login}"/>--%>
-<%--<c:set var="password11" value="${password}"/>--%>
+</article>
+<%--<footer>--%>
+    <%--<a href="error.jsp">error</a>--%>
+<%--</footer>--%>
 
-<%--<form name="loginForm1" method="get" action="controller">--%>
-<%--<input type="hidden" name="command" value="cancelLogin">--%>
-<%--<input type="submit" value="<fmt:message key="button.cancel" bundle="${rb}"/>">--%>
-<%--</form>--%>
-
-<%--<form name="createUser" method="post" action="create user">--%>
-<%--<input type="hidden" name="command" value="createUser">--%>
-<%--<input type="submit" value="<fmt:message key="aboutUser.createUser" bundle="${rb}"/>">--%>
-<%--</form>--%>
-
-<hr/>
 </body>
 </html>

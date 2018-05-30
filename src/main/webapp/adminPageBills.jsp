@@ -19,28 +19,58 @@
 <head>
     <c:set var="currentPage" value="path.page.adminPageBills" scope="request"/>
     <title><fmt:message key="adminPage.bills" bundle="${rb}"/></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/bills.css' %>
+    </style>
 </head>
 <body>
 
-<header>
-    <h3><fmt:message key="head.welcome" bundle="${rb}"/> <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>
-    <a href="adminPage.jsp"><fmt:message key="adminPage.periodical" bundle="${rb}"/></a>
-    <%--<a href="">Рахунки</a>--%>
-    <a href="users.jsp"><fmt:message key="adminPage.users" bundle="${rb}"/></a>
-    <c:import url="headUserInfo.jsp"/>
+<header class="bill_header">
+    <div class="header_info">
+        <h3 class="about_user"><fmt:message key="head.welcome" bundle="${rb}"/>
+            <c:out value="${currentUser.surname}"/>
+            <c:out value="${currentUser.name}"/>
+            <c:out value="${currentUser.lastName}"/>
+        </h3>
+        <p class="import_header"><c:import url="headUserInfo.jsp"/></p>
+    </div>
+    <div class="links_admin">
+        <a class="references" href="adminPage.jsp"><fmt:message key="adminPage.periodical" bundle="${rb}"/></a>
+        <a class="references" href="users.jsp"><fmt:message key="adminPage.users" bundle="${rb}"/></a>
+    </div>
+    <h3 class="header_title"><fmt:message key="aboutBill.billsList" bundle="${rb}"/></h3>
 </header>
 
-<div>
-    <p><fmt:message key="aboutBill.billsList" bundle="${rb}"/></p>
-    <table>
-        <thead>
-        <tr>
-            <th><fmt:message key="aboutBill.billNumber" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutBill.billingDate" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutBill.billingCost" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></th>
-        </tr>
-        </thead>
+<aside>
+        <form class="filter_input" name="selectBills" method="get" action="bills">
+            <input type="hidden" name="command" value="selectBills">
+            <input class="select_button" type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
+            <div>
+                <p class="filler_name"><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></p>
+                <select class="select_option" size="1" name="currentBillPaidId">
+                    <option value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusAll" bundle="${rb}"/></option>
+                    <option value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/></option>
+                    <option value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/></option>
+                    <option value="3" <c:if test="${currentBillPaidId == 3}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/></option>
+                </select>
+            </div>
+            <br>
+        </form>
+</aside>
+
+<article class="publications">
+    <div class="bill_table_block">
+    <table class="table">
+        <%--<thead>--%>
+        <%--<tr>--%>
+        <%--<th><fmt:message key="aboutBill.billNumber" bundle="${rb}"/></th>--%>
+        <%--<th><fmt:message key="aboutBill.billingDate" bundle="${rb}"/></th>--%>
+        <%--<th><fmt:message key="aboutBill.billingCost" bundle="${rb}"/></th>--%>
+        <%--<th><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></th>--%>
+        <%--</tr>--%>
+        <%--</thead>--%>
         <tbody>
         <c:forEach var="bill" items="${subscriptionBillList}">
             <tr>
@@ -63,42 +93,22 @@
                 <td>
                     <form action="controller" method="get">
                         <input type="hidden" name="command" value="showAboutBill">
-                        <button name="currentBillPaidId" value="${bill.id}" type="submit"><fmt:message key="aboutBill.billDetails" bundle="${rb}"/></button>
+                        <button class="table_button" name="currentBillPaidId" value="${bill.id}" type="submit">
+                            <fmt:message key="aboutBill.billDetails" bundle="${rb}"/>
+                        </button>
                     </form>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
-    <p><fmt:message key="aboutBill.billAmount" bundle="${rb}"/> ${fn:length(subscriptionBillList)}</p>
 </div>
+</article>
 
-<div>
-    <form name="selectBills" method="get" action="bills">
-        <input type="hidden" name="command" value="selectBills">
-
-        <div>
-            <p><b><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></b></p>
-            <select size="1" name="currentBillPaidId">
-                <option value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusAll" bundle="${rb}"/></option>
-                <option value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/></option>
-                <option value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/></option>
-                <option value="3" <c:if test="${currentBillPaidId == 3}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/></option>
-            </select>
-        </div>
-        <br>
-        <input type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
-    </form>
-
-</div>
-
-<div>
-    <%--<form name="showBills" method="get" action="bills">--%>
-        <%--<input type="hidden" name="command" value="resetBillList">--%>
-        <%--<input type="submit" value="До головного вікна"/>--%>
-    <%--</form>--%>
-    <%--<a href="adminPage.jsp"><fmt:message key="button.goMainPage" bundle="${rb}"/></a>--%>
-</div>
-
+<footer class="bill_page_footer">
+    <p class="publication_amount">
+        <fmt:message key="aboutBill.billAmount" bundle="${rb}"/> ${fn:length(subscriptionBillList)}
+    </p>
+</footer>
 </body>
 </html>

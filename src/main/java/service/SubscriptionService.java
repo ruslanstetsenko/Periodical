@@ -6,6 +6,10 @@ import dao.DaoFactory;
 import dao.interfaces.PublicationDao;
 import dao.interfaces.SubscriptionDao;
 import dao.interfaces.SubscriptionStatusDao;
+import exceptions.DataBaseWorkException;
+import exceptions.ErrorMassageException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -16,10 +20,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SubscriptionService {
+    private static final Logger LOGGER = LogManager.getLogger(SubscriptionService.class);
 
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
     private SubscriptionStatusDao subscriptionStatusDao = DaoFactory.getSubscriptionStatusDao();
-    private PublicationDao publicationDao = DaoFactory.getPublicationDao();
 
     public void createSubscription(int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList, List<Publication> publicationList, List<Integer> periodicyCostId) {
         Connection connection = ConnectionPool.getConnection(false);
@@ -28,13 +32,12 @@ public class SubscriptionService {
         PublicationPeriodicityCostService costService = new PublicationPeriodicityCostService();
         PublicationService publicationService = new PublicationService();
 
-        for (Integer costId : periodicyCostId) {
-            costBean = costService.getPubPeriodicyCost(costId);
-            publicationPeriodicyCostList.add(costBean);
-            publicationList.add(publicationService.getPublication(costBean.getPublicationId()));
-        }
-
         try {
+            for (Integer costId : periodicyCostId) {
+                costBean = costService.getPubPeriodicyCost(costId);
+                publicationPeriodicyCostList.add(costBean);
+                publicationList.add(publicationService.getPublication(costBean.getPublicationId()));
+            }
 
             int billId = new SubscriptionBillService().createBill(connection, userId, publicationPeriodicyCostList);
 
@@ -49,9 +52,11 @@ public class SubscriptionService {
                         .build();
                 subscriptionDao.create(subscription, connection);
             }
-            connection.commit();
-        } catch (SQLException e) {
+            ConnectionPool.commitTransaction(connection);
+        } catch (DataBaseWorkException e) {
             ConnectionPool.transactionRollback(connection);
+            LOGGER.error("Can't create subscription", e.getCause());
+            throw e;
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -59,64 +64,43 @@ public class SubscriptionService {
 
     public Subscription getSubscription(int subsId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Subscription subscription = subscriptionDao.read(subsId, connection);
-
-        ConnectionPool.closeConnection(connection);
+        Subscription subscription;
+        try {
+            subscription = subscriptionDao.read(subsId, connection);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get subscriptions", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return subscription;
-    }
-
-    public void addSubscriptionToList(User user, Publication publication, Double cost) {
-        List<Subscription> subscriptionList = new ArrayList<>();
-        subscriptionList.add(new Subscription.Builder().setSubscriptionDate((Date) Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())).setSubscriptionCost(cost).setPublicationId(publication.getId()).setSubscriptionStatusId(1).build());
-    }
-
-//    public List<Subscription> getSubscriptionsByBill(int billId) {
-//        Connection connection = ConnectionPool.getConnection(true);
-//        List<Subscription> subscriptionList = new ArrayList<>();
-//
-//        subscriptionDao.getAll(connection)
-//                .stream()
-//                .filter(subscription -> subscription.getSubscriptionBillsId() == billId)
-//                .collect(Collectors.toList());
-//
-//        ConnectionPool.closeConnection(connection);
-//        return subscriptionList;
-//    }
-
-    public Map<String, Subscription> getSubscByBillByUser(int userId, int billId) {
-        Connection connection = ConnectionPool.getConnection(true);
-        Map<String, Subscription> subscriptionMap = new LinkedHashMap<>();
-        subscriptionMap = subscriptionDao.getSubscByBillByUser(connection, userId, billId);
-
-        ConnectionPool.closeConnection(connection);
-        return subscriptionMap;
     }
 
     public Map<String, Subscription> getSubscByBill(int billId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Map<String, Subscription> subscriptionMap = subscriptionDao.getSubscByBill(connection, billId);
-
-        ConnectionPool.closeConnection(connection);
-        return subscriptionMap;
-    }
-
-    public Map<String, Subscription> getSubscById(int subsId) {
-        Connection connection = ConnectionPool.getConnection(true);
-        Map<String, Subscription> subscriptionMap = new LinkedHashMap<>();
-        Subscription subscription = subscriptionDao.read(subsId, connection);
-        Publication publication = publicationDao.read(subscription.getPublicationId(), connection);
-        subscriptionMap.put(publication.getName(), subscription);
-
-        ConnectionPool.closeConnection(connection);
+        Map<String, Subscription> subscriptionMap;
+        try {
+            subscriptionMap = subscriptionDao.getSubscByBill(connection, billId);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get subscriptions", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return subscriptionMap;
     }
 
     public List<SubscriptionStatus> getSubsStatusList() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<SubscriptionStatus> subscriptionStatusList = new ArrayList<>();
-        subscriptionStatusList = subscriptionStatusDao.getAll(connection);
-
-        ConnectionPool.closeConnection(connection);
+        List<SubscriptionStatus> subscriptionStatusList;
+        try {
+            subscriptionStatusList = subscriptionStatusDao.getAll(connection);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get subscriptions", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return subscriptionStatusList;
     }
 }

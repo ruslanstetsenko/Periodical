@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.SubscriptionStatus;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.SubscriptionStatusDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,15 +15,23 @@ public class SubscriptionStatusDaoImpl implements SubscriptionStatusDao {
     private static final Logger logger = LogManager.getLogger(SubscriptionStatusDaoImpl.class);
 
     @Override
-    public void create(SubscriptionStatus subscriptionStatus, Connection connection) {
+    public int create(SubscriptionStatus subscriptionStatus, Connection connection) {
         String sql = "INSERT INTO subscription_status (status_name) VALUE ?";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, subscriptionStatus.getStatusName());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create subscription status in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscriptionSupport");
         }
+        return id;
     }
 
     @Override
@@ -40,6 +49,7 @@ public class SubscriptionStatusDaoImpl implements SubscriptionStatusDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read subscription status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscriptionSupport");
         }
         return subscriptionStatus;
     }
@@ -54,6 +64,7 @@ public class SubscriptionStatusDaoImpl implements SubscriptionStatusDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update subscription status in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscriptionSupport");
         }
     }
 
@@ -66,6 +77,7 @@ public class SubscriptionStatusDaoImpl implements SubscriptionStatusDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete subscription status in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscriptionSupport");
         }
     }
 
@@ -85,6 +97,7 @@ public class SubscriptionStatusDaoImpl implements SubscriptionStatusDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get subscription statuses from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscriptionSupport");
         }
         return list;
     }

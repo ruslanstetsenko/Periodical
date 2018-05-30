@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.LivingAddress;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.LivingAddressDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +15,9 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
     private static final Logger logger = LogManager.getLogger(LivingAddressDaoImpl.class);
 
     @Override
-    public void create(String region, String district, String city, String street, String building, String appartment, Connection connection) {
+    public int create(String region, String district, String city, String street, String building, String appartment, Connection connection) {
         String sql = "INSERT INTO living_address (region, district, city, street, building, appartment) VALUES (?, ?, ?, ?, ?, ?)";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, region);
@@ -25,9 +27,16 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
             preparedStatement.setString(5, building);
             preparedStatement.setString(6, appartment);
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create user address in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.address");
         }
+        return id;
     }
 
     @Override
@@ -50,6 +59,7 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read user address from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.address");
         }
 
         return livingAddress;
@@ -70,6 +80,7 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user address in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.address");
         }
     }
 
@@ -82,6 +93,7 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete user address in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.address");
         }
     }
 
@@ -105,6 +117,7 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get user addresses from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.address");
         }
         return list;
     }
@@ -119,6 +132,7 @@ public class LivingAddressDaoImpl implements LivingAddressDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get last added user address from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.address");
         }
         return id;
     }

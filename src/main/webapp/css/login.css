@@ -1,0 +1,61 @@
+* {
+    /* border: 2px dotted rgb(0, 0, 0); */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background-color: rgb(50,50,50);
+    color: white;
+}
+
+.login_form {
+    margin: 10em 40em;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.login_form_element {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login_errors {
+    /*margin-left: 20%;*/
+    /*margin-right: 20%;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: red;
+}
+
+.login_button {
+    display: flex;
+    /*margin-top: 0.25em;*/
+    /*margin-bottom: 0.25em;*/
+    margin: .5em;
+    width: 10em;
+    height: 3em;
+    /*padding-left: 0.5em;*/
+}
+
+.login_input {
+    display: flex;
+    /*margin-top: 0.25em;*/
+    /*margin-bottom: 0.25em;*/
+    margin-right: .5em;
+    margin-bottom: .5em;
+    margin-top: .5em;
+    /*margin: .5em;*/
+    width: 11em;
+    height: 2em;
+}
+
+.input_elem_text {
+    text-indent: .5em;
+}

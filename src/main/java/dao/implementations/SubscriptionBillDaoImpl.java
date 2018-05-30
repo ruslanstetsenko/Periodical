@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.SubscriptionBill;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.SubscriptionBillDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +15,9 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
     private static final Logger logger = LogManager.getLogger(SubscriptionBillDaoImpl.class);
 
     @Override
-    public void create(SubscriptionBill subscriptionBill, Connection connection) {
+    public int create(SubscriptionBill subscriptionBill, Connection connection) {
         String sql = "INSERT INTO subscription_bills (total_cost, validity_period, paid, bill_nimber, bill_set_day, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setDouble(1, subscriptionBill.getTotalCost());
@@ -25,9 +27,16 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             preparedStatement.setDate(5, subscriptionBill.getBillSetDay());
             preparedStatement.setInt(6, subscriptionBill.getUserId());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create bill in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
+        return id;
     }
 
     @Override
@@ -50,6 +59,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read bill from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
         return subscriptionBill;
     }
@@ -67,6 +77,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update bill in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
     }
 
@@ -79,6 +90,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete bill in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
     }
 
@@ -100,6 +112,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get bills from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
         return list;
     }
@@ -116,6 +129,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read last added bill in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
         return id;
     }
@@ -141,6 +155,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get bill by status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
         return list;
     }
@@ -165,6 +180,7 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get bill by user from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.bill");
         }
         return list;
     }

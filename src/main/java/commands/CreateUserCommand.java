@@ -1,5 +1,6 @@
 package commands;
 
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
@@ -26,29 +27,30 @@ public class CreateUserCommand implements Command {
             logger.info("Session " + session.getId() + " has started");
         }
 
-//        if (!session.getId().equals(session.getAttribute("sessionId"))) {
-//            logger.info("Session " + session.getId() + " has finished");
-//            return PageConfigManager.getProperty("path.page.login");
-//        }
-
         LoginService loginService = new LoginService();
-
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         session.setAttribute("login", login);
         session.setAttribute("password", password);
+        boolean checkAccount;
 
-        if (loginService.checkLogin(login)) {
+        try {
+            checkAccount = (loginService.checkLogin(login));
+        } catch (DataBaseWorkException e) {
+            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            logger.error("Can't check account. DB error", e.getCause());
+            return PageConfigManager.getProperty("path.page.login");
+        }
+
+        if (checkAccount) {
             request.setAttribute("dublicateAccount", true);
             logger.info("Can't create account. Dublicate login");
             return PageConfigManager.getProperty("path.page.login");
         } else {
             Map<String, Boolean> map = LoginValidator.validate(login, password);
             if (map.isEmpty()) {
-//                session.setAttribute("login", login);
-//                session.setAttribute("password", password);
                 logger.info("Start creating user");
-//                map.clear();
                 return PageConfigManager.getProperty("path.page.createUser");
             } else {
                 for (Map.Entry<String, Boolean> entry : map.entrySet()) {

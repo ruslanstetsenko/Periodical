@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.PublicationType;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PublicationTypeDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,15 +15,23 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
     private static final Logger logger = LogManager.getLogger(PublicationTypeDaoImpl.class);
 
     @Override
-    public void create(PublicationType publicationType, Connection connection) {
+    public int create(PublicationType publicationType, Connection connection) {
         String sql = "INSERT INTO publication_type (type_name) VALUES ?";
+        int id = 0;
 
-        try ( PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, publicationType.getTypeName());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create publication type in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
+        return id;
     }
 
     @Override
@@ -40,6 +49,7 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication type from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return publicationType;
     }
@@ -58,6 +68,7 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication type by name from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return id;
     }
@@ -72,6 +83,7 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update publication type in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
     }
 
@@ -84,6 +96,7 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete publication type in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
     }
 
@@ -100,6 +113,7 @@ public class PublicationTypeDaoImpl implements PublicationTypeDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication types from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return list;
     }

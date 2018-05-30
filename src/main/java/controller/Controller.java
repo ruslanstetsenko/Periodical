@@ -1,6 +1,7 @@
 package controller;
 
 import commands.Command;
+import commands.NoCommand;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -26,11 +27,14 @@ public class Controller extends HttpServlet implements Servlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-       doRequest(request, response);
+        doRequest(request, response);
     }
 
-    private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+    private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = requestHelper.getCommand(request);
+        if (command == null) {
+            command = new NoCommand();
+        }
         String page = command.execute(request, response);
 //        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
 //        dispatcher.forward(request, response);

@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.PublicationStatus;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PublicationStatusDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,14 +15,23 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
     private static final Logger logger = LogManager.getLogger(PublicationStatusDaoImpl.class);
 
     @Override
-    public void create(PublicationStatus publicationStatus, Connection connection) {
+    public int create(PublicationStatus publicationStatus, Connection connection) {
         String sql = "INSERT INTO publication_status (status_name) VALUE ?";
+        int id = 0;
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, publicationStatus.getStatusName());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create publication status in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
+        return id;
     }
 
     @Override
@@ -39,6 +49,7 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return publicationStatus;
     }
@@ -57,6 +68,7 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication status by status name from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return id;
     }
@@ -71,6 +83,7 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update publication status in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
     }
 
@@ -83,6 +96,7 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete publication status in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
 
     }
@@ -100,6 +114,7 @@ public class PublicationStatusDaoImpl implements PublicationStatusDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication statuses from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationSupport");
         }
         return list;
     }

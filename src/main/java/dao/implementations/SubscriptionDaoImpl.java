@@ -2,6 +2,7 @@ package dao.implementations;
 
 import beans.Subscription;
 import dao.interfaces.SubscriptionDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,8 +13,9 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     private static final Logger logger = LogManager.getLogger(SubscriptionDaoImpl.class);
 
     @Override
-    public void create(Subscription subscription, Connection connection) {
+    public int create(Subscription subscription, Connection connection) {
         String sql = "INSERT INTO subscription (subscription_date, subscription_cost, publication_id, subscription_status_id, users_id, subscription_bills_id) VALUES (?, ?, ?, ?, ?, ?)";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setDate(1, subscription.getSubscriptionDate());
@@ -23,10 +25,16 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             preparedStatement.setInt(5, subscription.getUsersId());
             preparedStatement.setInt(6, subscription.getSubscriptionBillsId());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create subscription in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
-
+        return id;
     }
 
     @Override
@@ -49,6 +57,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read subscription from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return subscription;
     }
@@ -73,6 +82,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read subscription by bill from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return subscription;
     }
@@ -92,6 +102,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update subscription in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
     }
 
@@ -104,6 +115,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete subscription in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
     }
 
@@ -127,6 +139,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get subscriptions from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return list;
     }
@@ -154,6 +167,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get subscription by bill, user in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return map;
     }
@@ -179,6 +193,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get subscription by user from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return map;
     }
@@ -205,6 +220,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get subscription by status, user from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return map;
     }
@@ -230,6 +246,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get subscription by bill from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
         }
         return map;
     }

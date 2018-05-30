@@ -15,7 +15,7 @@ public final class RequestHelper {
 //        commands.put("backPrevPage", new BackPrevPageCommand());
         commands.put("cancelCreatePublication", new CancelCreatePublicationCommand());
         commands.put("cancelEditPublication", new CancelEditPublicationCommand());
-        commands.put("cancelWievSubscription", new CancelWievSubscriptionCommand());
+        commands.put("cancelWievSubscription", new CancelViewSubscriptionCommand());
 //        commands.put("cancelLogin", new CancelLoginComand());
         commands.put("cancelWievAboutBill", new CancelWievAboutBillComand());
 //        commands.put("confirmDelete", new ConfirmDeleteCommand());
@@ -51,6 +51,7 @@ public final class RequestHelper {
         commands.put("selectBills", new SelectBillsCommand());
         commands.put("resetBillList", new ResetBillListCommand());
         commands.put("setLocale", new SetLocaleCommand());
+        commands.put("goBack", new GoBackCommand());
     }
 
     public Command getCommand(HttpServletRequest request) {

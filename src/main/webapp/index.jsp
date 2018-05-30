@@ -19,7 +19,7 @@
 
     <input type="hidden" name="command" value="login">
     <input type="submit"  value="go">
-
+    <c:redirect url="login.jsp"/>
 </form>
 
 </body>

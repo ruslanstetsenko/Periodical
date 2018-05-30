@@ -1,9 +1,10 @@
 package commands;
 
 import beans.Publication;
-import beans.PublicationPeriodicyCost;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import validate.PublicationValidator;
@@ -13,19 +14,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
 public class OkCreatePublicationCommand implements Command {
-//    private static final Logger logger = Logger.getLogger(OkCreatePublicationCommand.class);
-private static final Logger logger = LogManager.getLogger(OkCreatePublicationCommand.class);
+//    private static final Logger LOGGER = Logger.getLogger(OkCreatePublicationCommand.class);
+private static final Logger LOGGER = LogManager.getLogger(OkCreatePublicationCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
@@ -44,16 +44,31 @@ private static final Logger logger = LogManager.getLogger(OkCreatePublicationCom
         Map<String, Boolean> map = PublicationValidator.validate(pubName, issn, website, setDate, publicationType, publicationStatus, publicationTheme, cost1M, cost3M, cost6M, cost12M);
 
         if (map.isEmpty()) {
-            new PublicationService().createPublication(pubName, issn, website, setDate, publicationType, publicationStatus, publicationTheme, cost1M, cost3M, cost6M, cost12M);
+            try {
+                new PublicationService().createPublication(pubName, issn, website, setDate, publicationType, publicationStatus, publicationTheme, cost1M, cost3M, cost6M, cost12M);
+                int currentPubTypeId = (Integer) session.getAttribute("currentPubTypeId");
+                int currentPubThemeId = (Integer) session.getAttribute("currentPubThemeId");
+                int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
+                List<Publication> publicationList = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId);
 
-            int currentPubTypeId = (Integer) session.getAttribute("currentPubTypeId");
-            int currentPubThemeId = (Integer) session.getAttribute("currentPubThemeId");
-            int currentPubStatusId = (Integer) session.getAttribute("currentPubStatusId");
-            List<Publication> publicationList = new PublicationService().getSelectedPublication(currentPubTypeId, currentPubThemeId, currentPubStatusId);
-            session.setAttribute("publicationList", publicationList);
+                if (publicationList != null) {
+                    session.setAttribute("publicationList", publicationList);
+                } else {
+                    request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
+                    request.setAttribute("previousPage", "path.page.adminPage");
+                    LOGGER.error("Can't load periodicals from DB");
+                    return PageConfigManager.getProperty("path.page.error");
+                }
 
-            logger.info("Publication " + pubName + " was created");
-            return PageConfigManager.getProperty("path.page.adminPage");
+                LOGGER.info("Publication " + pubName + " was created");
+                return PageConfigManager.getProperty("path.page.adminPage");
+            } catch (DataBaseWorkException e) {
+                request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                request.setAttribute("previousPage", "path.page.adminPage");
+                LOGGER.error("Publication was not created. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            }
+
         } else {
             for (Map.Entry<String, Boolean> entry : map.entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
@@ -67,7 +82,7 @@ private static final Logger logger = LogManager.getLogger(OkCreatePublicationCom
             request.setAttribute("cost6Months", cost6M);
             request.setAttribute("cost12Months", cost12M);
 
-            logger.info("Publication " + pubName + " was not created. Try again");
+            LOGGER.info("Publication " + pubName + " was not created. Try again");
             return PageConfigManager.getProperty("path.page.createPublication");
         }
 

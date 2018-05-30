@@ -19,80 +19,26 @@
 <head>
     <c:set var="currentPage" value="path.page.createSubscription" scope="request"/>
     <title><fmt:message key="aboutSubscription.createTitle" bundle="${rb}"/></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/create_subscription.css' %>
+    </style>
 </head>
 <body>
-<div>
-    <form name="createSubscription" method="post" action="controller">
-        <input type="hidden" name="command" value="okCreateSubscription">
+<header>
+    <h3><fmt:message key="aboutPublication.periodicalList" bundle="${rb}"/></h3>
+</header>
 
-        <p><fmt:message key="aboutPublication.periodicalList" bundle="${rb}"/></p>
-        <table>
-            <thead>
-            <tr>
-                <%--<td></td>--%>
-                <th><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></th>
-                <th><fmt:message key="aboutPublication.publicationWebsite" bundle="${rb}"/></th>
-                <th><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <c:forEach var="publWithCost" items="${publicationListWithCost}">
-                <%--<form name="createSubscription" method="get" action="controller">--%>
-                <input type="hidden" name="command" value="addPublicationToSubscription">
-                <tr>
-                        <%--<td valign="top"><input type="checkbox" name="curentPubid" value="${publWithCost.key.id}"></td>--%>
-                    <td valign="center"><c:out value="${publWithCost.key.name}"/></td>
-                    <td valign="center" align="right"><c:out value="${publWithCost.key.website}"/></td>
-                        <%--<td>--%>
-                        <%--<br>--%>
-                        <%--<c:forEach var="periodicyCost" items="${publWithCost.value}">--%>
-                        <%--<input type="checkbox" name="curentCostid" value="${periodicyCost.id}"><c:out--%>
-                        <%--value="${periodicyCost.cost}"/><br/>--%>
-                        <%--</c:forEach>--%>
-                        <%--</td>--%>
-
-
-                    <td valign="center">
-
-                        <c:forEach var="subscription" items="${mapAllPubNameSubscription}">
-                            <c:if test="${publWithCost.key.id == subscription.value.publicationId && subscription.value.subscriptionStatusId != 2}">
-                                <c:set var="subscriptionExist" value="true"/>
-                            </c:if>
-                        </c:forEach>
-                        <br>
-
-                        <select size="1" name="curentCostId"
-                                <c:if test="${subscriptionExist}">DISABLED</c:if>>
-
-                            <option></option>
-                            <c:forEach var="periodicyCost" items="${publWithCost.value}">
-                                <option value="${periodicyCost.id}"><c:out value="${periodicyCost.cost}"/> <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/> <c:out value="${periodicyCost.timesPerYear}"/> <fmt:message key="aboutPublication.subsCostHead" bundle="${rb}"/>
-                                </option>
-                                <c:set var="subscriptionExist" value="false"/>
-                            </c:forEach>
-                        </select>
-                    </td>
-                        <%--<td>--%>
-                        <%--<input type="submit" name="addPubToSubs" value="Додати підписку" <c:if test="${costValue == 0}">disabled</c:if>>--%>
-                        <%--</td>--%>
-                </tr>
-                <%--</form>--%>
-            </c:forEach>
-            </tbody>
-        </table>
-
-        <p><fmt:message key="aboutPublication.periodicalAmount" bundle="${rb}"/> ${fn:length(publicationListWithCost)}</p>
-        <input type="submit" name="createSubscription" value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
-
-    </form>
-
-    <form>
+<aside>
+    <form class="filler_input">
         <input type="hidden" name="command" value="selectPublicationsCreateSubsWindow">
+        <input class="select_button" type="submit" name="useFilters"
+               value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
 
         <div>
-            <p><b><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></b></p>
-            <select size="1" name="currentPubTypeId">
+            <p class="filler_name"><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></p>
+            <select class="select_option" size="1" name="currentPubTypeId">
                 <option value="0" <c:if test="${currentPubTypeId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="type" items="${publicationTypeList}">
                     <option value="${type.id}" <c:if test="${currentPubTypeId == type.id}">SELECTED</c:if>><c:out
@@ -102,8 +48,8 @@
         </div>
 
         <div>
-            <p><b><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></b></p>
-            <select size="1" name="currentPubThemeId">
+            <p class="filler_name"><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></p>
+            <select class="select_option" size="1" name="currentPubThemeId">
                 <option value="0" <c:if test="${currentPubThemeId == 0}">SELECTED</c:if>>показати всі</option>
                 <c:forEach var="theme" items="${publicationThemeList}">
                     <option value="${theme.id}" <c:if test="${currentPubThemeId == theme.id}">SELECTED</c:if>><c:out
@@ -112,17 +58,68 @@
             </select>
         </div>
         <br>
-        <input type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
     </form>
+</aside>
 
-</div>
+<article>
+    <div class="create_subs_block">
+        <form name="createSubscription" method="post" action="controller">
+            <input type="hidden" name="command" value="okCreateSubscription">
+            <table>
+                <tbody>
+                <c:forEach var="publWithCost" items="${publicationListWithCost}">
+                    <input type="hidden" name="command" value="addPublicationToSubscription">
+                    <tr>
 
-<div id="publicationsList">
-    <form name="cancelSubscription" method="get" action="controller">
-        <input type="hidden" name="command" value="cancelCreateSubscription">
-        <input type="submit" name="showInfo" value="<fmt:message key="button.cancel" bundle="${rb}"/>">
-    </form>
-</div>
+                        <td valign="center"><c:out value="${publWithCost.key.name}"/></td>
+                        <td valign="center" align="right"><c:out value="${publWithCost.key.website}"/></td>
+                        <td valign="center">
+
+                            <c:forEach var="subscription" items="${mapAllPubNameSubscription}">
+                                <c:if test="${publWithCost.key.id == subscription.value.publicationId && subscription.value.subscriptionStatusId != 2}">
+                                    <c:set var="subscriptionExist" value="true"/>
+                                </c:if>
+                            </c:forEach>
+
+                            <select class="table_select" size="1" name="curentCostId"
+                                    <c:if test="${subscriptionExist}">DISABLED</c:if>>
+                                <option></option>
+                                <c:forEach var="periodicyCost" items="${publWithCost.value}">
+                                    <option value="${periodicyCost.id}"><c:out value="${periodicyCost.cost}"/>
+                                        <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/> <c:out
+                                                value="${periodicyCost.timesPerYear}"/> <fmt:message
+                                                key="aboutPublication.subsCostHead" bundle="${rb}"/>
+                                    </option>
+                                    <c:set var="subscriptionExist" value="false"/>
+                                </c:forEach>
+                            </select>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+            <div class="buttons">
+                <input class="button" type="submit" name="createSubscription"
+                       value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
+                <button class="button" type="submit" name="command" value="cancelCreateSubscription">
+                    <fmt:message key="button.cancel" bundle="${rb}"/>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</article>
+
+<footer>
+    <p class="publication_amount"><fmt:message key="aboutPublication.periodicalAmount"
+                    bundle="${rb}"/>: ${fn:length(publicationListWithCost)}</p>
+</footer>
+<%--<div id="publicationsList">--%>
+    <%--<form name="cancelSubscription" method="get" action="controller">--%>
+        <%--<input type="hidden" name="command" value="cancelCreateSubscription">--%>
+        <%--<input type="submit" name="showInfo" value="<fmt:message key="button.cancel" bundle="${rb}"/>">--%>
+    <%--</form>--%>
+<%--</div>--%>
 
 </body>
 </html>

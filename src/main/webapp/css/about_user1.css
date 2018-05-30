@@ -1,0 +1,180 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
+header {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    position: fixed;
+    background-color: rgb(50, 50, 50);
+    justify-content: center;
+    align-items: center;
+}
+.header_info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+.about_user {
+    text-indent: .5em;
+}
+.links_user {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+.header_title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: .5em;
+    text-transform: uppercase;
+    width: 100%;
+}
+/*.header_title1 {*/
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*margin-top: 0.5em;*/
+    /*margin-bottom: .5em;*/
+    /*text-transform: uppercase;*/
+/*}*/
+.references {
+    color: white;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+article {
+    display: flex;
+    /*flex-wrap: wrap;*/
+    justify-content: center;
+    align-items: center;
+}
+.about_user_block {
+    display: flex;
+    flex-wrap: wrap;
+    /*justify-content: center;*/
+    align-items: center;
+    margin-top: 6em;
+    margin-bottom: 3em;
+    width: 40em;
+}
+.about_user_block1 {
+    display: flex;
+    flex-wrap: wrap;
+    /*justify-content: center;*/
+    align-items: center;
+    /*margin-top: 6em;*/
+    margin-bottom: 3em;
+    width: 40em;
+}
+.blocks_title {
+    width: 12em;
+    line-height: 3em;
+    text-transform: uppercase;
+    text-decoration: underline;
+}
+.input_FIO {
+    height: 2em;
+    width: 15em;
+}
+.input_date {
+    height: 2em;
+    width: 10em;
+}
+.personal_info {
+    display: flex;
+    flex-wrap: wrap;
+}
+.passport_info {
+    display: flex;
+    flex-wrap: wrap;
+}
+.input_passpNoSerial {
+    height: 2em;
+    width: 5em;
+}
+.input_passpIssuedBy {
+    height: 5em;
+    width: 15em;
+    margin-top: .5em;
+    margin-bottom: .5em;
+    word-wrap: break-word;
+}
+.input_ID {
+    height: 2em;
+    width: 10em;
+}
+.address_info {
+    display: flex;
+    flex-wrap: wrap;
+}
+.input_address1 {
+    height: 2em;
+    width: 15em;
+}
+.input_address2 {
+    height: 2em;
+    width: 4em;
+}
+.contact_info {
+    display: flex;
+    flex-wrap: wrap;
+}
+.autorization_info {
+    display: flex;
+    flex-wrap: wrap;
+}
+table {
+    border-collapse: collapse;
+}
+.input_contacts {
+    height: 2em;
+    width: 12em;
+}
+th {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    line-height: 3em;
+}
+td {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    line-height: 3em;
+    transition: .3s linear;
+}
+
+footer {
+    display: flex;
+    background-color: rgb(50, 50, 50);
+    height: 3em;
+    width: 100em;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+.button {
+    margin: 0.5em;
+    width: 12em;
+    height: 2.5em;
+}
+.buttons {
+    width: 60%;
+    justify-content: center;
+    /*border: 0.1em solid red;*/
+}
+.error {
+    color: red;
+}

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class CancelWievAboutBillComand implements Command {
-    //    private static final Logger logger = Logger.getLogger(CancelWievAboutBillComand.class);
     private static final Logger logger = LogManager.getLogger(CancelWievAboutBillComand.class);
 
     @Override

@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.PublicationPeriodicyCost;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PublicationPeriodicityCostDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,19 +15,26 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
     private static final Logger logger = LogManager.getLogger(PublicationPeriodicityCostDaoImpl.class);
 
     @Override
-    public void create(PublicationPeriodicyCost publicationPeriodicyCost, Connection connection) {
+    public int create(PublicationPeriodicyCost publicationPeriodicyCost, Connection connection) {
         String sql = "INSERT INTO publication_periodicity_cost (times_per_year, cost, publication_id) VALUES (?, ?, ?)";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, publicationPeriodicyCost.getTimesPerYear());
             preparedStatement.setDouble(2, publicationPeriodicyCost.getCost());
             preparedStatement.setInt(3, publicationPeriodicyCost.getPublicationId());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("Can't create periodicy cost in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationCost");
         }
-
+        return id;
     }
 
     @Override
@@ -45,6 +53,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
             publicationPeriodicyCost.setPublicationId(resultSet.getInt("publication_id"));
         } catch (SQLException e) {
             logger.error("Can't read periodicy cost from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationCost");
         }
         return publicationPeriodicyCost;
     }
@@ -76,6 +85,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update periodicy cost in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationCost");
         }
     }
 
@@ -88,6 +98,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete periodicy cost in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationCost");
         }
     }
 
@@ -108,6 +119,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
             }
         } catch (SQLException e) {
             logger.error("Can't get periodicy costs from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationCost");
         }
         return list;
     }
@@ -131,6 +143,7 @@ public class PublicationPeriodicityCostDaoImpl implements PublicationPeriodicity
             }
         } catch (SQLException e) {
             logger.error("Can't get periodicy costs selected by publication from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publicationCostB");
         }
         return list;
     }

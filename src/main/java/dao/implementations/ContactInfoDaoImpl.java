@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.ContactInfo;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.ContactInfoDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,18 +15,24 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
     private static final Logger logger = LogManager.getLogger(ContactInfoDaoImpl.class);
 
     @Override
-    public void create(String userPhoneNumber, String userEmail, Connection connection) {
+    public int create(String userPhoneNumber, String userEmail, Connection connection) {
         String sql = "INSERT INTO contact_info (phone, email) VALUES (?, ?)";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, userPhoneNumber);
             preparedStatement.setString(2, userEmail);
             preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error("Can't create user contact info in DB", e.getCause());
-        }
 
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            logger.error("Can't create user contact info in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.contactInfo");
+        }
+        return id;
     }
 
     @Override
@@ -37,13 +44,14 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next())  {
+            if (resultSet.next()) {
                 contactInfo.setId(id);
                 contactInfo.setPhone(resultSet.getString("phone"));
                 contactInfo.setEmail(resultSet.getString("email"));
             }
         } catch (SQLException e) {
             logger.error("Can't read user contact info  from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.contactInfo");
         }
 
         return contactInfo;
@@ -60,6 +68,8 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user contact info in DB", e.getCause());
+            e.printStackTrace();
+            throw new DataBaseWorkException("message.error.contactInfo");
         }
     }
 
@@ -72,6 +82,7 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete user contact info in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.contactInfo");
         }
     }
 
@@ -91,23 +102,24 @@ public class ContactInfoDaoImpl implements ContactInfoDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get user contacts info from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.contactInfo");
         }
         return list;
     }
 
-    @Override
-    public int getLastId(Connection connection) {
-        int id = 0;
-        String sql = "SELECT LAST_INSERT_ID() AS lastId FROM contact_info";
-
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
-            if (resultSet.next()) {
-                id = resultSet.getInt("lastId");
-            }
-        } catch (SQLException e) {
-            logger.error("Can't read last added user contact info from DB", e.getCause());
-        }
-        return id;
-    }
+//    @Override
+//    public int getLastId(Connection connection) {
+//        int id = 0;
+//        String sql = "SELECT LAST_INSERT_ID() AS lastId FROM contact_info";
+//
+//        try (Statement statement = connection.createStatement()) {
+//            ResultSet resultSet = statement.executeQuery(sql);
+//            if (resultSet.next()) {
+//                id = resultSet.getInt("lastId");
+//            }
+//        } catch (SQLException e) {
+//            logger.error("Can't read last added user contact info from DB", e.getCause());
+//        }
+//        return id;
+//    }
 }

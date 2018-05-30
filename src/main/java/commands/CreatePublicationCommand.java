@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class CreatePublicationCommand implements Command {
-//    private static final Logger logger = Logger.getLogger(CreatePublicationCommand.class);
     private static final Logger logger = LogManager.getLogger(CreatePublicationCommand.class);
 
     @Override

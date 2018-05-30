@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.User;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.UserDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +15,10 @@ public class UserDaoImpl implements UserDao {
     private static final Logger logger = LogManager.getLogger(UserDaoImpl.class);
 
     @Override
-    public void create(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, int passportId, int userRoleId, int addressId, int contactInfoId, int accountId, Connection connection) {
+    public int create(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, int passportId, int userRoleId, int addressId, int contactInfoId, int accountId, Connection connection) {
         String sql = "INSERT INTO users (name, surname, last_name, birthday, registration_date, passport_ident_number_id, living_address_id, contact_info_id, user_role_id, accounts_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int id = 0;
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, userSurName);
@@ -29,11 +32,17 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setInt(10, accountId);
 
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("Can't create user in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.user");
         }
-
+        return id;
     }
 
     @Override
@@ -60,6 +69,7 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("Can't read user from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.user");
         }
 
         return user;
@@ -77,6 +87,7 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.user");
         }
     }
 
@@ -89,6 +100,7 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete user in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.user");
         }
     }
 
@@ -114,6 +126,7 @@ public class UserDaoImpl implements UserDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get users from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.user");
         }
         return list;
     }
@@ -128,6 +141,7 @@ public class UserDaoImpl implements UserDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get last added user from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.user");
         }
         return id;
     }

@@ -9,7 +9,7 @@ public class PassportIdentNumber implements Serializable {
     private int number;
     private Date dateOfIssue;
     private String issuedBy;
-    private int idNumber;
+    private String idNumber;
 
     public PassportIdentNumber() {
     }
@@ -63,11 +63,11 @@ public class PassportIdentNumber implements Serializable {
         this.issuedBy = issuedBy;
     }
 
-    public int getIdNumber() {
+    public String getIdNumber() {
         return idNumber;
     }
 
-    public void setIdNumber(int idNumber) {
+    public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
     }
 
@@ -78,12 +78,21 @@ public class PassportIdentNumber implements Serializable {
 
         PassportIdentNumber that = (PassportIdentNumber) o;
 
-        return id == that.id;
+        if (number != that.number) return false;
+        if (serial != null ? !serial.equals(that.serial) : that.serial != null) return false;
+        if (dateOfIssue != null ? !dateOfIssue.equals(that.dateOfIssue) : that.dateOfIssue != null) return false;
+        if (issuedBy != null ? !issuedBy.equals(that.issuedBy) : that.issuedBy != null) return false;
+        return idNumber != null ? idNumber.equals(that.idNumber) : that.idNumber == null;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int result = serial != null ? serial.hashCode() : 0;
+        result = 31 * result + number;
+        result = 31 * result + (dateOfIssue != null ? dateOfIssue.hashCode() : 0);
+        result = 31 * result + (issuedBy != null ? issuedBy.hashCode() : 0);
+        result = 31 * result + (idNumber != null ? idNumber.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -94,7 +103,7 @@ public class PassportIdentNumber implements Serializable {
         sb.append(", number=").append(number);
         sb.append(", dateOfIssue=").append(dateOfIssue);
         sb.append(", issuedBy='").append(issuedBy).append('\'');
-        sb.append(", idNumber=").append(idNumber);
+        sb.append(", idNumber='").append(idNumber).append('\'');
         sb.append('}');
         return sb.toString();
     }
@@ -105,7 +114,7 @@ public class PassportIdentNumber implements Serializable {
         private int number;
         private Date dateOfIssue;
         private String issuedBy;
-        private int idNumber;
+        private String idNumber;
 
         public Builder setId(int id) {
             this.id = id;
@@ -132,7 +141,7 @@ public class PassportIdentNumber implements Serializable {
             return this;
         }
 
-        public Builder setIdNumber(int idNumber) {
+        public Builder setIdNumber(String idNumber) {
             this.idNumber = idNumber;
             return this;
         }

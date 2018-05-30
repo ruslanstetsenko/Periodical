@@ -4,8 +4,10 @@ import beans.Publication;
 import beans.PublicationPeriodicyCost;
 import beans.Subscription;
 import beans.User;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import service.UserWindowsService;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateSubscriptionCommand implements Command {
-    //    private static final Logger logger = Logger.getLogger(CreateSubscriptionCommand.class);
     private static final Logger logger = LogManager.getLogger(CreateSubscriptionCommand.class);
 
     @Override
@@ -33,15 +34,28 @@ public class CreateSubscriptionCommand implements Command {
 
         User user = (User) session.getAttribute("currentUser");
         PublicationService publicationService = new PublicationService();
-        Map<Publication, List<PublicationPeriodicyCost>> map = publicationService.getPublicationWithCosts(0, 0, 1);
         UserWindowsService userWindowsService = new UserWindowsService();
-        Map<String, Subscription> subscriptionMap = userWindowsService.loadSelectedUserWindow(user.getId(), 0);
-        session.setAttribute("mapAllPubNameSubscription", subscriptionMap);
 
-        PublicThemeAndTypeWrapper wrapper = publicationService.getPubThemesAndTypes();
-        session.setAttribute("publicationListWithCost", map.entrySet());
-        session.setAttribute("publicationTypeList", wrapper.getPublicationTypes());
-        session.setAttribute("publicationThemeList", wrapper.getPublicationThemes());
+        try {
+            Map<Publication, List<PublicationPeriodicyCost>> map = publicationService.getPublicationWithCosts(0, 0, 1);
+            Map<String, Subscription> subscriptionMap = userWindowsService.loadSelectedUserWindow(user.getId(), 0);
+            PublicThemeAndTypeWrapper wrapper = publicationService.getPubThemesAndTypes();
+
+            session.setAttribute("mapAllPubNameSubscription", subscriptionMap);
+            session.setAttribute("publicationListWithCost", map.entrySet());
+            session.setAttribute("publicationTypeList", wrapper.getPublicationTypes());
+            session.setAttribute("publicationThemeList", wrapper.getPublicationThemes());
+        } catch (DataBaseWorkException e) {
+            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            logger.error("Can't start creating new subscription. DB error", e.getCause());
+            return PageConfigManager.getProperty("path.page.error");
+        } catch (NullPointerException npe) {
+            request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            logger.error("Can't start creating new subscription", npe.getCause());
+            return PageConfigManager.getProperty("path.page.error");
+        }
 
         logger.info("Start creating new subscription");
         return PageConfigManager.getProperty("path.page.createSubscription");

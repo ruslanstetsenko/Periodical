@@ -1097,7 +1097,7 @@
     </column>
     <column id="268" parent="232" name="id_number">
       <Position>6</Position>
-      <DataType>int(10)|0s</DataType>
+      <DataType>varchar(10)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>

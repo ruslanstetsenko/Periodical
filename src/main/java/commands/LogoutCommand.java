@@ -19,9 +19,10 @@ private static final Logger logger = LogManager.getLogger(LogoutCommand.class);
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute("currentUser");
-        logger.info("User " + user.getSurname() + " " + user.getName() + " " + user.getLastName() + " log out");
+        if (user != null) {
+            logger.info("User " + user.getSurname() + " " + user.getName() + " " + user.getLastName() + " log out");
+        }
         session.invalidate();
-
         return PageConfigManager.getProperty("path.page.login");
     }
 }

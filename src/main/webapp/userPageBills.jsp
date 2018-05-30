@@ -19,96 +19,99 @@
 <head>
     <c:set var="currentPage" value="path.page.userPageBills" scope="request"/>
     <title><fmt:message key="userPage.billsTitle" bundle="${rb}"/></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/bills.css' %>
+    </style>
 </head>
 <body>
 
-<header>
-    <h3><fmt:message key="head.welcome" bundle="${rb}"/> <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>
-    <a href="userPageSubsc.jsp"><fmt:message key="userPage.subscriptions" bundle="${rb}"/></a>
-    <a href="aboutUser.jsp"><fmt:message key="userPage.aboutUser" bundle="${rb}"/></a>
-    <c:import url="headUserInfo.jsp"/>
+<header class="bill_header">
+    <div class="header_info">
+        <h3 class="about_user"><fmt:message key="head.welcome" bundle="${rb}"/>
+            <c:out value="${currentUser.surname}"/>
+            <c:out value="${currentUser.name}"/>
+            <c:out value="${currentUser.lastName}"/>
+        </h3>
+        <p class="import_header"><c:import url="headUserInfo.jsp"/></p>
+    </div>
+    <div class="links_admin">
+        <a class="references" href="userPageSubsc.jsp"><fmt:message key="userPage.subscriptions" bundle="${rb}"/></a>
+        <a class="references" href="aboutUser.jsp"><fmt:message key="userPage.aboutUser" bundle="${rb}"/></a>
+    </div>
+    <h3><fmt:message key="aboutBill.billsList" bundle="${rb}"/></h3>
 </header>
 
-<div>
-    <p><fmt:message key="aboutBill.billsList" bundle="${rb}"/></p>
-    <table>
-        <thead>
-        <tr>
-            <th><fmt:message key="aboutBill.billNumber" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutBill.billingDate" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutBill.billingCost" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="bill" items="${subscriptionBillList}">
-            <tr>
-                <td><c:out value="${bill.billNumber}"/></td>
-                <td align="right"><c:out value="${bill.billSetDay}"/></td>
-                <td align="right"><c:out value="${bill.totalCost}"/></td>
-                <td align="right">
-                    <c:choose>
-                        <c:when test="${bill.paid == 1}">
-                            <fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/>
-                        </c:when>
-                        <c:when test="${bill.paid == 2}">
-                            <fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/>
-                        </c:when>
-                        <c:otherwise>
-                            <fmt:message key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td>
-                    <form name="showBillInfo" action="controller" method="get">
-                        <input type="hidden" name="command" value="showAboutBill">
-                        <button name="currentBillPaidId" value="${bill.id}" type="submit"><fmt:message key="aboutBill.billDetails" bundle="${rb}"/></button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-    <p><fmt:message key="aboutBill.billAmount" bundle="${rb}"/>${fn:length(subscriptionBillList)}</p>
-</div>
-
-<div>
-    <form name="selectBills" method="get" action="bills">
+<aside>
+    <form class="filter_input" name="selectBills" method="get" action="bills">
         <input type="hidden" name="command" value="selectBills">
+        <input class="select_button" type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
         <div>
-            <b><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></b>
-            <%--<p><input type="radio" name="currentBillPaidId" value="0"--%>
-                      <%--<c:if test="${currentBillPaidId == 0}">CHECKED</c:if>/>показати всі</p>--%>
-            <%--<p><input type="radio" name="currentBillPaidId" value="1"--%>
-                      <%--<c:if test="${currentBillPaidId == 1}">CHECKED</c:if>/>новий</p>--%>
-            <%--<p><input type="radio" name="currentBillPaidId" value="2"--%>
-                      <%--<c:if test="${currentBillPaidId == 2}">CHECKED</c:if>/>оплачений</p>--%>
-            <%--<p><input type="radio" name="currentBillPaidId" value="3"--%>
-                      <%--<c:if test="${currentBillPaidId == 3}">CHECKED</c:if>/>не оплачений</p>--%>
-
-
-            <select size="1" name="currentBillPaidId">
-                <option value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusAll" bundle="${rb}"/></option>
-                <option value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/></option>
-                <option value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/></option>
-                <option value="3" <c:if test="${currentBillPaidId == 3}">SELECTED</c:if>><fmt:message key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/></option>
+            <p class="filler_name"><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></p>
+            <select class="select_option" size="1" name="currentBillPaidId">
+                <option value="0" <c:if test="${currentBillPaidId == 0}">SELECTED</c:if>><fmt:message
+                        key="aboutBill.billiPayStatusAll" bundle="${rb}"/></option>
+                <option value="1" <c:if test="${currentBillPaidId == 1}">SELECTED</c:if>><fmt:message
+                        key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/></option>
+                <option value="2" <c:if test="${currentBillPaidId == 2}">SELECTED</c:if>><fmt:message
+                        key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/></option>
+                <option value="3" <c:if test="${currentBillPaidId == 3}">SELECTED</c:if>><fmt:message
+                        key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/></option>
             </select>
         </div>
-
-        <input type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
     </form>
-</div>
+</aside>
 
-<%--<div>--%>
-    <%--<form name="createSubscription" method="post" action="controller">--%>
-        <%--<input type="hidden" name="command" value="createSubscription">--%>
-        <%--<input type="submit" name="create" value="Оформити підписку">--%>
-    <%--</form>--%>
-<%--</div>--%>
+<article>
+    <div class="bill_table_block">
+        <table>
+            <%--<thead>--%>
+            <%--<tr>--%>
+                <%--<th><fmt:message key="aboutBill.billNumber" bundle="${rb}"/></th>--%>
+                <%--<th><fmt:message key="aboutBill.billingDate" bundle="${rb}"/></th>--%>
+                <%--<th><fmt:message key="aboutBill.billingCost" bundle="${rb}"/></th>--%>
+                <%--<th><fmt:message key="aboutBill.billiPayStatus" bundle="${rb}"/></th>--%>
+            <%--</tr>--%>
+            <%--</thead>--%>
+            <tbody>
+            <c:forEach var="bill" items="${subscriptionBillList}">
+                <tr>
+                    <td><c:out value="${bill.billNumber}"/></td>
+                    <td align="right"><c:out value="${bill.billSetDay}"/></td>
+                    <td align="right"><c:out value="${bill.totalCost}"/></td>
+                    <td align="right">
+                        <c:choose>
+                            <c:when test="${bill.paid == 1}">
+                                <fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/>
+                            </c:when>
+                            <c:when test="${bill.paid == 2}">
+                                <fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <fmt:message key="aboutBill.billiPayStatusNotPaid" bundle="${rb}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <form name="showBillInfo" action="controller" method="get">
+                            <input type="hidden" name="command" value="showAboutBill">
+                            <button class="table_button" name="currentBillPaidId" value="${bill.id}" type="submit"><fmt:message
+                                    key="aboutBill.billDetails" bundle="${rb}"/></button>
+                        </form>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
 
-<div>
+    </div>
+</article>
 
-</div>
-
+<footer>
+    <p class="publication_amount">
+        <fmt:message key="aboutBill.billAmount" bundle="${rb}"/>: ${fn:length(subscriptionBillList)}
+    </p>
+</footer>
 </body>
 </html>

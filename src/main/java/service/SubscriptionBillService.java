@@ -7,6 +7,10 @@ import dao.interfaces.SubscriptionBillDao;
 import beans.SubscriptionBill;
 import dao.interfaces.SubscriptionDao;
 import dao.interfaces.UserDao;
+import exceptions.DataBaseWorkException;
+import exceptions.ErrorMassageException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,102 +19,77 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubscriptionBillService {
+    private static final Logger LOGGER = LogManager.getLogger(SubscriptionBillService.class);
 
     private SubscriptionBillDao subscriptionBillDao = DaoFactory.getSubscriptionBillDao();
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
     private UserDao userDao = DaoFactory.getUserDao();
 
-
-    //create biil and subscription
     public int createBill(Connection connection, int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
         SubscriptionBill subscriptionBill = new SubscriptionBill();
         subscriptionBill.setUserId(userId);
         subscriptionBill.setTotalCost(publicationPeriodicyCostList.stream().mapToDouble(PublicationPeriodicyCost::getCost).sum());
         subscriptionBill.setBillNumber((new Date().getTime()) % 1_000_000 + "_" + userId);
         int subscriptionBillId;
-        subscriptionBillDao.create(subscriptionBill, connection);
-//            connection.commit();
-        subscriptionBillId = subscriptionBillDao.readLastId(connection);
+        try {
+            subscriptionBillId = subscriptionBillDao.create(subscriptionBill, connection);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't create bill", e.getCause());
+            throw e;
+        }
         return subscriptionBillId;
     }
 
     public SubscriptionBill getBill(int billId) {
         Connection connection = ConnectionPool.getConnection(true);
-        SubscriptionBill bill = new SubscriptionBill();
-        bill = subscriptionBillDao.read(billId, connection);
-
-        ConnectionPool.closeConnection(connection);
+        SubscriptionBill bill;
+        try {
+            bill = subscriptionBillDao.read(billId, connection);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get bill", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return bill;
     }
 
     public List<SubscriptionBill> selectBillsByStatus(int status) {
         Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionBill> subscriptionBillList;
-        if (status == 0) {
-            subscriptionBillList = subscriptionBillDao.getAll(connection);
-        } else {
-            subscriptionBillList = subscriptionBillDao.getByStatus(connection, status);
+        try {
+            if (status == 0) {
+                subscriptionBillList = subscriptionBillDao.getAll(connection);
+            } else {
+                subscriptionBillList = subscriptionBillDao.getByStatus(connection, status);
+            }
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't select bills", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
-
-        ConnectionPool.closeConnection(connection);
         return subscriptionBillList;
     }
 
     public List<SubscriptionBill> selectBillsByUserByStatus(int userId, int status) {
         Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionBill> subscriptionBillList;
-        if (status == 0) {
-            subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
-        } else {
-            subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
-                    .stream()
-                    .filter(subscriptionBill -> subscriptionBill.getPaid() == status)
-                    .collect(Collectors.toList());
+        try {
+            if (status == 0) {
+                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId);
+            } else {
+                subscriptionBillList = subscriptionBillDao.getByUser(connection, userId)
+                        .stream()
+                        .filter(subscriptionBill -> subscriptionBill.getPaid() == status)
+                        .collect(Collectors.toList());
+            }
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't select bills", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
-
-        ConnectionPool.closeConnection(connection);
         return subscriptionBillList;
     }
-
-//    public void showAboutSubscrBill(SubscriptionBill subscriptionBill) {
-//        Connection connection = ConnectionPool.getConnection(true);
-//
-//        int userId = subscriptionDao.readByBill(subscriptionBill.getId(), connection).getUsersId();
-//        User user = userDao.read(userId, connection);
-//        ConnectionPool.closeConnection(connection);
-//    }
-
-//    public void deleteSubscriptionBill(SubscriptionBill subscriptionBill, int currentBillStatus) {
-//        LocalDate setBill = LocalDate.ofInstant(subscriptionBill.getBillSetDay().toInstant(), ZoneId.systemDefault());
-//        if (subscriptionBill.getValidityPeriod() >
-//                Period.between(setBill, LocalDate.now()).getDays()) {
-//            Connection connection = ConnectionPool.getConnection(false);
-//            List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-//            try {
-//                subscriptionBillDao.delete(subscriptionBill.getId(), connection);
-//                connection.commit();
-//                subscriptionBillList = subscriptionBillDao.getAll(connection)
-//                        .stream()
-//                        .filter(subscriptionBill1 -> subscriptionBill1.getPaid() == currentBillStatus)
-//                        .collect(Collectors.toList());
-////                publicationsAmount = publicationList.size();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//                try {
-//                    connection.rollback();
-//                } catch (SQLException e1) {
-//                    e1.printStackTrace();
-//                }
-//            } finally {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        } else {
-//            //cant delete
-//        }
-//
-//    }
 }

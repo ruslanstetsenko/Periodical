@@ -158,15 +158,19 @@ public class DbTest {
         PublicationDao publicationDao = DaoFactory.getPublicationDao();
 //        System.out.println(publicationDao.getByTypeThemeStatus(connection, 2, 5, 1));
 //        System.out.println("last pubId = " + publicationDao.getLastPublicationId(connection));
-        System.out.println(publicationDao.create(new Publication.Builder()
-                .setName("123")
-                .setIssnNumber(11111111)
-                .setRegistrationDate(Date.valueOf("1999-12-12"))
-                .setWebsite("wwwwwwww")
-                .setPublicationTypeId(1)
-                .setPublicationStatusId(1)
-                .setPublicationThemeId(4)
-                .build(), connection));
+//        System.out.println(publicationDao.create(new Publication.Builder()
+//                .setName("123")
+//                .setIssnNumber(11111111)
+//                .setRegistrationDate(Date.valueOf("1999-12-12"))
+//                .setWebsite("wwwwwwww")
+//                .setPublicationTypeId(1)
+//                .setPublicationStatusId(1)
+//                .setPublicationThemeId(4)
+//                .build(), connection));
+        List<Publication> list = publicationDao.getallPagination(connection, 1, 3);
+        for (Publication publication : list) {
+            System.out.println(publication);
+        }
         ConnectionPool.closeConnection(connection);
     }
 

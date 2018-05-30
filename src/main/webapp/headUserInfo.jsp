@@ -10,40 +10,35 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
+<fmt:setBundle basename="pagecontent" var="rb"/>
+
 
 <html>
 <head>
-    <%--<title>Title</title>--%>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/header.css' %>
+    </style>
 </head>
 <body>
-<c:if test="${currentPage ne path.page.login}"><a href="Controller?command=logout">Logout</a></c:if>
 
-<%--<h3>Вітаємо, <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>--%>
-<%--<a href="controller?command=setLocale" name="locale">English</a>--%>
-<%--<a href="controller?command=setLocale">Українська</a>--%>
+<div class="main_header">
+    <form name="setLocaleEN" method="get" action="controller">
+        <input type="hidden" name="command" value="setLocale">
+        <c:set var="currentPage" value="${currentPage}" scope="request"/>
+        <input type="hidden" name="currentPage" value="${currentPage}">
+        <button class="change_locale" type="submit" name="locale" value="1">English</button>
+        <button class="change_locale" type="submit" name="locale" value="2">Українська</button>
+    </form>
 
-<form name="setLocaleEN" method="get" action="controller">
-    <input type="hidden" name="command" value="setLocale">
-    <c:set var="currentPage" value="${currentPage}" scope="request"/>
-    <input type="hidden" name="currentPage" value="${currentPage}">
-    <button type="submit" name="locale" value="1">English</button>
-    <button type="submit" name="locale" value="2">Українська</button>
-</form>
+    <form name="logout" method="get" action="logout">
+        <input type="hidden" name="command" value="logout">
+        <button class="change_locale" type="submit">
+            <fmt:message key="button.logout" bundle="${rb}"/>
+        </button>
+    </form>
+</div>
 
-<%--<form name="setLocaleUA" method="get" action="controller">--%>
-    <%--<input type="hidden" name="command" value="setLocale">--%>
-    <%--<c:set var="currentPage" value="${currentPage}" scope="request"/>--%>
-    <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
-    <%--<button type="submit" name="locale" value="2">Українська</button>--%>
-<%--</form>--%>
-
-<%--<select name="locale">--%>
-    <%--<option value="en_us"><a href="controller?command=setLocale"></a>English</option>--%>
-    <%--<option value="uk_ua"><a href="controller?command=setLocale"></a>Українська</option>--%>
-<%--</select>--%>
-<%--<form name="logout" method="get" action="login">--%>
-<%--<input type="hidden" name="command" value="logout">--%>
-<%--<input type="submit" name="cancel" value="Logout">--%>
-<%--</form>--%>
 </body>
 </html>

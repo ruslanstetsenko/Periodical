@@ -19,67 +19,43 @@
 <head>
     <c:set var="currentPage" value="path.page.userPageSubsc" scope="request"/>
     <title><fmt:message key="userPage.subsTitle" bundle="${rb}"/></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/user_page_subs.css' %>
+    </style>
 </head>
 <body>
 
 <header>
-    <h3><fmt:message key="head.welcome" bundle="${rb}"/> <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>
-    <a href="userPageBills.jsp"><fmt:message key="userPage.billsTitle" bundle="${rb}"/></a>
-    <a href="aboutUser.jsp"><fmt:message key="userPage.aboutUser" bundle="${rb}"/></a>
-    <c:import url="headUserInfo.jsp"/>
+    <div class="header_info">
+        <h3 class="about_user">
+            <fmt:message key="head.welcome" bundle="${rb}"/>
+            <c:out value="${currentUser.surname}"/>
+            <c:out value="${currentUser.name}"/>
+            <c:out value="${currentUser.lastName}"/>
+        </h3>
+        <p><c:import url="headUserInfo.jsp"/></p>
+    </div>
+    <div class="links_user">
+        <a class="references" href="userPageBills.jsp"><fmt:message key="userPage.billsTitle" bundle="${rb}"/></a>
+        <a class="references" href="aboutUser.jsp"><fmt:message key="userPage.aboutUser" bundle="${rb}"/></a>
+    </div>
+    <h3 class="header_title"><fmt:message key="aboutSubscription.subsList" bundle="${rb}"/></h3>
 </header>
 
-<div>
-    <p><fmt:message key="aboutSubscription.subsList" bundle="${rb}"/></p>
-    <table>
-        <thead>
-        <tr>
-            <th><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutSubscription.registerDate" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutSubscription.subscrCost" bundle="${rb}"/></th>
-            <th><fmt:message key="aboutSubscription.subscrStatus" bundle="${rb}"/></th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="subscription" items="${mapPubNameSubscription}">
-            <tr>
-                <td><c:out value="${subscription.key}"/></td>
-                <td align="right"><c:out value="${subscription.value.subscriptionDate}"/></td>
-                <td align="right"><c:out value="${subscription.value.subscriptionCost}"/></td>
-                <td align="right">
-                    <c:forEach var="paid" items="${subsStatusList}">
-                        <c:if test="${paid.id == subscription.value.subscriptionStatusId}"><c:out value="${paid.statusName}"/></c:if>
-                    </c:forEach>
-                    </td>
-                <td>
-                    <form name="showSubscriptionIngo" action="controller" method="get">
-                        <input type="hidden" name="command" value="showAboutSubscription">
-                        <button name="currentSubsId" value="${subscription.value.id}" type="submit"><fmt:message key="aboutSubscription.details" bundle="${rb}"/></button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-    <p><fmt:message key="aboutSubscription.subsAmount" bundle="${rb}"/> ${fn:length(mapPubNameSubscription)}</p>
-</div>
+<aside>
+    <form name="createSubscription" method="post" action="controller">
+        <input type="hidden" name="command" value="createSubscription">
+        <input class="add_button" type="submit" name="create" value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
+    </form>
 
-<div>
     <form name="selectSubscriptions" method="get" action="subscriptions">
         <input type="hidden" name="command" value="selectSubsUserWindow">
+        <input class="select_button" type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
         <div>
-            <b><fmt:message key="aboutSubscription.subscrStatus" bundle="${rb}"/> </b>
-            <%--<input type="radio" name="currentSubStatusId" value="0"--%>
-                   <%--<c:if test="${currentSubStatusId == 0}">CHECKED</c:if>/>показати всі--%>
-            <%--<c:forEach var="subStatus" items="${subsStatusList}">--%>
-                <%--<p align="left">--%>
-                    <%--<input type="radio" name="currentSubStatusId" value="${subStatus.id}"--%>
-                           <%--<c:if test="${currentSubStatusId == subStatus.id}">CHECKED</c:if>/><c:out--%>
-                        <%--value="${subStatus.statusName}"/>--%>
-                <%--</p>--%>
-            <%--</c:forEach>--%>
-
-            <select size="1" name="currentSubStatusId">
+            <p class="filler_name"><fmt:message key="aboutSubscription.subscrStatus" bundle="${rb}"/></p>
+            <select class="select_option" size="1" name="currentSubStatusId">
                 <option value="0" <c:if test="${currentSubStatusId == 0}">SELECTED</c:if>><fmt:message key="aboutSubscription.showAll" bundle="${rb}"/></option>
                 <c:forEach var="subStatus" items="${subsStatusList}">
                     <option value="${subStatus.id}" <c:if test="${currentSubStatusId == subStatus.id}">SELECTED</c:if>><c:out
@@ -87,21 +63,49 @@
                 </c:forEach>
             </select>
         </div>
-
-        <input type="submit" name="useFilters" value="<fmt:message key="button.useFilter" bundle="${rb}"/>">
     </form>
-</div>
+</aside>
 
-<div>
-    <form name="createSubscription" method="post" action="controller">
-        <input type="hidden" name="command" value="createSubscription">
-        <input type="submit" name="create" value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
-    </form>
-</div>
+<article>
+    <div class="subscription_table_block">
+        <table>
+            <%--<thead>--%>
+            <%--<tr>--%>
+                <%--<th><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></th>--%>
+                <%--<th><fmt:message key="aboutSubscription.registerDate" bundle="${rb}"/></th>--%>
+                <%--<th><fmt:message key="aboutSubscription.subscrCost" bundle="${rb}"/></th>--%>
+                <%--<th><fmt:message key="aboutSubscription.subscrStatus" bundle="${rb}"/></th>--%>
+            <%--</tr>--%>
+            <%--</thead>--%>
+            <tbody>
+            <c:forEach var="subscription" items="${mapPubNameSubscription}">
+                <tr>
+                    <td><c:out value="${subscription.key}"/></td>
+                    <td align="right"><c:out value="${subscription.value.subscriptionDate}"/></td>
+                    <td align="right"><c:out value="${subscription.value.subscriptionCost}"/></td>
+                    <td align="right">
+                        <c:forEach var="paid" items="${subsStatusList}">
+                            <c:if test="${paid.id == subscription.value.subscriptionStatusId}"><c:out value="${paid.statusName}"/></c:if>
+                        </c:forEach>
+                    </td>
+                    <td>
+                        <form name="showSubscriptionIngo" action="controller" method="get">
+                            <input type="hidden" name="command" value="showAboutSubscription">
+                            <button class="table_button" name="currentSubsId" value="${subscription.value.id}" type="submit"><fmt:message key="aboutSubscription.details" bundle="${rb}"/></button>
+                        </form>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</article>
+<footer>
+    <p class="publication_amount">
+        <fmt:message key="aboutSubscription.subsAmount" bundle="${rb}"/>: ${fn:length(mapPubNameSubscription)}
+    </p>
+</footer>
 
-<div>
-
-</div>
 
 </body>
 </html>

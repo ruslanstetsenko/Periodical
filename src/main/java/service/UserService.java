@@ -4,6 +4,10 @@ import beans.*;
 import connection.ConnectionPool;
 import dao.*;
 import dao.interfaces.*;
+import exceptions.DataBaseWorkException;
+import exceptions.ErrorMassageException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import wrappers.AboutUserWrapper;
 
 import java.sql.Connection;
@@ -12,6 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class UserService {
+    private static final Logger LOGGER = LogManager.getLogger(UserService.class);
 
     private UserDao userDao = DaoFactory.getUserDao();
     private AccountDao accountDao = DaoFactory.getAccountDao();
@@ -19,49 +24,54 @@ public class UserService {
     private LivingAddressDao livingAddressDao = DaoFactory.getLivingAddressDao();
     private ContactInfoDao contactInfoDao = DaoFactory.getContactInfoDao();
 
-    public void createUser(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
-        Connection connection = ConnectionPool.getConnection(false);
+    public User read(int userId) {
+        Connection connection = ConnectionPool.getConnection(true);
+        User user = null;
         try {
-            passportIdentNumberDao.create(passportSerial, passportNumber, passportDateOfIssue, passportIssuedBy, identNuber, connection);
-            int passportId = passportIdentNumberDao.getLastId(connection);
-
-            livingAddressDao.create(region, district, city, street, building, appartment, connection);
-            int addressId = livingAddressDao.getLastId(connection);
-
-            contactInfoDao.create(userPhoneNumber, userEmail, connection);
-            int contactInfoId = contactInfoDao.getLastId(connection);
-
-            accountDao.create(login, password, connection);
-            int accountId = accountDao.getLastId(connection);
-
-            userDao.create(userName, userSurName, userLastName, userBirthDate, userRegistrationDate, passportId, 2, addressId, contactInfoId, accountId, connection);
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            ConnectionPool.transactionRollback(connection);
+            user = userDao.read(userId, connection);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't read user", e.getCause());
+            throw e;
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        return user;
     }
 
-    public void updateUser(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
+    public int createUser(String userName, String userSurName, String userLastName, Date userBirthDate, Date userRegistrationDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, String identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
+        Connection connection = ConnectionPool.getConnection(false);
+        int userId;
+    try {
+        int passportId = passportIdentNumberDao.create(passportSerial, passportNumber, passportDateOfIssue, passportIssuedBy, identNuber, connection);
+        int addressId = livingAddressDao.create(region, district, city, street, building, appartment, connection);
+        int contactInfoId = contactInfoDao.create(userPhoneNumber, userEmail, connection);
+        int accountId = accountDao.create(login, password, connection);
+        userId = userDao.create(userName, userSurName, userLastName, userBirthDate, userRegistrationDate, passportId, 2, addressId, contactInfoId, accountId, connection);
+
+        ConnectionPool.commitTransaction(connection);
+    } catch (DataBaseWorkException e) {
+        ConnectionPool.transactionRollback(connection);
+        LOGGER.error("Can't create user", e.getCause());
+        throw e;
+    } finally {
+        ConnectionPool.closeConnection(connection);
+    }
+        return userId;
+    }
+
+    public void updateUser(int userId, String userName, String userSurName, String userLastName, Date userBirthDate, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, String identNuber, String region, String district, String city, String street, String building, String appartment, String userPhoneNumber, String userEmail, String login, String password) {
         Connection connection = ConnectionPool.getConnection(false);
         try {
             User user = userDao.read(userId, connection);
             passportIdentNumberDao.update(user.getPassportIdentNumberId(), passportSerial, passportNumber, passportDateOfIssue, passportIssuedBy, identNuber, connection);
             livingAddressDao.update(user.getLivingAddressId(), region, district, city, street, building, appartment, connection);
             contactInfoDao.update(user.getContactInfoId(), userPhoneNumber, userEmail, connection);
-            accountDao.update(user.getAccountsId(), login, password, connection);
-//            connection.commit();
             userDao.update(userId, userName, userSurName, userLastName, userBirthDate, connection);
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            ConnectionPool.commitTransaction(connection);
+        } catch (DataBaseWorkException e) {
+            ConnectionPool.transactionRollback(connection);
+            LOGGER.error("Can't update user", e.getCause());
+            throw e;
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -69,29 +79,34 @@ public class UserService {
 
     public List<User> getAllUsers() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<User> list = userDao.getAll(connection);
-        ConnectionPool.closeConnection(connection);
+        List<User> list;
+        try {
+            list = userDao.getAll(connection);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get users", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return list;
     }
 
     public AboutUserWrapper getUserInfo(int userId) {
         Connection connection = ConnectionPool.getConnection(true);
-        User user = userDao.read(userId, connection);
-//        if (user.getAccountsId() != null)
-        Account account = accountDao.read(user.getAccountsId(), connection);
-        PassportIdentNumber passportIdentNumber = passportIdentNumberDao.read(user.getPassportIdentNumberId(), connection);
-        LivingAddress livingAddress = livingAddressDao.read(user.getLivingAddressId(), connection);
-        ContactInfo contactInfo = contactInfoDao.read(user.getContactInfoId(), connection);
-
-        ConnectionPool.closeConnection(connection);
-        return new AboutUserWrapper(account, passportIdentNumber, livingAddress, contactInfo, user);
-    }
-
-    public User getLastAddedUser() {
-        Connection connection = ConnectionPool.getConnection(true);
-        int userId = userDao.getLastId(connection);
-        User user = userDao.read(userId, connection);
-
-        return user;
+        AboutUserWrapper wrapper = null;
+        try {
+            User user = userDao.read(userId, connection);
+            Account account = accountDao.read(user.getAccountsId(), connection);
+            PassportIdentNumber passportIdentNumber = passportIdentNumberDao.read(user.getPassportIdentNumberId(), connection);
+            LivingAddress livingAddress = livingAddressDao.read(user.getLivingAddressId(), connection);
+            ContactInfo contactInfo = contactInfoDao.read(user.getContactInfoId(), connection);
+            wrapper = new AboutUserWrapper(account, passportIdentNumber, livingAddress, contactInfo, user);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get user info", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return wrapper;
     }
 }

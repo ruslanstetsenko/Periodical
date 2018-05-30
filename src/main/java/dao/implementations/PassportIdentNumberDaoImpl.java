@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.PassportIdentNumber;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PassportIdentNumberDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,18 +15,27 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
     private static final Logger logger = LogManager.getLogger(PassportIdentNumberDaoImpl.class);
 
     @Override
-    public void create(String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, Connection connection) {
+    public int create(String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, String identNuber, Connection connection) {
         String sql = "INSERT INTO passport_ident_number (serial, number, date_of_issue, issued_by, id_number) VALUES (?, ?, ?, ?, ?)";
+        int id = 0;
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, passportSerial);
             preparedStatement.setInt(2, passportNumber);
             preparedStatement.setDate(3, passportDateOfIssue);
             preparedStatement.setString(4, passportIssuedBy);
-            preparedStatement.setInt(5, identNuber);
+            preparedStatement.setString(5, identNuber);
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create user passport info in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.passport");
         }
+        return id;
     }
 
     @Override
@@ -43,16 +53,17 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
                 passportIdentNumber.setNumber(resultSet.getInt("number"));
                 passportIdentNumber.setDateOfIssue(resultSet.getDate("date_of_issue"));
                 passportIdentNumber.setIssuedBy(resultSet.getString("issued_by"));
-                passportIdentNumber.setIdNumber(resultSet.getInt("id_number"));
+                passportIdentNumber.setIdNumber(resultSet.getString("id_number"));
             }
         } catch (SQLException e) {
             logger.error("Can't read user passport info from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.passport");
         }
         return passportIdentNumber;
     }
 
     @Override
-    public void update(int passportId, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, int identNuber, Connection connection) {
+    public void update(int passportId, String passportSerial, int passportNumber, Date passportDateOfIssue, String passportIssuedBy, String identNuber, Connection connection) {
         String sql = "UPDATE passport_ident_number SET serial=?, number=?, date_of_issue=?, issued_by=?, id_number=? WHERE id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -60,11 +71,12 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
             preparedStatement.setInt(2, passportNumber);
             preparedStatement.setDate(3, passportDateOfIssue);
             preparedStatement.setString(4, passportIssuedBy);
-            preparedStatement.setInt(5, identNuber);
+            preparedStatement.setString(5, identNuber);
             preparedStatement.setInt(6, passportId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user passport info in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.passport");
         }
     }
 
@@ -77,6 +89,7 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete user passport info in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.passport");
         }
     }
 
@@ -94,11 +107,12 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
                         .setNumber(resultSet.getInt("number"))
                         .setDateOfIssue(resultSet.getDate("date_of_issue"))
                         .setIssuedBy(resultSet.getString("issued_by"))
-                        .setIdNumber(resultSet.getInt("id_number"))
+                        .setIdNumber(resultSet.getString("id_number"))
                         .build());
             }
         } catch (SQLException e) {
             logger.error("Can't get user passport dataset in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.passport");
         }
         return list;
     }
@@ -113,6 +127,7 @@ public class PassportIdentNumberDaoImpl implements PassportIdentNumberDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get last added user passport info from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.passport");
         }
         return id;
     }

@@ -1,0 +1,157 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
+
+.header_admin {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    position: fixed;
+    background-color: rgb(50, 50, 50);
+    justify-content: center;
+    align-items: center;
+}
+
+.header_info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+
+}
+
+.about_user_block {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.about_user {
+    text-indent: .5em;
+}
+
+.import_header {
+}
+
+.links_admin {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.header_title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: .5em;
+    text-transform: uppercase;
+}
+.references {
+    color: white;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+aside {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 6%;
+    margin-left: 1%;
+    width: 12%;
+    align-content: center;
+    position: fixed;
+}
+.select_option {
+    margin: 0.5em;
+    width: 12em;
+    height: 2.5em;
+}
+.add_button {
+    margin: 0.5em;
+    width: 12em;
+    height: 2.5em;
+}
+.filler_input {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+.select_button {
+    margin: 0.5em;
+    width: 12em;
+    height: 2.5em;
+}
+.filler_name {
+    text-indent: .5em;
+    text-transform: lowercase;
+}
+
+article {
+    display: flex;
+    justify-content: center;
+}
+
+.pusers_table_block {
+    display: flex;
+    justify-content: center;
+    margin-top: 6em;
+    margin-bottom: 5em;
+}
+
+table {
+    border-collapse: collapse;
+}
+th {
+    border-bottom: 2px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    text-align: left;
+}
+
+td {
+    border-bottom: 1px solid #878787;
+    padding-left: 1em;
+    padding-right: 1em;
+    transition: .3s linear;
+}
+
+tr:hover td {
+    color: gray
+}
+.table_button {
+    margin: 0.5em;
+    width: 8em;
+    height: 2.5em;
+}
+
+footer {
+    display: flex;
+    background-color: rgb(50, 50, 50);
+    justify-content: flex-end;
+    height: 3em;
+    width: 100em;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    align-items: center;
+}
+.users_amount {
+    /*width: 100%;*/
+    margin-right: 25%;
+}
+.error {
+    color: red;
+    font-size: 8pt;
+}
+

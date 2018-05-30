@@ -2,6 +2,7 @@ package dao.implementations;
 
 import beans.UserRole;
 import dao.interfaces.UserRoleDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,15 +14,23 @@ public class UserRoleDaoImpl implements UserRoleDao {
     private static final Logger logger = LogManager.getLogger(UserRoleDaoImpl.class);
 
     @Override
-    public void create(UserRole userRole, Connection connection) {
+    public int create(UserRole userRole, Connection connection) {
         String sql = "INSERT INTO user_role (role_name) VALUE?";
+        int id = 0;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, userRole.getRoleName());
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create user role in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.userSupport");
         }
+        return id;
     }
 
     @Override
@@ -39,6 +48,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read user role from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.userSupport");
         }
         return userRole;
     }
@@ -53,6 +63,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user role in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.userSupport");
         }
     }
 
@@ -65,6 +76,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete user role in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.userSupport");
         }
     }
 
@@ -83,6 +95,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get user roles from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.userSupport");
         }
         return list;
     }

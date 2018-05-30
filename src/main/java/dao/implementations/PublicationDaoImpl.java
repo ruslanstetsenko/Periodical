@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.Publication;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PublicationDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +36,7 @@ public class PublicationDaoImpl implements PublicationDao {
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("Can't create publication in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return id;
     }
@@ -60,6 +62,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read publication from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return publication;
     }
@@ -76,6 +79,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get last added publication from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return id;
     }
@@ -96,6 +100,7 @@ public class PublicationDaoImpl implements PublicationDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update publication in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
 
     }
@@ -109,6 +114,7 @@ public class PublicationDaoImpl implements PublicationDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete publication in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
     }
 
@@ -133,6 +139,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't tet publications from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -162,6 +169,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by type, theme, status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -189,6 +197,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by type from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -216,6 +225,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by theme from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -243,6 +253,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -271,6 +282,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by thype, theme from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -299,6 +311,7 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by type, status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }
@@ -327,6 +340,33 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by theme, status from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
+        }
+        return list;
+    }
+
+    @Override
+    public List<Publication> getallPagination(Connection connection, int start, int total) {
+        List<Publication> list = new ArrayList<>();
+        String sql = "SELECT * FROM publication LIMIT "+(start-1)+","+total+"";
+
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                list.add(new Publication.Builder()
+                        .setId(resultSet.getInt("id"))
+                        .setName(resultSet.getString("name"))
+                        .setIssnNumber(resultSet.getInt("issn_number"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setWebsite(resultSet.getString("website"))
+                        .setPublicationTypeId(resultSet.getInt("publication_type_id"))
+                        .setPublicationStatusId(resultSet.getInt("publication_status_id"))
+                        .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            logger.error("Can't tet publications from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.publication");
         }
         return list;
     }

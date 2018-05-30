@@ -4,6 +4,10 @@ import connection.ConnectionPool;
 import dao.*;
 import beans.*;
 import dao.interfaces.*;
+import exceptions.DataBaseWorkException;
+import exceptions.ErrorMassageException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import wrappers.EditPublicationWrapper;
 import wrappers.FullPublicationInfoWrapper;
 import wrappers.PublicThemeAndTypeWrapper;
@@ -15,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PublicationService {
+    private static final Logger LOGGER = LogManager.getLogger(LoginService.class);
 
     private PublicationDao publicationDao = DaoFactory.getPublicationDao();
     private PublicationTypeDao publicationTypeDao = DaoFactory.getPublicationTypeDao();
@@ -25,8 +30,14 @@ public class PublicationService {
 
     public Publication getPublication(int pubId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Publication publication = publicationDao.read(pubId, connection);
-        ConnectionPool.closeConnection(connection);
+        Publication publication;
+        try {
+            publication = publicationDao.read(pubId, connection);
+
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get publication", e.getCause());
+            throw e;
+        }
         return publication;
     }
 
@@ -73,16 +84,16 @@ public class PublicationService {
                 .build();
         try {
             int publicationId = publicationDao.create(publication, connection);
-
-//            int publicationId = publicationDao.getLastPublicationId(connection);
             for (PublicationPeriodicyCost cost : list) {
                 cost.setPublicationId(publicationId);
                 System.out.println("publicationId " + publicationId);
                 publicationPeriodicityCostDao.create(cost, connection);
             }
-            connection.commit();
-        } catch (SQLException e) {
+            ConnectionPool.commitTransaction(connection);
+        } catch (DataBaseWorkException e) {
             ConnectionPool.transactionRollback(connection);
+            LOGGER.error("Can't create publication", e.getCause());
+            throw e;
         } finally {
             ConnectionPool.closeConnection(connection);
         }
@@ -112,129 +123,134 @@ public class PublicationService {
                     }
                 }
             }
-
-//            for (int i = 0; i < costs.size(); i++) {
-//                PublicationPeriodicyCost publicationPeriodicyCost = costBeens.get(i);
-//                if (costs.)
-//                publicationPeriodicyCost.setCost(Double.valueOf(costs[i]));
-//                publicationPeriodicityCostDao.update(publicationPeriodicyCost, connection);
-//            }
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            ConnectionPool.commitTransaction(connection);
+        } catch (DataBaseWorkException e) {
+            ConnectionPool.transactionRollback(connection);
+            LOGGER.error("Can't update publication", e.getCause());
+            throw e;
         } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ConnectionPool.closeConnection(connection);
         }
     }
 
     public FullPublicationInfoWrapper aboutPublication(int publicationId) {
+        FullPublicationInfoWrapper wrapper;
         Connection connection = ConnectionPool.getConnection(true);
-        Publication publication = publicationDao.read(publicationId, connection);
-        PublicationType publicationType = publicationTypeDao.read(publication.getPublicationTypeId(), connection);
-        PublicationTheme publicationTheme = publicationThemeDao.read(publication.getPublicationThemeId(), connection);
-        PublicationStatus publicationStatus = publicationStatusDao.read(publication.getPublicationStatusId(), connection);
-        List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAllByPubId(connection, publicationId);
-
-        ConnectionPool.closeConnection(connection);
-        return new FullPublicationInfoWrapper.Builder()
-                .setPublication(publication)
-                .setPublicationType(publicationType)
-                .setPublicationTheme(publicationTheme)
-                .setPublicationStatus(publicationStatus)
-                .setPublicationPeriodicyCostList(publicationPeriodicyCostList)
-                .build();
+        try {
+            Publication publication = publicationDao.read(publicationId, connection);
+            PublicationType publicationType = publicationTypeDao.read(publication.getPublicationTypeId(), connection);
+            PublicationTheme publicationTheme = publicationThemeDao.read(publication.getPublicationThemeId(), connection);
+            PublicationStatus publicationStatus = publicationStatusDao.read(publication.getPublicationStatusId(), connection);
+            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAllByPubId(connection, publicationId);
+            wrapper = new FullPublicationInfoWrapper.Builder()
+                    .setPublication(publication)
+                    .setPublicationType(publicationType)
+                    .setPublicationTheme(publicationTheme)
+                    .setPublicationStatus(publicationStatus)
+                    .setPublicationPeriodicyCostList(publicationPeriodicyCostList)
+                    .build();
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get info about publication", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return wrapper;
     }
 
     public EditPublicationWrapper editPublication(int publicationId) {
         Connection connection = ConnectionPool.getConnection(true);
-
-        Publication publication = publicationDao.read(publicationId, connection);
-        List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
-        List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
-        List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
-        List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAll(connection)
-                .stream()
-                .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == publicationId)
-                .collect(Collectors.toList());
-
-        ConnectionPool.closeConnection(connection);
-        return new EditPublicationWrapper(publication, publicationTypeList, publicationThemeList, publicationStatusList, publicationPeriodicyCostList);
+        EditPublicationWrapper wrapper = null;
+        try {
+            Publication publication = publicationDao.read(publicationId, connection);
+            List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
+            List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
+            List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
+            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAll(connection)
+                    .stream()
+                    .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == publicationId)
+                    .collect(Collectors.toList());
+            wrapper = new EditPublicationWrapper(publication, publicationTypeList, publicationThemeList, publicationStatusList, publicationPeriodicyCostList);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't edit publication", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return wrapper;
     }
 
-//    public void deletePublication(Publication publication) {
-//        Connection connection = ConnectionPool.getConnection(false);
-//        try {
-//            publicationDao.delete(publication.getId(), connection);
-//            connection.commit();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                connection.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//        } finally {
-//            try {
-//                connection.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    /*Working*/
+    public List<Publication> getallPagination(int start, int total) {
+        Connection connection = ConnectionPool.getConnection(true);
+        List<Publication> list;
+        try {
+            list = publicationDao.getallPagination(connection, start, total);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get all publications", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return list;
+    }
 
     public FullPublicationInfoWrapper getAllPublication() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> publicationList = publicationDao.getAll(connection);
-        List<SubscriptionBill> subscriptionBillList = subscriptionBillDao.getAll(connection);
-        List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
-        List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
-        List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
-
-        ConnectionPool.closeConnection(connection);
-        return new FullPublicationInfoWrapper.Builder()
-                .setPublicationList(publicationList)
-                .setSubscriptionBillList(subscriptionBillList)
-                .setPublicationTypeList(publicationTypeList)
-                .setPublicationThemeList(publicationThemeList)
-                .setPublicationStatusList(publicationStatusList)
-                .build();
+        FullPublicationInfoWrapper wrapper;
+        try {
+            List<Publication> publicationList = publicationDao.getAll(connection);
+            List<SubscriptionBill> subscriptionBillList = subscriptionBillDao.getAll(connection);
+            List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
+            List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
+            List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
+            wrapper = new FullPublicationInfoWrapper.Builder()
+                    .setPublicationList(publicationList)
+                    .setSubscriptionBillList(subscriptionBillList)
+                    .setPublicationTypeList(publicationTypeList)
+                    .setPublicationThemeList(publicationThemeList)
+                    .setPublicationStatusList(publicationStatusList)
+                    .build();
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get all publications", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return wrapper;
     }
 
     public PublicThemeAndTypeWrapper getPubThemesAndTypes() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
-        List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
-
-        ConnectionPool.closeConnection(connection);
-        return new PublicThemeAndTypeWrapper(publicationThemeList, publicationTypeList);
+        PublicThemeAndTypeWrapper wrapper = null;
+        try {
+            List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
+            List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
+            wrapper = new PublicThemeAndTypeWrapper(publicationThemeList, publicationTypeList);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get publication themes and types", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return wrapper;
     }
 
     public List<Publication> getSelectedPublication(int pubTypeId, int pubThemeId, int pubStatusId) {
         Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> publicationList;
-//        List<SubscriptionBill> subscriptionBillList = new ArrayList<>();
-//        List<PublicationType> publicationTypeList = new ArrayList<>();
-//        List<PublicationTheme> publicationThemeList = new ArrayList<>();
-//        List<PublicationStatus> publicationStatusList = new ArrayList<>();
-
-//        publicationTypeList = publicationTypeDao.getAll(connection);
-//        publicationThemeList = publicationThemeDao.getAll(connection);
-//        publicationStatusList = publicationStatusDao.getAll(connection);
-        publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
-        ConnectionPool.closeConnection(connection);
+        List<Publication> publicationList = null;
+        try {
+            publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get selected publications", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return publicationList;
     }
 
-    private List<Publication> supportGetPubList(Connection connection, int pubTypeId, int pubThemeId, int pubStatusId) {
+    private List<Publication> supportGetPubList(Connection connection, int pubTypeId, int pubThemeId, int pubStatusId) throws DataBaseWorkException {
         List<Publication> publicationList;
         if (pubTypeId == 0 && pubThemeId == 0 && pubStatusId == 0) {
             publicationList = publicationDao.getAll(connection);
@@ -258,142 +274,47 @@ public class PublicationService {
 
     public List<Publication> selectPublicationsByTypeByTheme(int typeId, int themeId) {
         Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> publicationList = supportGetPubList(connection, typeId, themeId, 1);
-
-        ConnectionPool.closeConnection(connection);
+        List<Publication> publicationList;
+        try {
+            publicationList = supportGetPubList(connection, typeId, themeId, 1);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get selected publications", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
         return publicationList;
     }
 
-//    public List<Publication> selectPublicationsByStatus(PublicationStatus status, int currentPubTypeId, int currentPubThemeId) {
-//        Connection connection = ConnectionPool.getConnection(true);
-//        List<Publication> publicationList = publicationDao.getAll(connection)
-//                .stream()
-//                .filter(publication -> publication.getPublicationStatusId() == status.getId())
-//                .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-//                .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
-//                .collect(Collectors.toList());
-//
-//        ConnectionPool.closeConnection(connection);
-//        return publicationList;
-//    }
-
-//    public List<Publication> selectPublicationsByTheme(PublicationTheme theme, int currentPubStatusId, int currentPubTypeId) {
-//        Connection connection = ConnectionPool.getConnection(true);
-//        List<Publication> publicationList = publicationDao.getAll(connection)
-//                .stream()
-//                .filter(publication -> publication.getPublicationThemeId() == theme.getId())
-//                .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-//                .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-//                .collect(Collectors.toList());
-//
-//        ConnectionPool.closeConnection(connection);
-//        return publicationList;
-//    }
-
-
-//    public List<Publication> selectPublicationsByType(PublicationType type, int currentPubStatusId, int currentPubThemeId) {
-//        Connection connection = ConnectionPool.getConnection(true);
-//
-//        List<Publication> publicationList = publicationDao.getAll(connection)
-//                .stream()
-//                .filter(publication -> publication.getPublicationTypeId() == type.getId())
-//                .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-//                .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
-//                .collect(Collectors.toList());
-//
-//        ConnectionPool.closeConnection(connection);
-//        return publicationList;
-//    }
-
-//    public void addNewPublication(String name, int issnNumber, Date registrationDate, String website, Integer publicationTypeId, Integer publicationStatusId, Integer publicationThemeId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
-//        Connection connection = ConnectionPool.getConnection(false);
-//        Publication publicationNew = new Publication.Builder()
-//                .setName(name)
-//                .setIssnNumber(issnNumber)
-//                .setRegistrationDate(registrationDate)
-//                .setWebsite(website)
-//                .setPublicationTypeId(publicationTypeId)
-//                .setPublicationStatusId(publicationStatusId)
-//                .build();
-//        try {
-//            publicationDao.create(publicationNew, connection);
-//            connection.commit();
-//            List<Publication> publicationList = publicationDao.getAll(connection)
-//                    .stream()
-//                    .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-//                    .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-//                    .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
-//                    .collect(Collectors.toList());
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                connection.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//        } finally {
-//            try {
-//                connection.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-//    public void deletePublication(int publicationId, int currentPubStatusId, int currentPubTypeId, int currentPubThemeId) {
-//        Connection connection = ConnectionPool.getConnection(false);
-//        List<Publication> publicationList = new ArrayList<>();
-//        try {
-//            publicationDao.delete(publicationId, connection);
-//            connection.commit();
-//            publicationList = publicationDao.getAll(connection)
-//                    .stream()
-//                    .filter(publication -> publication.getPublicationStatusId() == currentPubStatusId)
-//                    .filter(publication -> publication.getPublicationTypeId() == currentPubTypeId)
-//                    .filter(publication -> publication.getPublicationThemeId() == currentPubThemeId)
-//                    .collect(Collectors.toList());
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            try {
-//                connection.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//        } finally {
-//            try {
-//                connection.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
     public Map<Publication, List<PublicationPeriodicyCost>> getPublicationWithCosts(int typeId, int themeId, int statusId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Map<Publication, List<PublicationPeriodicyCost>> publicationListMap = new LinkedHashMap<>();
-        List<Publication> publications = new ArrayList<>();
-        List<PublicationPeriodicyCost> publicationPeriodicyCosts = new ArrayList<>();
+        Map<Publication, List<PublicationPeriodicyCost>> publicationListMap = null;
+        List<Publication> publications;
+        List<PublicationPeriodicyCost> publicationPeriodicyCosts;
         List<PublicationPeriodicyCost> forEachPub = new ArrayList<>();
+        try {
+            publications = supportGetPubList(connection, typeId, themeId, statusId);
+            publicationPeriodicyCosts = publicationPeriodicityCostDao.getAll(connection)
+                    .stream()
+                    .sorted(Comparator.comparing(PublicationPeriodicyCost::getPublicationId))
+                    .collect(Collectors.toList());
 
-
-        publications = supportGetPubList(connection, typeId, themeId, statusId);
-        publicationPeriodicyCosts = publicationPeriodicityCostDao.getAll(connection)
-                .stream()
-                .sorted(Comparator.comparing(PublicationPeriodicyCost::getPublicationId))
-                .collect(Collectors.toList());
-
-        for (Publication publication : publications) {
-            for (PublicationPeriodicyCost cost : publicationPeriodicyCosts) {
-                if (cost.getPublicationId() == publication.getId()) {
-                    forEachPub.add(cost);
+            for (Publication publication : publications) {
+                for (PublicationPeriodicyCost cost : publicationPeriodicyCosts) {
+                    if (cost.getPublicationId() == publication.getId()) {
+                        forEachPub.add(cost);
+                    }
                 }
+
+                publicationListMap.put(publication, forEachPub);
+                forEachPub = new ArrayList<>();
             }
-
-            publicationListMap.put(publication, forEachPub);
-            forEachPub = new ArrayList<>();
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't get publication with costs", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
-
-        ConnectionPool.closeConnection(connection);
         return publicationListMap;
     }
 }

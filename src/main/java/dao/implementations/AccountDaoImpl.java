@@ -3,6 +3,7 @@ package dao.implementations;
 import beans.Account;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.AccountDao;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,16 +15,24 @@ public class AccountDaoImpl implements AccountDao {
     private static final Logger logger = LogManager.getLogger(AccountDaoImpl.class);
 
     @Override
-    public void create(String login, String password, Connection connection) {
+    public int create(String login, String password, Connection connection) {
         String sql = "INSERT INTO accounts (login, password) VALUES (?, ?)";
+        int id = 0;
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             logger.error("Can't create user account in DB", e.getCause());
-            e.printStackTrace();
+            throw new DataBaseWorkException("message.error.accountAccess");
         }
+        return id;
     }
 
     @Override
@@ -42,6 +51,7 @@ public class AccountDaoImpl implements AccountDao {
             }
         } catch (SQLException e) {
             logger.error("Can't read user account from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.accountAccess");
         }
         return account;
     }
@@ -56,6 +66,7 @@ public class AccountDaoImpl implements AccountDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't update user account in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.accountAccess");
         }
     }
 
@@ -67,6 +78,7 @@ public class AccountDaoImpl implements AccountDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("Can't delete user account in DB", e.getCause());
+            throw new DataBaseWorkException("message.error.accountAccess");
         }
     }
 
@@ -86,24 +98,9 @@ public class AccountDaoImpl implements AccountDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get accounts from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.accountAccess");
         }
         return list;
-    }
-
-    @Override
-    public int getLastId(Connection connection) {
-        int id = 0;
-        String sql = "SELECT LAST_INSERT_ID() AS lastId FROM accounts";
-
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
-            if (resultSet.next()) {
-                id = resultSet.getInt("lastId");
-            }
-        } catch (SQLException e) {
-            logger.error("Can't get last added user account from DB", e.getCause());
-        }
-        return id;
     }
 }
 

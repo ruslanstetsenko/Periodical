@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class NoCommand implements Command {
-//    private static final Logger logger = Logger.getLogger(NoCommand.class);
 private static final Logger logger = LogManager.getLogger(NoCommand.class);
 
     @Override

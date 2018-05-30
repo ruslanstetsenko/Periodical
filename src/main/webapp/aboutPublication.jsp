@@ -19,61 +19,69 @@
 <head>
     <c:set var="currentPage" value="path.page.aboutPublication" scope="request"/>
     <title><fmt:message key="aboutPublication.publicationInfo" bundle="${rb}"/></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/about_publication.css' %>
+    </style>
 </head>
 <body>
-<div>
-    <p><fmt:message key="aboutPublication.aboutPublication" bundle="${rb}"/></p>
-    <table>
-        <tbody>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></strong></th>
-            <th><c:out value="${publication.name}"/></th>
-        </tr>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationISSN" bundle="${rb}"/></strong></th>
-            <th align="left"><c:out value="${publication.issnNumber}"/></th>
-        </tr>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></strong></th>
-            <th align="left"><c:out value="${publicationType.typeName}"/></th>
-        </tr>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationStatus" bundle="${rb}"/></strong></th>
-            <th align="left"><c:out value="${publicationStatus.statusName}"/></th>
-        </tr>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></strong></th>
-            <th align="left"><c:out value="${publicationTheme.themeName}"/></th>
-        </tr>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationRegDate" bundle="${rb}"/></strong></th>
-            <th align="left"><c:out value="${publication.registrationDate}"/></th>
-        </tr>
-        <tr>
-            <th align="left"><strong><fmt:message key="aboutPublication.publicationWebsite" bundle="${rb}"/></strong></th>
-            <th align="left"><c:out value="${publication.website}"/></th>
-        </tr>
-        </tbody>
-    </table>
+<article>
+    <div class="about_publication">
+        <h3 class="about_publication_title"><fmt:message key="aboutPublication.aboutPublication" bundle="${rb}"/></h3>
+        <table class="about_table1">
+            <tbody>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationName" bundle="${rb}"/></th>
+                <td class="parameter_value"><c:out value="${publication.name}"/></td>
+            </tr>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationISSN" bundle="${rb}"/></th>
+                <td class="parameter_value" align="left"><c:out value="${publication.issnNumber}"/></td>
+            </tr>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationType" bundle="${rb}"/></th>
+                <td class="parameter_value" align="left"><c:out value="${publicationType.typeName}"/></td>
+            </tr>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationStatus" bundle="${rb}"/></th>
+                <td class="parameter_value" align="left"><c:out value="${publicationStatus.statusName}"/></td>
+            </tr>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationTheme" bundle="${rb}"/></th>
+                <td class="parameter_value" align="left"><c:out value="${publicationTheme.themeName}"/></td>
+            </tr>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationRegDate" bundle="${rb}"/></th>
+                <td class="parameter_value" align="left"><c:out value="${publication.registrationDate}"/></td>
+            </tr>
+            <tr>
+                <th class="parameneter_title" align="left"><fmt:message key="aboutPublication.publicationWebsite" bundle="${rb}"/></th>
+                <td class="parameter_value" align="left"><c:out value="${publication.website}"/></td>
+            </tr>
+            </tbody>
+        </table>
 
-    <table>
-        <tbody>
-        <tr>
-            <th valign="top"><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></th>
-            <td>
-                <c:forEach var="cost" items="${publicationPeriodicityCostList}">
-                    на <c:out value="${cost.timesPerYear}"/> <fmt:message key="aboutPublication.subsCostHead" bundle="${rb}"/> <c:out value="${cost.cost}"/> <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/><br>
-                </c:forEach>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <table class="about_table2">
+            <tbody>
+            <tr>
+                <th valign="top"><fmt:message key="aboutPublication.publicationCost" bundle="${rb}"/></th>
+                <td>
+                    <c:forEach var="cost" items="${publicationPeriodicityCostList}">
+                         <c:out value="${cost.timesPerYear}"/> <fmt:message key="aboutPublication.subsCostHead" bundle="${rb}"/> <c:out value="${cost.cost}"/> <fmt:message key="aboutPublication.subsCostTail" bundle="${rb}"/><br>
+                    </c:forEach>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-    <form name="backPrevPage" method="post" action="controller">
-        <input type="hidden" name="command" value="cancelEditPublication">
-        <input type="submit" name="cancel" value="<fmt:message key="button.backToUserWindow" bundle="${rb}"/>">
-    </form>
-</div>
+        <form name="backPrevPage" method="post" action="controller">
+            <input type="hidden" name="command" value="cancelEditPublication">
+            <input class="button_back" type="submit" name="cancel" value="<fmt:message key="button.backToUserWindow" bundle="${rb}"/>">
+        </form>
+    </div>
+</article>
+
 
 </body>
 </html>

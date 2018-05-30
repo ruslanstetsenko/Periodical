@@ -19,134 +19,161 @@
 <head>
     <c:set var="currentPage" value="path.page.aboutUser" scope="request"/>
     <title><fmt:message key="aboutUser.title" bundle="${rb}"/></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <c:if test="${currentUser.userRoleId == 1}">
+        <style>
+            <%@include file='css/about_user.css' %>
+        </style>
+    </c:if>
+    <c:if test="${currentUser.userRoleId == 2}">
+        <style>
+            <%@include file='css/about_user1.css' %>
+        </style>
+    </c:if>
+
+
+
 </head>
 <body>
 
 <header>
-    <h3><fmt:message key="head.welcome" bundle="${rb}"/> <c:out value="${currentUser.surname}"/> <c:out value="${currentUser.name}"/> <c:out value="${currentUser.lastName}"/></h3>
-    <div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
-        <a href="userPageSubsc.jsp"><fmt:message key="userPage.subscriptions" bundle="${rb}"/></a>
-        <a href="userPageBills.jsp"><fmt:message key="userPage.billsTitle" bundle="${rb}"/></a>
+    <div class="header_info">
+        <h3><fmt:message key="head.welcome" bundle="${rb}"/>
+            <c:out value="${currentUser.surname}"/>
+            <c:out value="${currentUser.name}"/>
+            <c:out value="${currentUser.lastName}"/>
+        </h3>
+        <h3 class="import_header"><c:import url="headUserInfo.jsp"/></h3>
     </div>
-    <div <c:if test="${currentUser.userRoleId == 2}">HIDDEN</c:if>>
-        <a href="users.jsp"><fmt:message key="aboutUser.goToUsers" bundle="${rb}"/></a>
+    <div class="links_user" <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
+        <a class="references" href="userPageSubsc.jsp"><fmt:message key="userPage.subscriptions" bundle="${rb}"/></a>
+        <a class="references" href="userPageBills.jsp"><fmt:message key="userPage.billsTitle" bundle="${rb}"/></a>
+        <a class="references" href="controller?command=editUser"><fmt:message key="aboutUser.editUser" bundle="${rb}"/></a>
     </div>
-    <div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
-        <a href="controller?command=editUser"><fmt:message key="aboutUser.editUser" bundle="${rb}"/></a><br>
-        <%--<a href="userPageSubsc.jsp"><fmt:message key="aboutUser.backToSubs" bundle="${rb}"/></a>--%>
+    <div class="links_admin" <c:if test="${currentUser.userRoleId == 2}">HIDDEN</c:if>>
+        <a class="references" href="users.jsp">
+            <fmt:message key="aboutUser.goToUsers" bundle="${rb}"/></a>
+    <%--</div>--%>
+    <%--<div class="links_user" <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>--%>
     </div>
-    <c:import url="headUserInfo.jsp"/>
+    <h3 class="header_title"><fmt:message key="aboutUser.user" bundle="${rb}"/></h3>
 </header>
 
-<div>
-    <p><b><fmt:message key="aboutUser.user" bundle="${rb}"/></b></p>
-    <table>
-        <tbody>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.surname" bundle="${rb}"/></th>
-            <td><c:out value="${user.surname}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.name" bundle="${rb}"/></th>
-            <td><c:out value="${user.name}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.lastName" bundle="${rb}"/></th>
-            <td><c:out value="${user.lastName}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.birthday" bundle="${rb}"/></th>
-            <td><c:out value="${user.birthday}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.regDate" bundle="${rb}"/></th>
-            <td><c:out value="${user.registrationDate}"/></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<article>
+    <div class="about_user_block">
+        <div class="personal_info">
+            <table>
+                <tbody>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.surname" bundle="${rb}"/></th>
+                    <td><c:out value="${user.surname}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.name" bundle="${rb}"/></th>
+                    <td><c:out value="${user.name}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.lastName" bundle="${rb}"/></th>
+                    <td><c:out value="${user.lastName}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.birthday" bundle="${rb}"/></th>
+                    <td><c:out value="${user.birthday}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.regDate" bundle="${rb}"/></th>
+                    <td><c:out value="${user.registrationDate}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-<div>
-    <p><b><fmt:message key="aboutUser.passportData" bundle="${rb}"/></b></p>
-    <table>
-        <tbody>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.serialAndNumber" bundle="${rb}"/></th>
-            <td><c:out value="${userPassportIdNumb.serial}"/> <c:out value="${userPassportIdNumb.number}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.dateOfIssue" bundle="${rb}"/></th>
-            <td><c:out value="${userPassportIdNumb.dateOfIssue}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.issuedBy" bundle="${rb}"/></th>
-            <td><c:out value="${userPassportIdNumb.issuedBy}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.identNumber" bundle="${rb}"/></th>
-            <td><c:out value="${userPassportIdNumb.idNumber}"/></td>
-        </tr>
+        <div class="passport_info">
+            <p class="blocks_title"><fmt:message key="aboutUser.passportData" bundle="${rb}"/></p>
+            <table>
+                <tbody>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.serialAndNumber" bundle="${rb}"/></th>
+                    <td><c:out value="${userPassportIdNumb.serial}"/> <c:out value="${userPassportIdNumb.number}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.dateOfIssue" bundle="${rb}"/></th>
+                    <td><c:out value="${userPassportIdNumb.dateOfIssue}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.issuedBy" bundle="${rb}"/></th>
+                    <td><c:out value="${userPassportIdNumb.issuedBy}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.identNumber" bundle="${rb}"/></th>
+                    <td><c:out value="${userPassportIdNumb.idNumber}"/></td>
+                </tr>
 
 
-        </tbody>
-    </table>
-</div>
+                </tbody>
+            </table>
+        </div>
 
-<div>
-    <p><b><fmt:message key="aboutUser.address" bundle="${rb}"/></b></p>
-    <table>
-        <tbody>
-        <tr>
-            <td></td>
-            <td><c:out value="${userLivingAddress.region}"/> <fmt:message key="aboutUser.region" bundle="${rb}"/></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><c:out value="${userLivingAddress.district}"/> <fmt:message key="aboutUser.district" bundle="${rb}"/></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><c:out value="${userLivingAddress.city}"/></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><c:out value="${userLivingAddress.street}"/>,  <c:out value="${userLivingAddress.building}"/> <fmt:message key="aboutUser.appartment" bundle="${rb}"/> <c:out value="${userLivingAddress.appartment}"/></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="address_info">
+            <p class="blocks_title"><fmt:message key="aboutUser.address" bundle="${rb}"/></p>
+            <table>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td><c:out value="${userLivingAddress.region}"/> <fmt:message key="aboutUser.region" bundle="${rb}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><c:out value="${userLivingAddress.district}"/> <fmt:message key="aboutUser.district" bundle="${rb}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><c:out value="${userLivingAddress.city}"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><c:out value="${userLivingAddress.street}"/>,  <c:out value="${userLivingAddress.building}"/> <fmt:message key="aboutUser.appartment" bundle="${rb}"/> <c:out value="${userLivingAddress.appartment}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-<div>
-    <p><b><fmt:message key="aboutUser.contacts" bundle="${rb}"/></b></p>
-    <table>
-        <tbody>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.phone" bundle="${rb}"/></th>
-            <td><c:out value="${userContactInfo.phone}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.email" bundle="${rb}"/></th>
-            <td><c:out value="${userContactInfo.email}"/></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="contact_info">
+            <p class="blocks_title"><fmt:message key="aboutUser.contacts" bundle="${rb}"/></p>
+            <table>
+                <tbody>
+                <tr>
+                    <%--<th align="left"><fmt:message key="aboutUser.phone" bundle="${rb}"/></th>--%>
+                    <td><c:out value="${userContactInfo.phone}"/></td>
+                </tr>
+                <tr>
+                    <%--<th align="left"><fmt:message key="aboutUser.email" bundle="${rb}"/></th>--%>
+                    <td><c:out value="${userContactInfo.email}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-<div <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
-    <p><b><fmt:message key="aboutUser.authorizationOptions" bundle="${rb}"/></b></p>
-    <table>
-        <tbody>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.login" bundle="${rb}"/></th>
-            <td><c:out value="${userAccount.login}"/></td>
-        </tr>
-        <tr>
-            <th align="left"><fmt:message key="aboutUser.password" bundle="${rb}"/></th>
-            <td><c:out value="${userAccount.password}"/></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="autorization_info" <c:if test="${currentUser.userRoleId == 1}">HIDDEN</c:if>>
+            <p class="blocks_title"><fmt:message key="aboutUser.authorizationOptions" bundle="${rb}"/></p>
+            <table>
+                <tbody>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.login" bundle="${rb}"/></th>
+                    <td><c:out value="${userAccount.login}"/></td>
+                </tr>
+                <tr>
+                    <th align="left"><fmt:message key="aboutUser.password" bundle="${rb}"/></th>
+                    <td><c:out value="${userAccount.password}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>
+<footer>
 
+</footer>
 </body>
 </html>

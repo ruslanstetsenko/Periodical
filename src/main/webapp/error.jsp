@@ -19,10 +19,17 @@
 <head>
     <c:set var="currentPage" value="path.page.error" scope="request"/>
     <title><fmt:message key="errorPage.title" bundle="${rb}"/></title>
-
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=cyrillic,cyrillic-ext,latin-ext"
+          rel="stylesheet"/>
+    <style>
+        <%@include file='css/error.css' %>
+    </style>
 </head>
 <body>
-${errorFoundUser}<br/>
-<a href="controller?command=logout"></a>
+<div class="page_body">
+    <p class="error_message">${errorMessage}Test error message</p>
+    <a class="go_back" href="controller?command=goBack"><fmt:message key="errorPage.goBack" bundle="${rb}"/></a>
+</div>
+
 </body>
 </html>

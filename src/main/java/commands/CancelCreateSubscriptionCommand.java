@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.Map;
 
 public class CancelCreateSubscriptionCommand implements Command {
-    //    private static final Logger logger = Logger.getLogger(CancelCreateSubscriptionCommand.class);
     private static final Logger logger = LogManager.getLogger(CancelCreateSubscriptionCommand.class);
 
     @Override
