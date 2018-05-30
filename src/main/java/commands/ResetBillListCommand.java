@@ -1,8 +1,10 @@
 package commands;
 
 import beans.SubscriptionBill;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.SubscriptionBillService;
 
@@ -14,19 +16,32 @@ import java.io.IOException;
 import java.util.List;
 
 public class ResetBillListCommand implements Command {
-//    private static final Logger logger = Logger.getLogger(ResetBillListCommand.class);
-private static final Logger logger = LogManager.getLogger(ResetBillListCommand.class);
+private static final Logger LOGGER = LogManager.getLogger(ResetBillListCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
         session.setAttribute("currentBillPaidId", 0);
-        List<SubscriptionBill> list = new SubscriptionBillService().selectBillsByStatus(0);
-        session.setAttribute("subscriptionBillList", list);
+        try {
+            List<SubscriptionBill> list = new SubscriptionBillService().selectBillsByStatus(0);
+            if (list != null) {
+                session.setAttribute("subscriptionBillList", list);
+            } else {
+                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                request.setAttribute("previousPage", "path.page.adminPage");
+                LOGGER.error("Can't load bills informations");
+                return PageConfigManager.getProperty("path.page.error");
+            }
+        } catch (DataBaseWorkException e) {
+            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            request.setAttribute("previousPage", "path.page.login");
+            LOGGER.error("New user was not created. DB error", e.getCause());
+            return PageConfigManager.getProperty("path.page.error");
+        }
 
         return PageConfigManager.getProperty("path.page.adminPage");
     }

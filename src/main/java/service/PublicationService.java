@@ -30,7 +30,7 @@ public class PublicationService {
 
     public Publication getPublication(int pubId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Publication publication;
+        Publication publication = null;
         try {
             publication = publicationDao.read(pubId, connection);
 
@@ -134,7 +134,7 @@ public class PublicationService {
     }
 
     public FullPublicationInfoWrapper aboutPublication(int publicationId) {
-        FullPublicationInfoWrapper wrapper;
+        FullPublicationInfoWrapper wrapper = null;
         Connection connection = ConnectionPool.getConnection(true);
         try {
             Publication publication = publicationDao.read(publicationId, connection);
@@ -197,7 +197,7 @@ public class PublicationService {
 
     public FullPublicationInfoWrapper getAllPublication() {
         Connection connection = ConnectionPool.getConnection(true);
-        FullPublicationInfoWrapper wrapper;
+        FullPublicationInfoWrapper wrapper = null;
         try {
             List<Publication> publicationList = publicationDao.getAll(connection);
             List<SubscriptionBill> subscriptionBillList = subscriptionBillDao.getAll(connection);
@@ -274,7 +274,7 @@ public class PublicationService {
 
     public List<Publication> selectPublicationsByTypeByTheme(int typeId, int themeId) {
         Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> publicationList;
+        List<Publication> publicationList = null;
         try {
             publicationList = supportGetPubList(connection, typeId, themeId, 1);
         } catch (DataBaseWorkException e) {

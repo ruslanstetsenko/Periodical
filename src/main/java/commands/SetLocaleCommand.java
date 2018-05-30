@@ -11,14 +11,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class SetLocaleCommand implements Command {
-//    private static final Logger logger = Logger.getLogger(SetLocaleCommand.class);
-private static final Logger logger = LogManager.getLogger(SetLocaleCommand.class);
+private static final Logger LOGGER = LogManager.getLogger(SetLocaleCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (session.getAttribute("sessionId") !=null && !session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
@@ -27,9 +26,9 @@ private static final Logger logger = LogManager.getLogger(SetLocaleCommand.class
         session.setAttribute("locale", locale);
 
         if (locale.equals("1")) {
-            logger.info("Locale EN was setted");
+            LOGGER.info("Locale EN was setted");
         } else {
-            logger.info("Locale UA was setted");
+            LOGGER.info("Locale UA was setted");
         }
         return PageConfigManager.getProperty(key);
     }

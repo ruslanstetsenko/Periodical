@@ -56,7 +56,7 @@ public class SubscriptionBillService {
 
     public List<SubscriptionBill> selectBillsByStatus(int status) {
         Connection connection = ConnectionPool.getConnection(true);
-        List<SubscriptionBill> subscriptionBillList;
+        List<SubscriptionBill> subscriptionBillList = null;
         try {
             if (status == 0) {
                 subscriptionBillList = subscriptionBillDao.getAll(connection);

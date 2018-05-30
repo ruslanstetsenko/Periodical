@@ -1,11 +1,8 @@
 package commands;
 
 import beans.Account;
-import beans.Publication;
 import beans.User;
-import dao.implementations.PublicationDaoImpl;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
@@ -23,53 +20,59 @@ import java.io.IOException;
 import java.util.List;
 
 public class OkLoginComand implements Command {
-    //    private static final Logger logger = Logger.getLogger(OkLoginComand.class);
-//    static {
-//        System.setProperty("log4j2.configurationFile", "resources/log4j2.xml");
-//    }
-
-    private static final Logger logger = LogManager.getLogger(OkLoginComand.class);
+    private static final Logger LOGGER = LogManager.getLogger(OkLoginComand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
+        String sessionId = session.getId();
+
         if (session.getAttribute("sessionId") == null) {
-            session.setAttribute("sessionId", session.getId());
-            logger.info("Session " + session.getId() + " has started");
+            session.setAttribute("sessionId", sessionId);
+            LOGGER.info("Session " + session.getId() + " has started");
         }
 
-        String sessionId = session.getId();
         LoginService loginService = new LoginService();
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        Account account;
-        User currentUser;
+        Account account = null;
+        User currentUser = null;
+
         try {
             account = loginService.checkAccount(login, password);
         } catch (DataBaseWorkException e) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
             request.setAttribute("previousPage", "path.page.login");
+            LOGGER.error("Can't get user account. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
 
         if (account != null) {
-            currentUser = loginService.getUser(account);
-            logger.info("Account was found");
+            try {
+                currentUser = loginService.getUser(account);
+            } catch (DataBaseWorkException e) {
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("Can't get user. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            }
+            LOGGER.info("Account was found");
         } else {
-            logger.info("Account was not found");
+            LOGGER.info("Account was not found");
             request.setAttribute("errorLoginMessage", true);
             return PageConfigManager.getProperty("path.page.login");
         }
 
-        if (currentUser != null) {
+        if (currentUser != null && currentUser.getUserRoleId() == 1) {
+
             session.setAttribute("currentUser", currentUser);
             session.setAttribute("currentPubTypeId", 0);
             session.setAttribute("currentPubThemeId", 0);
             session.setAttribute("currentPubStatusId", 0);
             session.setAttribute("currentBillPaidId", 0);
+            session.setAttribute("sessionId", sessionId);
 
-            if (currentUser.getUserRoleId() == 1) {
-                session.setAttribute("sessionId", sessionId);
+            try {
                 FullPublicationInfoWrapper wrapper = new PublicationService().getAllPublication();
                 List<User> userList = new UserService().getAllUsers();
                 session.setAttribute("publicationList", wrapper.getPublicationList());
@@ -79,20 +82,32 @@ public class OkLoginComand implements Command {
                 session.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
                 session.setAttribute("userList", userList);
                 session.setAttribute("loginFormAction", "admin");
+            } catch (DataBaseWorkException e) {
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("Can't get data. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            } catch (NullPointerException npe) {
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("Can't load user info", npe.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            }
 
-                logger.info("Admin logined successful");
-                return PageConfigManager.getProperty("path.page.adminPage");
+            LOGGER.info("Admin logined successful");
+            return PageConfigManager.getProperty("path.page.adminPage");
+        } else if (currentUser != null && currentUser.getUserRoleId() == 2) {
+            LoadUserWindowWrapper wrapper = new UserWindowsService().loadUserWindow(currentUser.getId());
+            SubscriptionService subscriptionService = new SubscriptionService();
+            session.setAttribute("currentUser", currentUser);
+            session.setAttribute("currentSubStatusId", 0);
+            session.setAttribute("currentBillPaidId", 0);
+            session.setAttribute("mapPubNameSubscription", wrapper.getMap());
+            session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
+            session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
+            session.setAttribute("sessionId", sessionId);
 
-            } else if (currentUser.getUserRoleId() == 2) {
-                session.setAttribute("sessionId", sessionId);
-                LoadUserWindowWrapper wrapper = new UserWindowsService().loadUserWindow(currentUser.getId());
-                SubscriptionService subscriptionService = new SubscriptionService();
-                session.setAttribute("currentSubStatusId", 0);
-                session.setAttribute("currentBillPaidId", 0);
-                session.setAttribute("mapPubNameSubscription", wrapper.getMap());
-                session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
-                session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
-
+            try {
                 AboutUserWrapper wrapper1 = new UserService().getUserInfo(currentUser.getId());
                 session.setAttribute("user", wrapper1.getUser());
                 session.setAttribute("userAccount", wrapper1.getAccount());
@@ -101,15 +116,25 @@ public class OkLoginComand implements Command {
                 session.setAttribute("userPassportIdNumb", wrapper1.getPassportIdentNumber());
                 session.setAttribute("loginFormAction", "user");
                 session.setAttribute("currentPage", "path.page.userPageSubsc");
-
-                logger.info("User " + currentUser.getSurname() + " " + currentUser.getName() + " logined successful");
-                return PageConfigManager.getProperty("path.page.userPageSubsc");
+            } catch (DataBaseWorkException e) {
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("Can't get data. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            } catch (NullPointerException npe) {
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("Can't load user info", npe.getCause());
+                return PageConfigManager.getProperty("path.page.error");
             }
-        }
-        request.setAttribute("errorLoginMessage", true);
 
-        session.setAttribute("currentPage", "path.page.error");
-        logger.info("Unsuccessful authorization");
-        return PageConfigManager.getProperty("path.page.error");
+            LOGGER.info("User " + currentUser.getSurname() + " " + currentUser.getName() + " logined successful");
+            return PageConfigManager.getProperty("path.page.userPageSubsc");
+        } else {
+            request.setAttribute("errorLoginMessage", true);
+            LOGGER.info("Unsuccessful authorization, user was not found. Try again");
+            return PageConfigManager.getProperty("path.page.login");
+        }
+//        session.setAttribute("currentPage", "path.page.error");
     }
 }

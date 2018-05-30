@@ -55,6 +55,8 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreateSubscriptionCo
                 LOGGER.error("Can't load subscriptions from DB");
                 return PageConfigManager.getProperty("path.page.error");
             }
+
+            LOGGER.info("Subscription created");
         } catch (DataBaseWorkException e) {
             request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
             request.setAttribute("previousPage", "path.page.userPageSubsc");
@@ -62,7 +64,6 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreateSubscriptionCo
             return PageConfigManager.getProperty("path.page.error");
         }
 
-        LOGGER.info("Subscription created");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

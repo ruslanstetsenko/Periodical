@@ -79,7 +79,7 @@ public class UserService {
 
     public List<User> getAllUsers() {
         Connection connection = ConnectionPool.getConnection(true);
-        List<User> list;
+        List<User> list = null;
         try {
             list = userDao.getAll(connection);
         } catch (DataBaseWorkException e) {

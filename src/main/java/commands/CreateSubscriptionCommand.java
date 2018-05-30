@@ -22,17 +22,23 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateSubscriptionCommand implements Command {
-    private static final Logger logger = LogManager.getLogger(CreateSubscriptionCommand.class);
+    private static final Logger LOGGER = LogManager.getLogger(CreateSubscriptionCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
         User user = (User) session.getAttribute("currentUser");
+        if (user == null) {
+            LOGGER.error(MessageConfigManager.getProperty("message.error.cantFindUser"));
+            session.invalidate();
+            return PageConfigManager.getProperty("path.page.login");
+        }
+
         PublicationService publicationService = new PublicationService();
         UserWindowsService userWindowsService = new UserWindowsService();
 
@@ -45,19 +51,20 @@ public class CreateSubscriptionCommand implements Command {
             session.setAttribute("publicationListWithCost", map.entrySet());
             session.setAttribute("publicationTypeList", wrapper.getPublicationTypes());
             session.setAttribute("publicationThemeList", wrapper.getPublicationThemes());
+
+            LOGGER.info("Start creating new subscription");
         } catch (DataBaseWorkException e) {
             request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
             request.setAttribute("previousPage", "path.page.userPageSubsc");
-            logger.error("Can't start creating new subscription. DB error", e.getCause());
+            LOGGER.error("Can't start creating new subscription. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         } catch (NullPointerException npe) {
             request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
             request.setAttribute("previousPage", "path.page.userPageSubsc");
-            logger.error("Can't start creating new subscription", npe.getCause());
+            LOGGER.error("Can't start creating new subscription", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
 
-        logger.info("Start creating new subscription");
         return PageConfigManager.getProperty("path.page.createSubscription");
     }
 }

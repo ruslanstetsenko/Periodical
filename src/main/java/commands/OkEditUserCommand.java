@@ -1,8 +1,10 @@
 package commands;
 
 import beans.User;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.UserService;
 import validate.UserValidator;
@@ -18,24 +20,23 @@ import java.util.List;
 import java.util.Map;
 
 public class OkEditUserCommand implements Command {
-    //    private static final Logger logger = Logger.getLogger(OkEditUserCommand.class);
-    private static final Logger logger = LogManager.getLogger(OkEditUserCommand.class);
+    private static final Logger LOGGER = LogManager.getLogger(OkEditUserCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
         User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            LOGGER.error(MessageConfigManager.getProperty("message.error.cantFindUser"));
+            session.invalidate();
+            return PageConfigManager.getProperty("path.page.login");
+        }
         int currentUserId = 0;
-//        if (currentUser.getUserRoleId() == 1) {
-//            currentUserId = (Integer) session.getAttribute("currentUserId");
-//        } else {
-//            currentUserId = currentUser.getId();
-//        }
         currentUserId = (Integer) session.getAttribute("currentUserId");
 
         String userSurName = request.getParameter("userSurName");
@@ -52,7 +53,6 @@ public class OkEditUserCommand implements Command {
         String building = request.getParameter("building");
         String appartment = request.getParameter("appartment");
         String userPhoneNumber = request.getParameter("userPhoneNumber");
-        System.out.println("userPhoneNumber " + userPhoneNumber);
         String userEmail = request.getParameter("userEmail");
         String login = request.getParameter("login");
         String password = request.getParameter("password");
@@ -62,28 +62,34 @@ public class OkEditUserCommand implements Command {
         UserService userService = new UserService();
 
         Map<String, Boolean> map = UserValidator.validate(userSurName, userName, userLastName, passportSerial, passportNumber, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, userBirthDate, passportDateOfIssue);
+
         if (map.isEmpty()) {
             int passportNumber1 = Integer.valueOf(passportNumber);
-//            int identNuber1 = Integer.valueOf(identNuber);
             Date userBirthDate1 = Date.valueOf(userBirthDate);
             Date passportDateOfIssue1 = Date.valueOf(passportDateOfIssue);
 
-            userService.updateUser(currentUserId, userName, userSurName, userLastName, userBirthDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
-//            session.setAttribute("currentUserId", currentUser.getId());
-            logger.info("User " + userSurName + " " + userName + " " + userLastName + " has updated");
-            if (currentUser.getUserRoleId() == 1) {
-                List<User> userList = new UserService().getAllUsers();
-                session.setAttribute("userList", userList);
-                return PageConfigManager.getProperty("path.page.users");
+            try {
+                userService.updateUser(currentUserId, userName, userSurName, userLastName, userBirthDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
+                AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
+                session.setAttribute("user", wrapper.getUser());
+                session.setAttribute("userAccount", wrapper.getAccount());
+                session.setAttribute("userContactInfo", wrapper.getContactInfo());
+                session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
+                session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
+                session.removeAttribute("currentUserId");
+            } catch (DataBaseWorkException e) {
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                choicePreviousPage(request, currentUser);
+                LOGGER.error("Can't update user info. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            } catch (NullPointerException npe) {
+                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                choicePreviousPage(request, currentUser);
+                LOGGER.error("Can't load user data", npe.getCause());
+                return PageConfigManager.getProperty("path.page.error");
             }
 
-            AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
-            session.setAttribute("user", wrapper.getUser());
-            session.setAttribute("userAccount", wrapper.getAccount());
-            session.setAttribute("userContactInfo", wrapper.getContactInfo());
-            session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
-            session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-            session.removeAttribute("currentUserId");
+            LOGGER.info("User " + userSurName + " " + userName + " " + userLastName + " has updated");
             return PageConfigManager.getProperty("path.page.aboutUser");
         }
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
@@ -109,20 +115,15 @@ public class OkEditUserCommand implements Command {
         request.setAttribute("login", login);
         request.setAttribute("password", password);
 
-        logger.info("Can't ubdate user. Incorrect data");
+        LOGGER.info("Can't ubdate user. Incorrect data");
         return PageConfigManager.getProperty("path.page.editUser");
+    }
 
-//        System.out.println(userSurName);
-//        System.out.println(userName);
-//        System.out.println(userLastName);
-
-
-//        AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
-//        session.setAttribute("user", wrapper.getUser());
-//        session.setAttribute("userAccount", wrapper.getAccount());
-//        session.setAttribute("userContactInfo", wrapper.getContactInfo());
-//        session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
-//        session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-
+    private void choicePreviousPage(HttpServletRequest request, User currentUser) {
+        if (currentUser.getUserRoleId() == 1) {
+            request.setAttribute("previousPage", "path.page.users");
+        } else {
+            request.setAttribute("previousPage", "path.page.aboutUser");
+        }
     }
 }

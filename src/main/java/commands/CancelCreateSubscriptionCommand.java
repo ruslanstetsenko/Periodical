@@ -15,25 +15,33 @@ import java.io.IOException;
 import java.util.Map;
 
 public class CancelCreateSubscriptionCommand implements Command {
-    private static final Logger logger = LogManager.getLogger(CancelCreateSubscriptionCommand.class);
+    private static final Logger LOGGER = LogManager.getLogger(CancelCreateSubscriptionCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
-        User user = (User) session.getAttribute("currentUser");
-        int currentSubStatusId = (Integer) session.getAttribute("currentSubStatusId");
-        session.setAttribute("currentSubStatusId", currentSubStatusId);
+//        User user = (User) session.getAttribute("currentUser");
+//        Integer currentSubStatusId = (Integer) session.getAttribute("currentSubStatusId");
+//
+//        if (user == null) {
+//            LOGGER.error("Unexpected exception, user was not found");
+//            return PageConfigManager.getProperty("path.page.login");
+//        }
+//
+//        if (currentSubStatusId != null) {
+//            session.setAttribute("currentSubStatusId", currentSubStatusId);
+//        }
+//
+//        UserWindowsService userWindowsService = new UserWindowsService();
+//        Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(user.getId(), currentSubStatusId);
+//        session.setAttribute("mapPubNameSubscription", map);
 
-        UserWindowsService userWindowsService = new UserWindowsService();
-        Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(user.getId(), currentSubStatusId);
-        session.setAttribute("mapPubNameSubscription", map);
-
-        logger.info("Cancel create subscription");
+        LOGGER.info("Cancel create subscription");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

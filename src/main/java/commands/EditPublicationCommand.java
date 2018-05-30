@@ -18,18 +18,19 @@ import java.io.IOException;
 import java.util.List;
 
 public class EditPublicationCommand implements Command {
-    private static final Logger logger = LogManager.getLogger(EditPublicationCommand.class);
+    private static final Logger LOGGER = LogManager.getLogger(EditPublicationCommand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
-        int publicationId = Integer.valueOf(request.getParameter("publicationId"));
         String publicationName;
+        int publicationId = Integer.valueOf(request.getParameter("publicationId"));
+
         try {
             EditPublicationWrapper wrapper = new PublicationService().editPublication(publicationId);
             List<PublicationPeriodicyCost> costs = wrapper.getPublicationPeriodicyCostList();
@@ -45,19 +46,20 @@ public class EditPublicationCommand implements Command {
             request.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
             session.setAttribute("publicationPeriodicityCostList", costs);
             setCosts(request, costs);
+
+            LOGGER.info("Edit publication started " + publicationName);
         } catch (DataBaseWorkException e) {
             request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
             request.setAttribute("previousPage", "path.page.adminPage");
-            logger.error("Can't start edit publication. DB error", e.getCause());
+            LOGGER.error("Can't start edit publication. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         } catch (NullPointerException npe) {
             request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
             request.setAttribute("previousPage", "path.page.adminPage");
-            logger.error("Can't start edit publication", npe.getCause());
+            LOGGER.error("Can't start edit publication", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
 
-        logger.info("Edit publication started " + publicationName);
         return PageConfigManager.getProperty("path.page.editPublication");
     }
 

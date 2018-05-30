@@ -2,8 +2,10 @@ package commands;
 
 import beans.Subscription;
 import beans.User;
+import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.UserWindowsService;
 
@@ -16,27 +18,46 @@ import java.io.IOException;
 import java.util.Map;
 
 public class SelectSubsUserWindowComand implements Command {
-//    private static final Logger logger = Logger.getLogger(SelectSubsUserWindowComand.class);
-private static final Logger logger = LogManager.getLogger(SelectSubsUserWindowComand.class);
+private static final Logger LOGGER = LogManager.getLogger(SelectSubsUserWindowComand.class);
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if (!session.getId().equals(session.getAttribute("sessionId"))) {
-            logger.info("Session " + session.getId() + " has finished");
+            LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
 
         User user = (User) session.getAttribute("currentUser");
+        if (user == null) {
+            LOGGER.error(MessageConfigManager.getProperty("message.error.cantFindUser"));
+            session.invalidate();
+            return PageConfigManager.getProperty("path.page.login");
+        }
         int userId = user.getId();
         int currentSubStatusId = Integer.valueOf(request.getParameter("currentSubStatusId"));
         session.setAttribute("currentSubStatusId", currentSubStatusId);
 
         UserWindowsService userWindowsService = new UserWindowsService();
-        Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(userId, currentSubStatusId);
-        session.setAttribute("mapPubNameSubscription", map);
 
-        logger.info("Subscription selected");
+        try {
+            Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(userId, currentSubStatusId);
+            if (map != null) {
+                session.setAttribute("mapPubNameSubscription", map);
+            } else {
+                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                request.setAttribute("previousPage", "path.page.userPageSubsc");
+                LOGGER.error("Can't load subscriptions");
+                return PageConfigManager.getProperty("path.page.error");
+            }
+        } catch (DataBaseWorkException e) {
+            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            LOGGER.error("Can't load subscriptions. DB error", e.getCause());
+            return PageConfigManager.getProperty("path.page.error");
+        }
+
+        LOGGER.info("Subscription selected");
         return PageConfigManager.getProperty("path.page.userPageSubsc");
     }
 }

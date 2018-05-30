@@ -61,22 +61,23 @@ public class OkCreateUserCommand implements Command {
             try {
                 int currentUserId = userService.createUser(userName, userSurName, userLastName, userBirthDate1, userRegistrationDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
                 User currentUser = userService.read(currentUserId);
-                if (currentUser != null) {
-                    AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
-                    if (wrapper != null) {
-                        session.setAttribute("currentUser", currentUser);
-                        session.setAttribute("currentUserId", currentUser.getId());
-                        session.setAttribute("user", wrapper.getUser());
-                        session.setAttribute("userAccount", wrapper.getAccount());
-                        session.setAttribute("userContactInfo", wrapper.getContactInfo());
-                        session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
-                        session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-                    }
-                }
+                AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
+                session.setAttribute("currentUser", currentUser);
+                session.setAttribute("currentUserId", currentUser.getId());
+                session.setAttribute("user", wrapper.getUser());
+                session.setAttribute("userAccount", wrapper.getAccount());
+                session.setAttribute("userContactInfo", wrapper.getContactInfo());
+                session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
+                session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
             } catch (DataBaseWorkException e) {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
                 request.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("New user was not created. DB error", e.getCause());
+                return PageConfigManager.getProperty("path.page.error");
+            } catch (NullPointerException npe) {
+                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                request.setAttribute("previousPage", "path.page.login");
+                LOGGER.error("Can't create user", npe.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
             LOGGER.info("User " + userSurName + " " + userName + " " + userLastName + " has created");

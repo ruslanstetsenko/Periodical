@@ -25,13 +25,18 @@ public class EditUserCommand implements Command {
             LOGGER.info("Session " + session.getId() + " has finished");
             return PageConfigManager.getProperty("path.page.login");
         }
-        User currentUser = (User) session.getAttribute("currentUser");
-        int currentUserId;
 
-        currentUserId = getCurrentUserId(request, currentUser);
-        String surnameEditegUser;
-        String nameEditegUser;
-        String lastnameEditegUser;
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            LOGGER.error(MessageConfigManager.getProperty("message.error.cantFindUser"));
+            session.invalidate();
+            return PageConfigManager.getProperty("path.page.login");
+        }
+
+        int currentUserId = getCurrentUserId(request, currentUser);
+        String surnameEditedUser;
+        String nameEditedUser;
+        String lastnameEditedUser;
 
         session.setAttribute("currentUserId", currentUserId);
         try {
@@ -41,9 +46,9 @@ public class EditUserCommand implements Command {
             ContactInfo contactInfo = wrapper.getContactInfo();
             LivingAddress livingAddress = wrapper.getLivingAddress();
             PassportIdentNumber passportIdentNumber = wrapper.getPassportIdentNumber();
-            surnameEditegUser = wrapper.getUser().getSurname();
-            nameEditegUser = wrapper.getUser().getName();
-            lastnameEditegUser = wrapper.getUser().getLastName();
+            surnameEditedUser = wrapper.getUser().getSurname();
+            nameEditedUser = wrapper.getUser().getName();
+            lastnameEditedUser = wrapper.getUser().getLastName();
 
             request.setAttribute("userSurName", user.getSurname());
             request.setAttribute("userName", user.getName());
@@ -64,6 +69,8 @@ public class EditUserCommand implements Command {
             request.setAttribute("userEmail", contactInfo.getEmail());
             request.setAttribute("login", account.getLogin());
             request.setAttribute("password", account.getPassword());
+
+            LOGGER.info("Edit user: " + surnameEditedUser + " " + nameEditedUser + " " + lastnameEditedUser);
         } catch (DataBaseWorkException e) {
             request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
             choicePrevPage(request, currentUser);
@@ -76,7 +83,6 @@ public class EditUserCommand implements Command {
             return PageConfigManager.getProperty("path.page.error");
         }
 
-        LOGGER.info("Edit user: " + surnameEditegUser + " " + nameEditegUser + " " + lastnameEditegUser);
         return PageConfigManager.getProperty("path.page.editUser");
     }
 

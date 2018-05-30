@@ -64,7 +64,7 @@ public class SubscriptionService {
 
     public Subscription getSubscription(int subsId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Subscription subscription;
+        Subscription subscription = null;
         try {
             subscription = subscriptionDao.read(subsId, connection);
         } catch (DataBaseWorkException e) {
