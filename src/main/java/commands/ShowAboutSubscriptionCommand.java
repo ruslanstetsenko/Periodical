@@ -48,13 +48,13 @@ private static final Logger LOGGER = LogManager.getLogger(ShowAboutSubscriptionC
 
             LOGGER.info("Show about subscription " + wrapper.getPublication().getName());
         } catch (DataBaseWorkException e) {
-            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.userPageSubsc");
             LOGGER.error("Can't load subscription info. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         } catch (NullPointerException npe) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+            session.setAttribute("previousPage", "path.page.userPageSubsc");
             LOGGER.error("Can't load subscription info", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }

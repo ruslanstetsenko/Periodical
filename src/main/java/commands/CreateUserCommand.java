@@ -51,8 +51,8 @@ public class CreateUserCommand implements Command {
                 }
             }
         } catch (DataBaseWorkException e) {
-            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.userPageSubsc");
             LOGGER.error("Can't check account. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.login");
         }

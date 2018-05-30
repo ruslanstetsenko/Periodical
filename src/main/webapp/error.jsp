@@ -27,7 +27,7 @@
 </head>
 <body>
 <div class="page_body">
-    <p class="error_message">${errorMessage}Test error message</p>
+    <p class="error_message">${errorMessage}</p>
     <a class="go_back" href="controller?command=goBack"><fmt:message key="errorPage.goBack" bundle="${rb}"/></a>
 </div>
 

@@ -72,18 +72,26 @@ public class EditUserCommand implements Command {
 
             LOGGER.info("Edit user: " + surnameEditedUser + " " + nameEditedUser + " " + lastnameEditedUser);
         } catch (DataBaseWorkException e) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            choicePrevPage(request, currentUser);
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            choicePreviousPage(session, currentUser);
             LOGGER.error("Can't start edit user. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         } catch (NullPointerException npe) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-            choicePrevPage(request, currentUser);
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+            choicePreviousPage(session, currentUser);
             LOGGER.error("Can't start edit user", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
 
         return PageConfigManager.getProperty("path.page.editUser");
+    }
+
+    private void choicePreviousPage(HttpSession session, User currentUser) {
+        if (currentUser.getUserRoleId() == 1) {
+            session.setAttribute("previousPage", "path.page.users");
+        } else {
+            session.setAttribute("previousPage", "path.page.aboutUser");
+        }
     }
 
     private int getCurrentUserId(HttpServletRequest request, User currentUser) {
@@ -96,11 +104,4 @@ public class EditUserCommand implements Command {
         return currentUserId;
     }
 
-    private void choicePrevPage(HttpServletRequest request, User currentUser) {
-        if (currentUser.getUserRoleId() == 1) {
-            request.setAttribute("previousPage", "path.page.users");
-        } else {
-            request.setAttribute("previousPage", "path.page.aboutUser");
-        }
-    }
 }

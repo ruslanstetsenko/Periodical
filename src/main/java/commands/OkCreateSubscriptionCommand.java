@@ -50,16 +50,16 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreateSubscriptionCo
                 session.setAttribute("mapPubNameSubscription", map);
                 session.setAttribute("subscriptionBillList", billList);
             } else {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
-                request.setAttribute("previousPage", "path.page.userPageSubsc");
+                session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
+                session.setAttribute("previousPage", "path.page.userPageSubsc");
                 LOGGER.error("Can't load subscriptions from DB");
                 return PageConfigManager.getProperty("path.page.error");
             }
 
             LOGGER.info("Subscription created");
         } catch (DataBaseWorkException e) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.userPageSubsc");
             LOGGER.error("Subscription was not created. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }

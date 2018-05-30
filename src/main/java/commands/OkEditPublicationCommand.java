@@ -63,14 +63,14 @@ private static final Logger LOGGER = LogManager.getLogger(OkEditPublicationComma
                 if (publicationList != null) {
                     session.setAttribute("publicationList", publicationList);
                 } else {
-                    request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
-                    request.setAttribute("previousPage", "path.page.adminPage");
+                    session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
+                    session.setAttribute("previousPage", "path.page.adminPage");
                     LOGGER.error("Can't load publications from DB");
                     return PageConfigManager.getProperty("path.page.error");
                 }
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.adminPage");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.adminPage");
                 LOGGER.error("Publication was not updated. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }

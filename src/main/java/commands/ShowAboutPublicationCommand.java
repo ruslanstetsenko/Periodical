@@ -36,13 +36,13 @@ private static final Logger LOGGER = LogManager.getLogger(ShowAboutPublicationCo
             session.setAttribute("publicationPeriodicityCostList", wrapper.getPublicationPeriodicyCostList());
             LOGGER.info("Show about publication " + wrapper.getPublication().getName());
         } catch (DataBaseWorkException e) {
-            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.adminPage");
+            session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.adminPage");
             LOGGER.error("Can't load publicationss. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         } catch (NullPointerException npe) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-            request.setAttribute("previousPage", "path.page.adminPage");
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+            session.setAttribute("previousPage", "path.page.adminPage");
             LOGGER.error("Can't load publications", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }

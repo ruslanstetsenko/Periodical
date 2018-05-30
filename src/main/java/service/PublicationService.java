@@ -5,7 +5,6 @@ import dao.*;
 import beans.*;
 import dao.interfaces.*;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import wrappers.EditPublicationWrapper;
@@ -14,7 +13,6 @@ import wrappers.PublicThemeAndTypeWrapper;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 

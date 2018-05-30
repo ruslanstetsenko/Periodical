@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class SelectPublicationsAdminWindowCommand implements Command {
-//    private static final Logger LOGGER = Logger.getLogger(SelectPublicationsAdminWindowCommand.class);
 private static final Logger LOGGER = LogManager.getLogger(SelectPublicationsAdminWindowCommand.class);
 
     @Override
@@ -40,14 +39,14 @@ private static final Logger LOGGER = LogManager.getLogger(SelectPublicationsAdmi
             if (publicationList != null) {
                 session.setAttribute("publicationList", publicationList);
             } else {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
-                request.setAttribute("previousPage", "path.page.adminPage");
+                session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
+                session.setAttribute("previousPage", "path.page.adminPage");
                 LOGGER.error("Can't load publicationss from DB");
                 return PageConfigManager.getProperty("path.page.error");
             }
         } catch (DataBaseWorkException e) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.adminPage");
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.adminPage");
             LOGGER.error("Can't load publicationss. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }

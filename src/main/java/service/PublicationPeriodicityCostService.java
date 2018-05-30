@@ -5,7 +5,6 @@ import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.interfaces.PublicationPeriodicityCostDao;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

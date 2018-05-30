@@ -54,8 +54,8 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreatePublicationCom
                 if (publicationList != null) {
                     session.setAttribute("publicationList", publicationList);
                 } else {
-                    request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
-                    request.setAttribute("previousPage", "path.page.adminPage");
+                    session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
+                    session.setAttribute("previousPage", "path.page.adminPage");
                     LOGGER.error("Can't load periodicals from DB");
                     return PageConfigManager.getProperty("path.page.error");
                 }
@@ -63,8 +63,8 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreatePublicationCom
                 LOGGER.info("Publication " + pubName + " was created");
                 return PageConfigManager.getProperty("path.page.adminPage");
             } catch (DataBaseWorkException e) {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.adminPage");
+                session.setAttribute( "errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.adminPage");
                 LOGGER.error("Publication was not created. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }

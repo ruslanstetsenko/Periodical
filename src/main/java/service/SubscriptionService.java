@@ -3,21 +3,15 @@ package service;
 import beans.*;
 import connection.ConnectionPool;
 import dao.DaoFactory;
-import dao.interfaces.PublicationDao;
 import dao.interfaces.SubscriptionDao;
 import dao.interfaces.SubscriptionStatusDao;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SubscriptionService {
     private static final Logger LOGGER = LogManager.getLogger(SubscriptionService.class);

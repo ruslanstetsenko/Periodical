@@ -45,14 +45,14 @@ private static final Logger LOGGER = LogManager.getLogger(SelectSubsUserWindowCo
             if (map != null) {
                 session.setAttribute("mapPubNameSubscription", map);
             } else {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                request.setAttribute("previousPage", "path.page.userPageSubsc");
+                session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                session.setAttribute("previousPage", "path.page.userPageSubsc");
                 LOGGER.error("Can't load subscriptions");
                 return PageConfigManager.getProperty("path.page.error");
             }
         } catch (DataBaseWorkException e) {
-            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.userPageSubsc");
+            session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.userPageSubsc");
             LOGGER.error("Can't load subscriptions. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }

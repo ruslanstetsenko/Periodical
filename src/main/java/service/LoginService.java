@@ -7,7 +7,6 @@ import dao.interfaces.UserDao;
 import beans.Account;
 import beans.User;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

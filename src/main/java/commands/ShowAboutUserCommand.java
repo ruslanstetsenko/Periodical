@@ -47,13 +47,13 @@ private static final Logger LOGGER = LogManager.getLogger(ShowAboutUserCommand.c
 
             LOGGER.info("Show about user ");
         } catch (DataBaseWorkException e) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-            choicePrevPage(request, user);
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+            choicePrevPage(session, user);
             LOGGER.error("Can't load user info. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         } catch (NullPointerException npe) {
-            request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-            choicePrevPage(request, user);
+            session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+            choicePrevPage(session, user);
             LOGGER.error("Can't load user info", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
@@ -61,11 +61,11 @@ private static final Logger LOGGER = LogManager.getLogger(ShowAboutUserCommand.c
         return PageConfigManager.getProperty("path.page.aboutUser");
     }
 
-    private void choicePrevPage(HttpServletRequest request, User currentUser) {
+    private void choicePrevPage(HttpSession session, User currentUser) {
         if (currentUser.getUserRoleId() == 1) {
-            request.setAttribute("previousPage", "path.page.users");
+            session.setAttribute("previousPage", "path.page.users");
         } else {
-            request.setAttribute("previousPage", "path.page.aboutUser");
+            session.setAttribute("previousPage", "path.page.aboutUser");
         }
     }
 }

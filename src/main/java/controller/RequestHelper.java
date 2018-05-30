@@ -8,40 +8,30 @@ import java.util.HashMap;
 public final class RequestHelper {
 
     private static RequestHelper instance = null;
-    HashMap<String, Command> commands = new HashMap<>();
+    private HashMap<String, Command> commands = new HashMap<>();
 
     private RequestHelper() {
-//        commands.put("addPublicationToSubscription", new AddPublicationToSubscriptionCommand());
-//        commands.put("backPrevPage", new BackPrevPageCommand());
         commands.put("cancelCreatePublication", new CancelCreatePublicationCommand());
         commands.put("cancelEditPublication", new CancelEditPublicationCommand());
         commands.put("cancelWievSubscription", new CancelViewSubscriptionCommand());
-//        commands.put("cancelLogin", new CancelLoginComand());
         commands.put("cancelWievAboutBill", new CancelWievAboutBillComand());
-//        commands.put("confirmDelete", new ConfirmDeleteCommand());
         commands.put("createPublication", new CreatePublicationCommand());
         commands.put("createSubscription", new CreateSubscriptionCommand());
         commands.put("cancelCreateSubscription", new CancelCreateSubscriptionCommand());
         commands.put("cancelCreareUser", new CancelCreareUserCommand());
-//        commands.put("deleteBill", new DeleteBillCommand());
         commands.put("editPublication", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
-//        commands.put("login", new LoginCommand());
         commands.put("logout", new LogoutCommand());
-        commands.put("NoCommand", new NoCommand());
+        commands.put("noCommand", new NoCommand());
         commands.put("okCreatePublication", new OkCreatePublicationCommand());
         commands.put("okCreateSubscription", new OkCreateSubscriptionCommand());
         commands.put("okEditPublication", new OkEditPublicationCommand());
-//        commands.put("okEditSubscription", new OkEditSubscriptionCommand());
         commands.put("okLogin", new OkLoginComand());
         commands.put("showAboutBill", new ShowAboutBillCommand());
         commands.put("aboutPublication", new ShowAboutPublicationCommand());
         commands.put("showAboutSubscription", new ShowAboutSubscriptionCommand());
-//        commands.put("selectBillsByStatusByUser", new SelectBillsByStatusByUserCommand());
-//        commands.put("selectBillsByStatus", new SelectBillsByStatusCommand());
         commands.put("selectPublicationsAdminWindow", new SelectPublicationsAdminWindowCommand());
         commands.put("selectPublicationsCreateSubsWindow", new SelectPublicationsCreateSubsWindowCommand());
-//        commands.put("selectPublicationsByTypeByTheme", new SelectPublicationsByTypeByThemeCommand());
         commands.put("selectSubsUserWindow", new SelectSubsUserWindowComand());
         commands.put("showAboutUser", new ShowAboutUserCommand());
         commands.put("cancelEditUser", new CancelEditUserCommand());
@@ -56,11 +46,10 @@ public final class RequestHelper {
 
     public Command getCommand(HttpServletRequest request) {
         String actionName = request.getParameter("command");
-        Command command = commands.get(actionName);
-        if (command == null) {
-            command = new NoCommand();
+        if (actionName == null) {
+            actionName = "noCommand";
         }
-        return command;
+        return commands.get(actionName);
     }
 
     public static RequestHelper getInstance() {

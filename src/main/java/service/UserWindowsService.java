@@ -5,15 +5,12 @@ import dao.*;
 import beans.*;
 import dao.interfaces.*;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import wrappers.LoadUserWindowWrapper;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class UserWindowsService {
     private static final Logger LOGGER = LogManager.getLogger(UserWindowsService.class);

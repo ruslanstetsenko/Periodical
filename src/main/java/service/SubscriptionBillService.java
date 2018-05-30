@@ -8,12 +8,10 @@ import beans.SubscriptionBill;
 import dao.interfaces.SubscriptionDao;
 import dao.interfaces.UserDao;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;

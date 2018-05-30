@@ -41,8 +41,8 @@ public class OkLoginComand implements Command {
         try {
             account = loginService.checkAccount(login, password);
         } catch (DataBaseWorkException e) {
-            request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-            request.setAttribute("previousPage", "path.page.login");
+            session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+            session.setAttribute("previousPage", "path.page.login");
             LOGGER.error("Can't get user account. DB error", e.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
@@ -51,8 +51,8 @@ public class OkLoginComand implements Command {
             try {
                 currentUser = loginService.getUser(account);
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("Can't get user. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
@@ -83,13 +83,13 @@ public class OkLoginComand implements Command {
                 session.setAttribute("userList", userList);
                 session.setAttribute("loginFormAction", "admin");
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("Can't get data. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             } catch (NullPointerException npe) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("Can't load user info", npe.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
@@ -117,13 +117,13 @@ public class OkLoginComand implements Command {
                 session.setAttribute("loginFormAction", "user");
                 session.setAttribute("currentPage", "path.page.userPageSubsc");
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("Can't get data. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             } catch (NullPointerException npe) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("Can't load user info", npe.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
@@ -135,6 +135,5 @@ public class OkLoginComand implements Command {
             LOGGER.info("Unsuccessful authorization, user was not found. Try again");
             return PageConfigManager.getProperty("path.page.login");
         }
-//        session.setAttribute("currentPage", "path.page.error");
     }
 }

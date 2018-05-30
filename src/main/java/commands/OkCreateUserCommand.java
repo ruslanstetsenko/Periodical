@@ -70,13 +70,13 @@ public class OkCreateUserCommand implements Command {
                 session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
                 session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("New user was not created. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             } catch (NullPointerException npe) {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                request.setAttribute("previousPage", "path.page.login");
+                session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                session.setAttribute("previousPage", "path.page.login");
                 LOGGER.error("Can't create user", npe.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }

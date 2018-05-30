@@ -5,14 +5,12 @@ import connection.ConnectionPool;
 import dao.*;
 import dao.interfaces.*;
 import exceptions.DataBaseWorkException;
-import exceptions.ErrorMassageException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import wrappers.AboutUserWrapper;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserService {

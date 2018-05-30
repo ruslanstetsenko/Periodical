@@ -36,8 +36,8 @@ public class OkEditUserCommand implements Command {
             session.invalidate();
             return PageConfigManager.getProperty("path.page.login");
         }
-        int currentUserId = 0;
-        currentUserId = (Integer) session.getAttribute("currentUserId");
+
+        int currentUserId = (Integer) session.getAttribute("currentUserId");
 
         String userSurName = request.getParameter("userSurName");
         String userName = request.getParameter("userName");
@@ -78,19 +78,19 @@ public class OkEditUserCommand implements Command {
                 session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
                 session.removeAttribute("currentUserId");
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                choicePreviousPage(request, currentUser);
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                choicePreviousPage(session, currentUser);
                 LOGGER.error("Can't update user info. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             } catch (NullPointerException npe) {
-                request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                choicePreviousPage(request, currentUser);
+                session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                choicePreviousPage(session, currentUser);
                 LOGGER.error("Can't load user data", npe.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
 
             LOGGER.info("User " + userSurName + " " + userName + " " + userLastName + " has updated");
-            return PageConfigManager.getProperty("path.page.aboutUser");
+            return currentUser.getUserRoleId() == 1 ? PageConfigManager.getProperty("path.page.users") : PageConfigManager.getProperty("path.page.aboutUser");
         }
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
@@ -119,11 +119,11 @@ public class OkEditUserCommand implements Command {
         return PageConfigManager.getProperty("path.page.editUser");
     }
 
-    private void choicePreviousPage(HttpServletRequest request, User currentUser) {
+    private void choicePreviousPage(HttpSession session, User currentUser) {
         if (currentUser.getUserRoleId() == 1) {
-            request.setAttribute("previousPage", "path.page.users");
+            session.setAttribute("previousPage", "path.page.users");
         } else {
-            request.setAttribute("previousPage", "path.page.aboutUser");
+            session.setAttribute("previousPage", "path.page.aboutUser");
         }
     }
 }

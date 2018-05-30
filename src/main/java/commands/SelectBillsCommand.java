@@ -42,14 +42,14 @@ private static final Logger LOGGER = LogManager.getLogger(SelectBillsCommand.cla
                 if (list != null) {
                     session.setAttribute("subscriptionBillList", list);
                 } else {
-                    request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                    request.setAttribute("previousPage", "path.page.adminPageBills");
+                    session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                    session.setAttribute("previousPage", "path.page.adminPageBills");
                     LOGGER.error("Can't load bills");
                     return PageConfigManager.getProperty("path.page.error");
                 }
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.adminPageBills");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.adminPageBills");
                 LOGGER.error("Can't load bills. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
@@ -62,14 +62,14 @@ private static final Logger LOGGER = LogManager.getLogger(SelectBillsCommand.cla
                 if (list != null) {
                     session.setAttribute("subscriptionBillList", list);
                 } else {
-                    request.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
-                    request.setAttribute("previousPage", "path.page.userPageBills");
+                    session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
+                    session.setAttribute("previousPage", "path.page.userPageBills");
                     LOGGER.error("Can't load bills");
                     return PageConfigManager.getProperty("path.page.error");
                 }
             } catch (DataBaseWorkException e) {
-                request.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
-                request.setAttribute("previousPage", "path.page.userPageBills");
+                session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
+                session.setAttribute("previousPage", "path.page.userPageBills");
                 LOGGER.error("Can't load bills. DB error", e.getCause());
                 return PageConfigManager.getProperty("path.page.error");
             }
