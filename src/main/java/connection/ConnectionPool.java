@@ -5,7 +5,6 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -13,12 +12,16 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public final class ConnectionPool {
-    private static final Logger logger = LogManager.getLogger(CancelCreatePublicationCommand.class);
+    private static final Logger LOGGER = LogManager.getLogger(CancelCreatePublicationCommand.class);
 
     private final static String DB_USERNAME = "username";
     private final static String DB_PASSWORD = "password";
     private final static String DB_URL = "url";
     private final static String DB_DRIVER_CLASS = "driver.class.name";
+    private final static String MAX_IDLE = "maxIdle";
+    private final static String MAX_WAIT = "maxWaitMillis";
+    private final static String MAX_TOTAL = "maxTotal";
+    private final static String TRANSACTION_ISOLATION = "transactionIsolation";
 
     private static Properties properties = new Properties();
     private static ClassLoader classLoader;
@@ -35,14 +38,13 @@ public final class ConnectionPool {
             dataSource.setUrl(properties.getProperty(DB_URL));
             dataSource.setUsername(properties.getProperty(DB_USERNAME));
             dataSource.setPassword(properties.getProperty(DB_PASSWORD));
-
-            dataSource.setInitialSize(10);
-
-            dataSource.setMinIdle(10);
-            dataSource.setMaxIdle(100);
+            dataSource.setMaxIdle(Integer.valueOf(properties.getProperty(MAX_IDLE)));
+            dataSource.setMaxWaitMillis(Long.valueOf(properties.getProperty(MAX_WAIT)));
+            dataSource.setMaxTotal(Integer.valueOf(properties.getProperty(MAX_TOTAL)));
+            dataSource.setDefaultTransactionIsolation(Integer.valueOf(properties.getProperty(TRANSACTION_ISOLATION)));
 
         } catch (IOException e) {
-//            logger.error("Cant load connection pool", e);
+            LOGGER.error("Cant load connection pool", e);
         }
     }
 
@@ -53,7 +55,6 @@ public final class ConnectionPool {
             connection.setAutoCommit(autocommit);
             return connection;
         } catch (SQLException e) {
-//            logger.error("Cant get connection from pool", e.getCause());
         }
         return connection;
     }
@@ -72,8 +73,8 @@ public final class ConnectionPool {
             try {
                 connection.setAutoCommit(true);
                 connection.close();
+                LOGGER.info("CONNECTION CLOSED");
             } catch (SQLException e) {
-//                logger.error("Cant close connection", e.getCause());
             }
         }
     }
@@ -84,7 +85,6 @@ public final class ConnectionPool {
                 connection.setAutoCommit(true);
                 connection.rollback();
             } catch (SQLException e) {
-//                logger.error("Cant rollback transaction", e.getCause());
             }
         }
     }

@@ -15,7 +15,7 @@ private static final Logger LOGGER = LogManager.getLogger(NoCommand.class);
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        session.setAttribute("previousPage", "path.page.login");
+//        session.setAttribute("previousPage", "path.page.login");
         return PageConfigManager.getProperty("path.page.error");
     }
 }

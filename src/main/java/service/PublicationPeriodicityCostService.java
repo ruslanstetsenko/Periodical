@@ -23,6 +23,8 @@ public class PublicationPeriodicityCostService {
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get periodicy cost", e.getCause());
             throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
         return bean;
     }

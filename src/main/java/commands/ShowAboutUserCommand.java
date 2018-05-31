@@ -39,7 +39,7 @@ private static final Logger LOGGER = LogManager.getLogger(ShowAboutUserCommand.c
 
         try {
             AboutUserWrapper wrapper = new UserService().getUserInfo(currentUserId);
-            session.setAttribute("user", wrapper.getUser());
+            session.setAttribute("currentUser", wrapper.getUser());
             session.setAttribute("userAccount", wrapper.getAccount());
             session.setAttribute("userContactInfo", wrapper.getContactInfo());
             session.setAttribute("userLivingAddress", wrapper.getLivingAddress());

@@ -19,12 +19,14 @@ public class SubscriptionService {
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
     private SubscriptionStatusDao subscriptionStatusDao = DaoFactory.getSubscriptionStatusDao();
 
-    public void createSubscription(int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList, List<Publication> publicationList, List<Integer> periodicyCostId) {
+    public void createSubscription(int userId, List<Integer> periodicyCostId) {
         Connection connection = ConnectionPool.getConnection(false);
         Subscription subscription;
         PublicationPeriodicyCost costBean;
         PublicationPeriodicityCostService costService = new PublicationPeriodicityCostService();
         PublicationService publicationService = new PublicationService();
+        List<PublicationPeriodicyCost> publicationPeriodicyCostList = new ArrayList<>();
+        List<Publication> publicationList = new ArrayList<>();
 
         try {
             for (Integer costId : periodicyCostId) {

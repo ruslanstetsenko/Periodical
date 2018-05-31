@@ -35,6 +35,8 @@ public class PublicationService {
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get publication", e.getCause());
             throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
         }
         return publication;
     }
@@ -178,21 +180,6 @@ public class PublicationService {
         return wrapper;
     }
 
-    /*Working*/
-    public List<Publication> getallPagination(int start, int total) {
-        Connection connection = ConnectionPool.getConnection(true);
-        List<Publication> list;
-        try {
-            list = publicationDao.getallPagination(connection, start, total);
-        } catch (DataBaseWorkException e) {
-            LOGGER.error("Can't get all publications", e.getCause());
-            throw e;
-        } finally {
-            ConnectionPool.closeConnection(connection);
-        }
-        return list;
-    }
-
     public FullPublicationInfoWrapper getAllPublication() {
         Connection connection = ConnectionPool.getConnection(true);
         FullPublicationInfoWrapper wrapper = null;
@@ -202,12 +189,14 @@ public class PublicationService {
             List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
             List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
             List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
+            Map<SubscriptionBill, User> subscriptionBillUserMap = subscriptionBillDao.getBillWithUsersByStatus(connection, 0);
             wrapper = new FullPublicationInfoWrapper.Builder()
                     .setPublicationList(publicationList)
                     .setSubscriptionBillList(subscriptionBillList)
                     .setPublicationTypeList(publicationTypeList)
                     .setPublicationThemeList(publicationThemeList)
                     .setPublicationStatusList(publicationStatusList)
+                    .setSubscriptionBillUserMap(subscriptionBillUserMap)
                     .build();
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get all publications", e.getCause());
@@ -286,26 +275,14 @@ public class PublicationService {
 
     public Map<Publication, List<PublicationPeriodicyCost>> getPublicationWithCosts(int typeId, int themeId, int statusId) {
         Connection connection = ConnectionPool.getConnection(true);
-        Map<Publication, List<PublicationPeriodicyCost>> publicationListMap = null;
-        List<Publication> publications;
-        List<PublicationPeriodicyCost> publicationPeriodicyCosts;
-        List<PublicationPeriodicyCost> forEachPub = new ArrayList<>();
+        Map<Publication, List<PublicationPeriodicyCost>> publicationListMap = new LinkedHashMap<>();
+        List<PublicationPeriodicyCost> publicationPeriodicyCosts = null;
+
         try {
-            publications = supportGetPubList(connection, typeId, themeId, statusId);
-            publicationPeriodicyCosts = publicationPeriodicityCostDao.getAll(connection)
-                    .stream()
-                    .sorted(Comparator.comparing(PublicationPeriodicyCost::getPublicationId))
-                    .collect(Collectors.toList());
-
-            for (Publication publication : publications) {
-                for (PublicationPeriodicyCost cost : publicationPeriodicyCosts) {
-                    if (cost.getPublicationId() == publication.getId()) {
-                        forEachPub.add(cost);
-                    }
-                }
-
-                publicationListMap.put(publication, forEachPub);
-                forEachPub = new ArrayList<>();
+            List<Publication> publications = supportGetPubList(connection, typeId, themeId, statusId);
+            for (int i = 0; i < publications.size(); i++) {
+                publicationPeriodicyCosts = publicationPeriodicityCostDao.getAllByPubId(connection, publications.get(i).getId());
+                publicationListMap.put(publications.get(i), publicationPeriodicyCosts);
             }
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get publication with costs", e.getCause());

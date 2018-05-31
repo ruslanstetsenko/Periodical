@@ -1,6 +1,7 @@
 package service;
 
 import beans.PublicationPeriodicyCost;
+import beans.User;
 import connection.ConnectionPool;
 import dao.DaoFactory;
 import dao.interfaces.SubscriptionBillDao;
@@ -14,14 +15,13 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SubscriptionBillService {
     private static final Logger LOGGER = LogManager.getLogger(SubscriptionBillService.class);
 
     private SubscriptionBillDao subscriptionBillDao = DaoFactory.getSubscriptionBillDao();
-    private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
-    private UserDao userDao = DaoFactory.getUserDao();
 
     public int createBill(Connection connection, int userId, List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
         SubscriptionBill subscriptionBill = new SubscriptionBill();
@@ -89,5 +89,19 @@ public class SubscriptionBillService {
             ConnectionPool.closeConnection(connection);
         }
         return subscriptionBillList;
+    }
+
+    public Map<SubscriptionBill, User> getBillWithUsersByStatus(int paid) {
+        Connection connection = ConnectionPool.getConnection(true);
+        Map<SubscriptionBill, User> map = null;
+        try {
+            map = subscriptionBillDao.getBillWithUsersByStatus(connection, paid);
+        } catch (DataBaseWorkException e) {
+            LOGGER.error("Can't select bills", e.getCause());
+            throw e;
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return map;
     }
 }

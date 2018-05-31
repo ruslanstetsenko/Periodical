@@ -31,7 +31,6 @@
     <div class="edit_publication">
         <h3 class="about_publication_title"><fmt:message key="aboutPublication.createPublication" bundle="${rb}"/></h3>
         <form name="createPublication" method="post" action="publications">
-            <%--<input type="hidden" name="command" value="okCreatePublication">--%>
             <table>
                 <tbody>
                 <tr>

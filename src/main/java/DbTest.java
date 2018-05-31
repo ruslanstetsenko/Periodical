@@ -1,9 +1,6 @@
-import beans.ContactInfo;
-import beans.Publication;
-import beans.PublicationPeriodicyCost;
+import beans.*;
 import connection.ConnectionPool;
 import dao.*;
-import beans.Account;
 import dao.interfaces.*;
 import service.PublicationService;
 
@@ -21,27 +18,28 @@ public class DbTest {
 //        testSubscription();
 //        testPublicationType();
 //        testPublicationTheme();
-        testPublication();
+//        testPublication();
 //        testPublicService();
 //        testPubPeriodCost();
+        testSubscriptionBill();
     }
 
-    private static void testAccount() throws SQLException {
-        Connection connection = ConnectionPool.getConnection(true);
-        AccountDao accountDao = DaoFactory.getAccountDao();
-        List<Account> list = accountDao.getAll(connection);
-
-        Account account1 = new Account();
-        account1.setLogin("login1");
-        account1.setPassword("password1");
-
-        Account account2 = new Account();
-        account2.setLogin("login2");
-        account2.setPassword("password2");
-
-        Account account3 = new Account();
-        account3.setLogin("login3");
-        account3.setPassword("password3");
+//    private static void testAccount() throws SQLException {
+//        Connection connection = ConnectionPool.getConnection(true);
+//        AccountDao accountDao = DaoFactory.getAccountDao();
+//        List<Account> list = accountDao.getAll(connection);
+//
+//        Account account1 = new Account();
+//        account1.setLogin("login1");
+//        account1.setPassword("password1");
+//
+//        Account account2 = new Account();
+//        account2.setLogin("login2");
+//        account2.setPassword("password2");
+//
+//        Account account3 = new Account();
+//        account3.setLogin("login3");
+//        account3.setPassword("password3");
 
 //        try {
 //            accountDao.create(account1, connection);
@@ -77,36 +75,36 @@ public class DbTest {
 //        for (Account account : list) {
 //            System.out.println(account);
 //        }
-    }
-
-    private static void testContactInfo() throws SQLException {
-        Connection connection = ConnectionPool.getConnection(false);
-        ContactInfoDao contactInfoDao = DaoFactory.getContactInfoDao();
-        List<ContactInfo> list = contactInfoDao.getAll(connection);
-
-        ContactInfo contactInfo1 = new ContactInfo();
-        contactInfo1.setPhone("063 292 44 45");
-        contactInfo1.setEmail("r.stetsenko@gmail.com");
-
-        ContactInfo contactInfo2 = new ContactInfo();
-        contactInfo2.setPhone("096 834 40 66");
-        contactInfo2.setEmail("arslan@ukr.net");
-
-        ContactInfo contactInfo3 = new ContactInfo();
-        contactInfo3.setPhone("044 234 32 32");
-        contactInfo3.setEmail("gergb@ukr.net");
-
-//        try {
-        contactInfoDao.create("063 292 44 45", "arslan@ukr.net", connection);
-        contactInfoDao.create("096 834 40 66", "r.stetsenko@gmail.com", connection);
-        contactInfoDao.create("044 234 32 32", "gergb@ukr.net", connection);
-        connection.commit();
-
-        list = contactInfoDao.getAll(connection);
-
-        System.out.println(contactInfoDao.read(list.get(0).getId(), connection));
-        System.out.println(contactInfoDao.read(list.get(1).getId(), connection));
-        System.out.println(contactInfoDao.read(list.get(2).getId(), connection));
+//    }
+//
+//    private static void testContactInfo() throws SQLException {
+//        Connection connection = ConnectionPool.getConnection(false);
+//        ContactInfoDao contactInfoDao = DaoFactory.getContactInfoDao();
+//        List<ContactInfo> list = contactInfoDao.getAll(connection);
+//
+//        ContactInfo contactInfo1 = new ContactInfo();
+//        contactInfo1.setPhone("063 292 44 45");
+//        contactInfo1.setEmail("r.stetsenko@gmail.com");
+//
+//        ContactInfo contactInfo2 = new ContactInfo();
+//        contactInfo2.setPhone("096 834 40 66");
+//        contactInfo2.setEmail("arslan@ukr.net");
+//
+//        ContactInfo contactInfo3 = new ContactInfo();
+//        contactInfo3.setPhone("044 234 32 32");
+//        contactInfo3.setEmail("gergb@ukr.net");
+//
+////        try {
+//        contactInfoDao.create("063 292 44 45", "arslan@ukr.net", connection);
+//        contactInfoDao.create("096 834 40 66", "r.stetsenko@gmail.com", connection);
+//        contactInfoDao.create("044 234 32 32", "gergb@ukr.net", connection);
+//        connection.commit();
+//
+//        list = contactInfoDao.getAll(connection);
+//
+//        System.out.println(contactInfoDao.read(list.get(0).getId(), connection));
+//        System.out.println(contactInfoDao.read(list.get(1).getId(), connection));
+//        System.out.println(contactInfoDao.read(list.get(2).getId(), connection));
 
 //            ContactInfo contactInfoUpdate = contactInfoDao.read(list.get(0).getId(), connection);
 //            contactInfoUpdate.setEmail("123@123");
@@ -130,7 +128,7 @@ public class DbTest {
 //        for (ContactInfo contactInfo : list) {
 //            System.out.println(contactInfo);
 //        }
-    }
+//}
 
     private static void testSubscription() throws SQLException {
         Connection connection = ConnectionPool.getConnection(true);
@@ -167,11 +165,11 @@ public class DbTest {
 //                .setPublicationStatusId(1)
 //                .setPublicationThemeId(4)
 //                .build(), connection));
-        List<Publication> list = publicationDao.getallPagination(connection, 1, 3);
-        for (Publication publication : list) {
-            System.out.println(publication);
-        }
-        ConnectionPool.closeConnection(connection);
+//        List<Publication> list = publicationDao.getallPagination(connection, 1, 3);
+//        for (Publication publication : list) {
+//            System.out.println(publication);
+//        }
+//        ConnectionPool.closeConnection(connection);
     }
 
     private static void testPublicService() {
@@ -185,6 +183,32 @@ public class DbTest {
         Connection connection = ConnectionPool.getConnection(true);
         PublicationPeriodicityCostDao dao = DaoFactory.getPublicationPeriodicityCostDao();
         System.out.println(dao.read(30, connection));
+    }
+
+    private static void testSubscriptionBill() {
+        Connection connection = ConnectionPool.getConnection(true);
+        SubscriptionBillDao dao = DaoFactory.getSubscriptionBillDao();
+        Map<SubscriptionBill, User> map = dao.getBillWithUsersByStatus(connection, 1);
+//        System.out.println(map);
+        for (Map.Entry<SubscriptionBill, User> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue().getSurname());
+        }
+        System.out.println();
+        map = dao.getBillWithUsersByStatus(connection, 2);
+        for (Map.Entry<SubscriptionBill, User> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue().getSurname());
+        }
+        System.out.println();
+        map = dao.getBillWithUsersByStatus(connection, 3);
+        for (Map.Entry<SubscriptionBill, User> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue().getSurname());
+        }
+
+        System.out.println();
+        map = dao.getBillWithUsersByStatus(connection, 0);
+        for (Map.Entry<SubscriptionBill, User> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue().getSurname());
+        }
     }
 
 }

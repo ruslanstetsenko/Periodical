@@ -25,6 +25,7 @@ public class GoBackCommand implements Command {
         }
 
         String pageProperties = (String) session.getAttribute("previousPage");
+        System.out.println(pageProperties);
         LOGGER.info("Go previous page after DB error, go to " + PageConfigManager.getProperty(pageProperties));
         session.removeAttribute("previousPage");
         session.removeAttribute("errorMessage");

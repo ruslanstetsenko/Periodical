@@ -1,6 +1,7 @@
 package dao.implementations;
 
 import beans.SubscriptionBill;
+import beans.User;
 import commands.CancelCreatePublicationCommand;
 import dao.interfaces.SubscriptionBillDao;
 import exceptions.DataBaseWorkException;
@@ -9,7 +10,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
     private static final Logger logger = LogManager.getLogger(SubscriptionBillDaoImpl.class);
@@ -183,5 +186,53 @@ public class SubscriptionBillDaoImpl implements SubscriptionBillDao {
             throw new DataBaseWorkException("message.error.bill");
         }
         return list;
+    }
+
+    @Override
+    public Map<SubscriptionBill, User> getBillWithUsersByStatus(Connection connection, int paid) {
+        Map<SubscriptionBill, User> map = new LinkedHashMap<>();
+
+        String sql = "SELECT * FROM subscription_bills INNER JOIN users ON subscription_bills.user_id = users.id WHERE paid =? ORDER BY users.surname ASC";
+        if (paid == 0) {
+            sql = "SELECT * FROM subscription_bills INNER JOIN users ON subscription_bills.user_id = users.id ORDER BY users.surname ASC";
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            if (paid != 0) {
+                preparedStatement.setInt(1, paid);
+            }
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                SubscriptionBill bill = new SubscriptionBill.Builder()
+                        .setId(resultSet.getInt(1))
+                        .setTotalCost(resultSet.getDouble("total_cost"))
+                        .setValidityPeriod(resultSet.getInt("validity_period"))
+                        .setPaid(resultSet.getInt("paid"))
+                        .setBillNumber(resultSet.getString("bill_nimber"))
+                        .setBillSetDay(resultSet.getDate("bill_set_day"))
+                        .setUserId(resultSet.getInt("user_id"))
+                        .build();
+                User user = new User.Builder()
+                        .setId(resultSet.getInt(8))
+                        .setSurname(resultSet.getString("surname"))
+                        .setName(resultSet.getString("name"))
+                        .setLastName(resultSet.getString("last_name"))
+                        .setBirthday(resultSet.getDate("birthday"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setPassportIdentNumberId(resultSet.getInt("passport_ident_number_id"))
+                        .setAccountsId(resultSet.getInt("accounts_id"))
+                        .setLivingAddressId(resultSet.getInt("living_address_id"))
+                        .setContactInfoId(resultSet.getInt("contact_info_id"))
+                        .setUserRoleId(resultSet.getInt("user_role_id"))
+                        .build();
+
+                map.put(bill, user);
+            }
+        } catch (SQLException e) {
+            logger.error("Can't get subscription by status, user from DB", e.getCause());
+            throw new DataBaseWorkException("message.error.subscription");
+        }
+        return map;
     }
 }

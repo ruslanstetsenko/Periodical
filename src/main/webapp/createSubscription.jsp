@@ -14,6 +14,7 @@
 <c:if test="${locale == 1}"><fmt:setLocale value="en_US" scope="session"/></c:if>
 <c:if test="${locale == 2}"><fmt:setLocale value="uk_UA" scope="session"/></c:if>
 <fmt:setBundle basename="pagecontent" var="rb"/>
+<fmt:setBundle basename="message" var="validation"/>
 
 <html>
 <head>
@@ -27,7 +28,12 @@
 </head>
 <body>
 <header>
-    <h3><fmt:message key="aboutPublication.periodicalList" bundle="${rb}"/></h3>
+    <h3><fmt:message key="aboutPublication.periodicalList" bundle="${rb}"/> </h3>
+    <h3 class="error_message">
+        <c:if test="${errorCreateSubscription}">
+            <fmt:message key="message.errorCreateSubscription" bundle="${validation}"/>
+        </c:if>
+    </h3>
 </header>
 
 <aside>
@@ -64,13 +70,10 @@
 <article>
     <div class="create_subs_block">
         <form name="createSubscription" method="post" action="controller">
-            <input type="hidden" name="command" value="okCreateSubscription">
             <table>
                 <tbody>
                 <c:forEach var="publWithCost" items="${publicationListWithCost}">
-                    <input type="hidden" name="command" value="addPublicationToSubscription">
                     <tr>
-
                         <td valign="center"><c:out value="${publWithCost.key.name}"/></td>
                         <td valign="center" align="right"><c:out value="${publWithCost.key.website}"/></td>
                         <td valign="center">
@@ -99,8 +102,12 @@
                 </tbody>
             </table>
             <div class="buttons">
-                <input class="button" type="submit" name="createSubscription"
-                       value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">
+                <button class="button" type="submit" name="command" value="okCreateSubscription"
+                        <c:if test="${fn:length(publicationListWithCost) == 0}">disabled</c:if>>
+                    <fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>
+                </button>
+                <%--<input class="button" type="submit" name="createSubscription"--%>
+                       <%--value="<fmt:message key="aboutSubscription.createSubs" bundle="${rb}"/>">--%>
                 <button class="button" type="submit" name="command" value="cancelCreateSubscription">
                     <fmt:message key="button.cancel" bundle="${rb}"/>
                 </button>

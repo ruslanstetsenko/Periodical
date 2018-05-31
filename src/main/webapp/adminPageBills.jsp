@@ -72,17 +72,19 @@
         <%--</tr>--%>
         <%--</thead>--%>
         <tbody>
-        <c:forEach var="bill" items="${subscriptionBillList}">
+        <%--<c:forEach var="bill" items="${subscriptionBillList}">--%>
+        <c:forEach var="bill" items="${subscriptionBillListWithUser}">
             <tr>
-                <td><c:out value="${bill.billNumber}"/></td>
-                <td align="right"><c:out value="${bill.billSetDay}"/></td>
-                <td align="right"><c:out value="${bill.totalCost}"/></td>
+                <td><c:out value="${bill.key.billNumber}"/></td>
+                <td align="right"><c:out value="${bill.key.billSetDay}"/></td>
+                <td align="right"><c:out value="${bill.key.totalCost}"/></td>
+                <td align="right"><c:out value="${bill.value.surname}"/> <c:out value="${bill.value.name}"/> <c:out value="${bill.value.lastName}"/></td>
                 <td align="right">
                     <c:choose>
-                        <c:when test="${bill.paid == 1}">
+                        <c:when test="${bill.key.paid == 1}">
                             <fmt:message key="aboutBill.billiPayStatusNameNew" bundle="${rb}"/>
                         </c:when>
-                        <c:when test="${bill.paid == 2}">
+                        <c:when test="${bill.key.paid == 2}">
                             <fmt:message key="aboutBill.billiPayStatusNamePaid" bundle="${rb}"/>
                         </c:when>
                         <c:otherwise>
@@ -93,7 +95,7 @@
                 <td>
                     <form action="controller" method="get">
                         <input type="hidden" name="command" value="showAboutBill">
-                        <button class="table_button" name="currentBillPaidId" value="${bill.id}" type="submit">
+                        <button class="table_button" name="currentBillPaidId" value="${bill.key.id}" type="submit">
                             <fmt:message key="aboutBill.billDetails" bundle="${rb}"/>
                         </button>
                     </form>
@@ -107,7 +109,7 @@
 
 <footer class="bill_page_footer">
     <p class="publication_amount">
-        <fmt:message key="aboutBill.billAmount" bundle="${rb}"/> ${fn:length(subscriptionBillList)}
+        <fmt:message key="aboutBill.billAmount" bundle="${rb}"/> ${fn:length(subscriptionBillListWithUser)}
     </p>
 </footer>
 </body>

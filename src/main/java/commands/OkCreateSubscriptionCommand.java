@@ -29,8 +29,6 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreateSubscriptionCo
             return PageConfigManager.getProperty("path.page.login");
         }
 
-        List<PublicationPeriodicyCost> publicationPeriodicyCostList = new ArrayList<>();
-        List<Publication> publicationList = new ArrayList<>();
         UserWindowsService userWindowsService = new UserWindowsService();
         User user = (User) session.getAttribute("currentUser");
         int currentSubStatusId = (Integer) session.getAttribute("currentSubStatusId");
@@ -41,14 +39,21 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreateSubscriptionCo
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
 
+        if (periodicyCostId.isEmpty()) {
+            request.setAttribute("errorCreateSubscription", true);
+            return PageConfigManager.getProperty("path.page.createSubscription");
+        }
+
         try {
-            new SubscriptionService().createSubscription(user.getId(), publicationPeriodicyCostList, publicationList, periodicyCostId);
+            new SubscriptionService().createSubscription(user.getId(), periodicyCostId);
             Map<String, Subscription> map = userWindowsService.loadSelectedUserWindow(user.getId(), currentSubStatusId);
             List<SubscriptionBill> billList = new SubscriptionBillService().selectBillsByUserByStatus(user.getId(), currentBillPaidId);
 
             if (map != null && billList !=null) {
                 session.setAttribute("mapPubNameSubscription", map);
                 session.setAttribute("subscriptionBillList", billList);
+                session.setAttribute("currentPubTypeId", 0);
+                session.setAttribute("currentPubThemeId", 0);
             } else {
                 session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.loadData"));
                 session.setAttribute("previousPage", "path.page.userPageSubsc");

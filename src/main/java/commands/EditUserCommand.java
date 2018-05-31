@@ -54,6 +54,7 @@ public class EditUserCommand implements Command {
             request.setAttribute("userName", user.getName());
             request.setAttribute("userLastName", user.getLastName());
             request.setAttribute("userBirthDate", user.getBirthday());
+            request.setAttribute("userRegistrationDate", user.getRegistrationDate());
             request.setAttribute("passportSerial", passportIdentNumber.getSerial());
             request.setAttribute("passportNumber", passportIdentNumber.getNumber());
             request.setAttribute("passportDateOfIssue", passportIdentNumber.getDateOfIssue());

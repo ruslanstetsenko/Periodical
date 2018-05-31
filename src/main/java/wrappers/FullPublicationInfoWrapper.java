@@ -3,6 +3,7 @@ package wrappers;
 import beans.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class FullPublicationInfoWrapper {
 
@@ -10,14 +11,13 @@ public class FullPublicationInfoWrapper {
     private PublicationType publicationType;
     private PublicationTheme publicationTheme;
     private PublicationStatus publicationStatus;
-
-
     private List<Publication> publicationList;
     private List<SubscriptionBill> subscriptionBillList;
     private List<PublicationType> publicationTypeList;
     private List<PublicationTheme> publicationThemeList;
     private List<PublicationStatus> publicationStatusList;
     private List<PublicationPeriodicyCost> publicationPeriodicyCostList;
+    private Map<SubscriptionBill, User> subscriptionBillUserMap;
 
     public FullPublicationInfoWrapper() {
     }
@@ -33,6 +33,7 @@ public class FullPublicationInfoWrapper {
         this.publicationThemeList = builder.publicationThemeList;
         this.publicationStatusList = builder.publicationStatusList;
         this.publicationPeriodicyCostList = builder.publicationPeriodicyCostList;
+        this.subscriptionBillUserMap = builder.subscriptionBillUserMap;
     }
 
     public Publication getPublication() {
@@ -75,19 +76,22 @@ public class FullPublicationInfoWrapper {
         return publicationPeriodicyCostList;
     }
 
+    public Map<SubscriptionBill, User> getSubscriptionBillUserMap() {
+        return subscriptionBillUserMap;
+    }
+
     public static class Builder {
         private Publication publication;
         private PublicationType publicationType;
         private PublicationTheme publicationTheme;
         private PublicationStatus publicationStatus;
-
-
         private List<Publication> publicationList;
         private List<SubscriptionBill> subscriptionBillList;
         private List<PublicationType> publicationTypeList;
         private List<PublicationTheme> publicationThemeList;
         private List<PublicationStatus> publicationStatusList;
         private List<PublicationPeriodicyCost> publicationPeriodicyCostList;
+        private Map<SubscriptionBill, User> subscriptionBillUserMap;
 
         public Builder setPublication(Publication publication) {
             this.publication = publication;
@@ -136,6 +140,11 @@ public class FullPublicationInfoWrapper {
 
         public Builder setPublicationPeriodicyCostList(List<PublicationPeriodicyCost> publicationPeriodicyCostList) {
             this.publicationPeriodicyCostList = publicationPeriodicyCostList;
+            return this;
+        }
+
+        public Builder setSubscriptionBillUserMap(Map<SubscriptionBill, User> subscriptionBillUserMap) {
+            this.subscriptionBillUserMap = subscriptionBillUserMap;
             return this;
         }
 

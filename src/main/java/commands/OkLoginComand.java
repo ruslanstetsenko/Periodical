@@ -76,10 +76,11 @@ public class OkLoginComand implements Command {
                 FullPublicationInfoWrapper wrapper = new PublicationService().getAllPublication();
                 List<User> userList = new UserService().getAllUsers();
                 session.setAttribute("publicationList", wrapper.getPublicationList());
-                session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
+//                session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
                 session.setAttribute("publicationTypeList", wrapper.getPublicationTypeList());
                 session.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
                 session.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
+                session.setAttribute("subscriptionBillListWithUser", wrapper.getSubscriptionBillUserMap().entrySet());//
                 session.setAttribute("userList", userList);
                 session.setAttribute("loginFormAction", "admin");
             } catch (DataBaseWorkException e) {

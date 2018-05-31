@@ -26,8 +26,4 @@ public interface PublicationDao {
     List<Publication> getByTypeByTheme(Connection connection, int typeId, int themeId) throws DataBaseWorkException;
     List<Publication> getByTypeByStatus(Connection connection, int typeId, int statusId) throws DataBaseWorkException;
     List<Publication> getByThemeByStatus(Connection connection, int themeId, int statusId) throws DataBaseWorkException;
-
-    List<Publication> getallPagination(Connection connection, int start, int total) throws DataBaseWorkException;
-
-
 }

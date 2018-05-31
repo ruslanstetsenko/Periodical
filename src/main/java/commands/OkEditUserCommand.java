@@ -58,6 +58,7 @@ public class OkEditUserCommand implements Command {
         String password = request.getParameter("password");
         String userBirthDate = request.getParameter("userBirthDate");
         String passportDateOfIssue = request.getParameter("passportDateOfIssue");
+        String userRegistrationDate = request.getParameter("userRegistrationDate");
 
         UserService userService = new UserService();
 
@@ -70,13 +71,22 @@ public class OkEditUserCommand implements Command {
 
             try {
                 userService.updateUser(currentUserId, userName, userSurName, userLastName, userBirthDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
-                AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
-                session.setAttribute("user", wrapper.getUser());
-                session.setAttribute("userAccount", wrapper.getAccount());
-                session.setAttribute("userContactInfo", wrapper.getContactInfo());
-                session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
-                session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
-                session.removeAttribute("currentUserId");
+                if (currentUser.getUserRoleId() != 1) {
+                    AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
+                    session.setAttribute("currentUser", wrapper.getUser());
+                    session.setAttribute("userAccount", wrapper.getAccount());
+                    session.setAttribute("userContactInfo", wrapper.getContactInfo());
+                    session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
+                    session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
+                    session.removeAttribute("currentUserId");
+                } else {
+                    List<User> userList = new UserService().getAllUsers();
+                    session.setAttribute("userList", userList);
+                    User user = (User) session.getAttribute("currentUser");
+                    currentUser = new UserService().read(user.getId());
+                    session.setAttribute("currentUser", currentUser);
+                }
+
             } catch (DataBaseWorkException e) {
                 session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
                 choicePreviousPage(session, currentUser);
@@ -99,6 +109,7 @@ public class OkEditUserCommand implements Command {
         request.setAttribute("userName", userName);
         request.setAttribute("userLastName", userLastName);
         request.setAttribute("userBirthDate", userBirthDate);
+        request.setAttribute("userRegistrationDate", userRegistrationDate);
         request.setAttribute("passportSerial", passportSerial);
         request.setAttribute("passportNumber", passportNumber);
         request.setAttribute("passportIssuedBy", passportIssuedBy);

@@ -67,23 +67,23 @@
                 <tbody>
                 <tr>
                     <th align="left"><fmt:message key="aboutUser.surname" bundle="${rb}"/></th>
-                    <td><c:out value="${user.surname}"/></td>
+                    <td><c:out value="${currentUser.surname}"/></td>
                 </tr>
                 <tr>
                     <th align="left"><fmt:message key="aboutUser.name" bundle="${rb}"/></th>
-                    <td><c:out value="${user.name}"/></td>
+                    <td><c:out value="${currentUser.name}"/></td>
                 </tr>
                 <tr>
                     <th align="left"><fmt:message key="aboutUser.lastName" bundle="${rb}"/></th>
-                    <td><c:out value="${user.lastName}"/></td>
+                    <td><c:out value="${currentUser.lastName}"/></td>
                 </tr>
                 <tr>
                     <th align="left"><fmt:message key="aboutUser.birthday" bundle="${rb}"/></th>
-                    <td><c:out value="${user.birthday}"/></td>
+                    <td><c:out value="${currentUser.birthday}"/></td>
                 </tr>
                 <tr>
                     <th align="left"><fmt:message key="aboutUser.regDate" bundle="${rb}"/></th>
-                    <td><c:out value="${user.registrationDate}"/></td>
+                    <td><c:out value="${currentUser.registrationDate}"/></td>
                 </tr>
                 </tbody>
             </table>

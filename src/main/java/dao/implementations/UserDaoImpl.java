@@ -47,25 +47,29 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User read(int id, Connection connection) {
-        User user = new User();
+        User user = null;
         String sql = "SELECT * FROM users WHERE id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            user.setId(id);
-            user.setName(resultSet.getString("name"));
-            user.setSurname(resultSet.getString("surname"));
-            user.setLastName(resultSet.getString("last_name"));
-            user.setBirthday(resultSet.getDate("birthday"));
-            user.setRegistrationDate(resultSet.getDate("registration_date"));
-            user.setPassportIdentNumberId(resultSet.getInt("passport_ident_number_id"));
-            user.setAccountsId(resultSet.getInt("accounts_id"));
-            user.setLivingAddressId(resultSet.getInt("living_address_id"));
-            user.setContactInfoId(resultSet.getInt("contact_info_id"));
-            user.setUserRoleId(resultSet.getInt("user_role_id"));
+            if (resultSet.next()) {
+                user = new User.Builder()
+                        .setId(resultSet.getInt(8))
+                        .setSurname(resultSet.getString("surname"))
+                        .setName(resultSet.getString("name"))
+                        .setLastName(resultSet.getString("last_name"))
+                        .setBirthday(resultSet.getDate("birthday"))
+                        .setRegistrationDate(resultSet.getDate("registration_date"))
+                        .setPassportIdentNumberId(resultSet.getInt("passport_ident_number_id"))
+                        .setAccountsId(resultSet.getInt("accounts_id"))
+                        .setLivingAddressId(resultSet.getInt("living_address_id"))
+                        .setContactInfoId(resultSet.getInt("contact_info_id"))
+                        .setUserRoleId(resultSet.getInt("user_role_id"))
+                        .build();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("Can't read user from DB", e.getCause());

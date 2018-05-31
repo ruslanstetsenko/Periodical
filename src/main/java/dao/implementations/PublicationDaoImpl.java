@@ -1,7 +1,6 @@
 package dao.implementations;
 
 import beans.Publication;
-import commands.CancelCreatePublicationCommand;
 import dao.interfaces.PublicationDao;
 import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
@@ -47,6 +46,7 @@ public class PublicationDaoImpl implements PublicationDao {
         String sql = "select name, issn_number, registration_date, website, publication_type_id, publication_status_id, publication_theme_id from publication where id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -121,7 +121,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getAll(Connection connection) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication ORDER BY name ASC";
 
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
@@ -147,7 +147,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByTypeThemeStatus(Connection connection, int typeId, int themeId, int statusId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? AND publication_status_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? AND publication_status_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, typeId);
@@ -177,7 +177,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByType(Connection connection, int typeId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_type_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, typeId);
@@ -205,7 +205,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByTheme(Connection connection, int themeId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_theme_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_theme_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, themeId);
@@ -233,7 +233,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByStatus(Connection connection, int statusId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_status_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_status_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, statusId);
@@ -261,7 +261,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByTypeByTheme(Connection connection, int typeId, int themeId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_theme_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, typeId);
@@ -290,7 +290,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByTypeByStatus(Connection connection, int typeId, int statusId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_status_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_type_id=? AND publication_status_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, typeId);
@@ -319,7 +319,7 @@ public class PublicationDaoImpl implements PublicationDao {
     @Override
     public List<Publication> getByThemeByStatus(Connection connection, int themeId, int statusId) {
         List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication WHERE publication_theme_id=? AND publication_status_id=? ORDER BY publication_status_id ASC";
+        String sql = "SELECT * FROM publication WHERE publication_theme_id=? AND publication_status_id=? ORDER BY name ASC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, themeId);
@@ -340,32 +340,6 @@ public class PublicationDaoImpl implements PublicationDao {
             }
         } catch (SQLException e) {
             logger.error("Can't get publication selected by theme, status from DB", e.getCause());
-            throw new DataBaseWorkException("message.error.publication");
-        }
-        return list;
-    }
-
-    @Override
-    public List<Publication> getallPagination(Connection connection, int start, int total) {
-        List<Publication> list = new ArrayList<>();
-        String sql = "SELECT * FROM publication LIMIT "+(start-1)+","+total+"";
-
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                list.add(new Publication.Builder()
-                        .setId(resultSet.getInt("id"))
-                        .setName(resultSet.getString("name"))
-                        .setIssnNumber(resultSet.getInt("issn_number"))
-                        .setRegistrationDate(resultSet.getDate("registration_date"))
-                        .setWebsite(resultSet.getString("website"))
-                        .setPublicationTypeId(resultSet.getInt("publication_type_id"))
-                        .setPublicationStatusId(resultSet.getInt("publication_status_id"))
-                        .setPublicationThemeId(resultSet.getInt("publication_theme_id"))
-                        .build());
-            }
-        } catch (SQLException e) {
-            logger.error("Can't tet publications from DB", e.getCause());
             throw new DataBaseWorkException("message.error.publication");
         }
         return list;

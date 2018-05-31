@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class SelectBillsCommand implements Command {
 private static final Logger LOGGER = LogManager.getLogger(SelectBillsCommand.class);
@@ -39,8 +40,9 @@ private static final Logger LOGGER = LogManager.getLogger(SelectBillsCommand.cla
         if (user.getUserRoleId() == 1) {
             try {
                 List<SubscriptionBill> list = new SubscriptionBillService().selectBillsByStatus(currentBillPaidId);
-                if (list != null) {
-                    session.setAttribute("subscriptionBillList", list);
+                Map<SubscriptionBill, User> map = new SubscriptionBillService().getBillWithUsersByStatus(currentBillPaidId);
+                if (map != null) {
+                    session.setAttribute("subscriptionBillListWithUser", map.entrySet());
                 } else {
                     session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
                     session.setAttribute("previousPage", "path.page.adminPageBills");
