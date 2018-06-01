@@ -6,9 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
+import service.SubscriptionService;
 import service.UserService;
+import service.UserWindowsService;
 import validate.UserValidator;
 import wrappers.AboutUserWrapper;
+import wrappers.LoadUserWindowWrapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,14 +57,15 @@ public class OkCreateUserCommand implements Command {
 
         Map<String, Boolean> map = UserValidator.validate(userSurName, userName, userLastName, passportSerial, passportNumber, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, userBirthDate, passportDateOfIssue);
         if (map.isEmpty()) {
-            int passportNumber1 = Integer.valueOf(passportNumber);
-            Date userBirthDate1 = Date.valueOf(userBirthDate);
-            Date userRegistrationDate1 = Date.valueOf(LocalDate.now());
-            Date passportDateOfIssue1 = Date.valueOf(passportDateOfIssue);
+//            int passportNumber1 = Integer.valueOf(passportNumber);
+//            Date userBirthDate1 = Date.valueOf(userBirthDate);
+//            Date userRegistrationDate1 = Date.valueOf(LocalDate.now());
+//            Date passportDateOfIssue1 = Date.valueOf(passportDateOfIssue);
             try {
-                int currentUserId = userService.createUser(userName, userSurName, userLastName, userBirthDate1, userRegistrationDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
+                int currentUserId = userService.createUser(userName, userSurName, userLastName, userBirthDate, passportSerial, passportNumber, passportDateOfIssue, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
                 User currentUser = userService.read(currentUserId);
                 AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
+                SubscriptionService subscriptionService = new SubscriptionService();
                 session.setAttribute("currentUser", currentUser);
                 session.setAttribute("currentUserId", currentUser.getId());
                 session.setAttribute("user", wrapper.getUser());
@@ -69,6 +73,11 @@ public class OkCreateUserCommand implements Command {
                 session.setAttribute("userContactInfo", wrapper.getContactInfo());
                 session.setAttribute("userLivingAddress", wrapper.getLivingAddress());
                 session.setAttribute("userPassportIdNumb", wrapper.getPassportIdentNumber());
+                session.setAttribute("currentSubStatusId", 0);
+                session.setAttribute("currentBillPaidId", 0);
+                session.setAttribute("subsStatusList", subscriptionService.getSubsStatusList());
+
+
             } catch (DataBaseWorkException e) {
                 session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
                 session.setAttribute("previousPage", "path.page.login");

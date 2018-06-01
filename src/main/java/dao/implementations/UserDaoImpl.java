@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 user = new User.Builder()
-                        .setId(resultSet.getInt(8))
+                        .setId(resultSet.getInt("id"))
                         .setSurname(resultSet.getString("surname"))
                         .setName(resultSet.getString("name"))
                         .setLastName(resultSet.getString("last_name"))
@@ -75,7 +75,6 @@ public class UserDaoImpl implements UserDao {
             logger.error("Can't read user from DB", e.getCause());
             throw new DataBaseWorkException("message.error.user");
         }
-
         return user;
     }
 

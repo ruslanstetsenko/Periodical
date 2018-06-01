@@ -12,11 +12,21 @@ import wrappers.LoadUserWindowWrapper;
 import java.sql.Connection;
 import java.util.*;
 
+/**
+ * User window service. Load information for user window
+ * @author Stetsenko Ruslan
+ */
 public class UserWindowsService {
     private static final Logger LOGGER = LogManager.getLogger(UserWindowsService.class);
     private SubscriptionBillDao subscriptionBillDao = DaoFactory.getSubscriptionBillDao();
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
 
+    /**
+     * Get information for load in user window
+     * @param userId user's id number in database
+     * @return support wraper with information about user or null
+     * @throws DataBaseWorkException errors in DAO layer
+     */
     public LoadUserWindowWrapper loadUserWindow(int userId) {
         Connection connection = ConnectionPool.getConnection(true);
         LoadUserWindowWrapper wrapper = null;
@@ -33,6 +43,13 @@ public class UserWindowsService {
         return wrapper;
     }
 
+    /**
+     * Get selected information for load in user window
+     * @param userId user's id number in database
+     * @param currentSubStatusId subscription status id number
+     * @return map "publication name - subscription" or null
+     * @throws DataBaseWorkException errors in DAO layer
+     */
     public Map<String, Subscription> loadSelectedUserWindow(int userId, int currentSubStatusId) {
         Connection connection = ConnectionPool.getConnection(true);
         Map<String, Subscription> map = null;

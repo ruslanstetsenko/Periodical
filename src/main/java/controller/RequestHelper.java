@@ -19,8 +19,9 @@ public final class RequestHelper {
         commands.put("createSubscription", new CreateSubscriptionCommand());
         commands.put("cancelCreateSubscription", new CancelCreateSubscriptionCommand());
         commands.put("cancelCreareUser", new CancelCreareUserCommand());
-        commands.put("editPublication", new EditPublicationCommand());
+        commands.put("aboutPublicationForUpdate", new EditPublicationCommand());
         commands.put("editUser", new EditUserCommand());
+        commands.put("editPublication", new EditPublicationCommand());
         commands.put("logout", new LogoutCommand());
         commands.put("noCommand", new NoCommand());
         commands.put("okCreatePublication", new OkCreatePublicationCommand());

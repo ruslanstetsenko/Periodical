@@ -73,7 +73,7 @@ public class OkLoginComand implements Command {
             session.setAttribute("sessionId", sessionId);
 
             try {
-                FullPublicationInfoWrapper wrapper = new PublicationService().getAllPublication();
+                FullPublicationInfoWrapper wrapper = new PublicationService().getAllPublications();
                 List<User> userList = new UserService().getAllUsers();
                 session.setAttribute("publicationList", wrapper.getPublicationList());
 //                session.setAttribute("subscriptionBillList", wrapper.getSubscriptionBillList());
@@ -110,6 +110,7 @@ public class OkLoginComand implements Command {
 
             try {
                 AboutUserWrapper wrapper1 = new UserService().getUserInfo(currentUser.getId());
+                FullPublicationInfoWrapper wrapper2 = new PublicationService().getPubThemesAndTypes();
                 session.setAttribute("user", wrapper1.getUser());
                 session.setAttribute("userAccount", wrapper1.getAccount());
                 session.setAttribute("userContactInfo", wrapper1.getContactInfo());
@@ -117,6 +118,8 @@ public class OkLoginComand implements Command {
                 session.setAttribute("userPassportIdNumb", wrapper1.getPassportIdentNumber());
                 session.setAttribute("loginFormAction", "user");
                 session.setAttribute("currentPage", "path.page.userPageSubsc");
+                session.setAttribute("publicationTypeList", wrapper2.getPublicationTypeList());
+                session.setAttribute("publicationThemeList", wrapper2.getPublicationThemeList());
             } catch (DataBaseWorkException e) {
                 session.setAttribute("errorMessage", MessageConfigManager.getProperty(e.getMessage()));
                 session.setAttribute("previousPage", "path.page.login");

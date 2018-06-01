@@ -31,6 +31,7 @@ private static final Logger LOGGER = LogManager.getLogger(OkCreateSubscriptionCo
 
         UserWindowsService userWindowsService = new UserWindowsService();
         User user = (User) session.getAttribute("currentUser");
+
         int currentSubStatusId = (Integer) session.getAttribute("currentSubStatusId");
         int currentBillPaidId = (Integer) session.getAttribute("currentBillPaidId");
 

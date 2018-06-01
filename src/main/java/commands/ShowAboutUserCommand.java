@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class ShowAboutUserCommand implements Command {
-//    private static final Logger LOGGER = Logger.getLogger(ShowAboutUserCommand.class);
 private static final Logger LOGGER = LogManager.getLogger(ShowAboutUserCommand.class);
 
 

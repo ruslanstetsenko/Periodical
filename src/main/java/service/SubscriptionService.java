@@ -13,12 +13,22 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.util.*;
 
+/**
+ * Subscription service. Working with publications
+ * @author Stetsenko Ruslan
+ */
 public class SubscriptionService {
     private static final Logger LOGGER = LogManager.getLogger(SubscriptionService.class);
 
     private SubscriptionDao subscriptionDao = DaoFactory.getSubscriptionDao();
     private SubscriptionStatusDao subscriptionStatusDao = DaoFactory.getSubscriptionStatusDao();
 
+    /**
+     * Create subscription
+     * @param userId user's id number in database
+     * @param periodicyCostId selected subscriptions cost's
+     * @throws DataBaseWorkException errors in DAO layer
+     */
     public void createSubscription(int userId, List<Integer> periodicyCostId) {
         Connection connection = ConnectionPool.getConnection(false);
         Subscription subscription;
@@ -58,6 +68,12 @@ public class SubscriptionService {
         }
     }
 
+    /**
+     * Get subscription from database
+     * @param subsId subscription's id number in database
+     * @throws DataBaseWorkException errors in DAO layer
+     * @return subscription from database or null
+     */
     public Subscription getSubscription(int subsId) {
         Connection connection = ConnectionPool.getConnection(true);
         Subscription subscription = null;
@@ -72,6 +88,12 @@ public class SubscriptionService {
         return subscription;
     }
 
+    /**
+     * Get subscription with publication name by bill
+     * @param billId bill's id number in database
+     * @throws DataBaseWorkException errors in DAO layer
+     * @return map "publication name - subscription" from database or null
+     */
     public Map<String, Subscription> getSubscByBill(int billId) {
         Connection connection = ConnectionPool.getConnection(true);
         Map<String, Subscription> subscriptionMap;
@@ -86,6 +108,11 @@ public class SubscriptionService {
         return subscriptionMap;
     }
 
+    /**
+     * Get subscription statuses
+     * @throws DataBaseWorkException errors in DAO layer
+     * @return list with subscription statuses or null
+     */
     public List<SubscriptionStatus> getSubsStatusList() {
         Connection connection = ConnectionPool.getConnection(true);
         List<SubscriptionStatus> subscriptionStatusList;

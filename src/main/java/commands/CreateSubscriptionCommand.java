@@ -11,6 +11,7 @@ import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
 import service.UserWindowsService;
+import wrappers.FullPublicationInfoWrapper;
 import wrappers.PublicThemeAndTypeWrapper;
 
 import javax.servlet.ServletException;
@@ -45,12 +46,12 @@ public class CreateSubscriptionCommand implements Command {
         try {
             Map<Publication, List<PublicationPeriodicyCost>> map = publicationService.getPublicationWithCosts(0, 0, 1);
             Map<String, Subscription> subscriptionMap = userWindowsService.loadSelectedUserWindow(user.getId(), 0);
-            PublicThemeAndTypeWrapper wrapper = publicationService.getPubThemesAndTypes();
+            FullPublicationInfoWrapper wrapper = publicationService.getPubThemesAndTypes();
 
             session.setAttribute("mapAllPubNameSubscription", subscriptionMap);
             session.setAttribute("publicationListWithCost", map.entrySet());
-            session.setAttribute("publicationTypeList", wrapper.getPublicationTypes());
-            session.setAttribute("publicationThemeList", wrapper.getPublicationThemes());
+            session.setAttribute("publicationTypeList", wrapper.getPublicationTypeList());
+            session.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
 
             LOGGER.info("Start creating new subscription");
         } catch (DataBaseWorkException e) {

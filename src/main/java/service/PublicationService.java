@@ -7,15 +7,16 @@ import dao.interfaces.*;
 import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import wrappers.EditPublicationWrapper;
 import wrappers.FullPublicationInfoWrapper;
-import wrappers.PublicThemeAndTypeWrapper;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * Publication service. Working with publications
+ * @author Stetsenko Ruslan
+ */
 public class PublicationService {
     private static final Logger LOGGER = LogManager.getLogger(LoginService.class);
 
@@ -26,11 +27,17 @@ public class PublicationService {
     private PublicationPeriodicityCostDao publicationPeriodicityCostDao = DaoFactory.getPublicationPeriodicityCostDao();
     private SubscriptionBillDao subscriptionBillDao = DaoFactory.getSubscriptionBillDao();
 
-    public Publication getPublication(int pubId) {
+    /**
+     * Get publication from database
+     * @param id id publication's number in database
+     * @return publication from the database if it exists or null
+     * @throws DataBaseWorkException errors in DAO layer
+     */
+    public Publication getPublication(int id) {
         Connection connection = ConnectionPool.getConnection(true);
         Publication publication = null;
         try {
-            publication = publicationDao.read(pubId, connection);
+            publication = publicationDao.read(id, connection);
 
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get publication", e.getCause());
@@ -41,6 +48,21 @@ public class PublicationService {
         return publication;
     }
 
+    /**
+     * Create publication in database
+     * @param pubName   publication's title
+     * @param issn      publication's ISSN number
+     * @param website   publication's website
+     * @param setDate   publication's registration date
+     * @param pubType   id number publication's type
+     * @param pubStatus id number publication's status
+     * @param pubTheme  id number publication's theme
+     * @param cost1M    value of publication subscription cost for 1 month
+     * @param cost3M    value of publication subscription cost for 3 month
+     * @param cost6M    value of publication subscription cost for 6 month
+     * @param cost12M   value of publication subscription cost for 12 month
+     * @throws DataBaseWorkException errors in DAO layer
+     */
     public void createPublication(String pubName, String issn, String website, String setDate, String pubType, String pubStatus, String pubTheme, String cost1M, String cost3M, String cost6M, String cost12M) {
         Connection connection = ConnectionPool.getConnection(false);
         List<PublicationPeriodicyCost> list = new ArrayList<>();
@@ -99,16 +121,30 @@ public class PublicationService {
         }
     }
 
-    public void updatePublication(int publicationId, String pubName, String issn, String website, String setDate, String publicationType, String publicationTheme, String publicationStatus, Map<Integer, String> costs, List<PublicationPeriodicyCost> costBeens) {
+    /**
+     * Update publication
+     * @param id        publication's id number
+     * @param pubName   publication's title
+     * @param issn      publication's ISSN number
+     * @param website   publication's website
+     * @param setDate   publication's registration date
+     * @param pubType   id number publication's type
+     * @param pubStatus id number publication's status
+     * @param pubTheme  id number publication's themes
+     * @param costs     map with pairs of values period - subscription price
+     * @param costBeens list of cost options before the change
+     * @throws DataBaseWorkException errors in DAO layer
+     */
+    public void updatePublication(int id, String pubName, String issn, String website, String setDate, String pubType, String pubTheme, String pubStatus, Map<Integer, String> costs, List<PublicationPeriodicyCost> costBeens) {
         Connection connection = ConnectionPool.getConnection(false);
 
         int issn1 = Integer.valueOf(issn);
         Date setDate1 = Date.valueOf(setDate);
-        int publicationType1 = Integer.valueOf(publicationType);
-        int publicationTheme1 = Integer.valueOf(publicationTheme);
-        int publicationStatus1 = Integer.valueOf(publicationStatus);
+        int publicationType1 = Integer.valueOf(pubType);
+        int publicationTheme1 = Integer.valueOf(pubTheme);
+        int publicationStatus1 = Integer.valueOf(pubStatus);
         try {
-            publicationDao.update(publicationId, pubName, issn1, website, setDate1, publicationType1, publicationTheme1, publicationStatus1, connection);
+            publicationDao.update(id, pubName, issn1, website, setDate1, publicationType1, publicationTheme1, publicationStatus1, connection);
             for (Map.Entry<Integer, String> entry : costs.entrySet()) {
                 for (int i = 0; i < costs.size(); i++) {
                     PublicationPeriodicyCost publicationPeriodicyCost = costBeens.get(i);
@@ -133,15 +169,22 @@ public class PublicationService {
         }
     }
 
-    public FullPublicationInfoWrapper aboutPublication(int publicationId) {
+    /**
+     * Get publication and full information about it
+     * @param id publication's id
+     * @return wrapper object with publication's information or null
+     * @throws DataBaseWorkException errors in DAO layer
+     * @see FullPublicationInfoWrapper
+     */
+    public FullPublicationInfoWrapper aboutPublication(int id) {
         FullPublicationInfoWrapper wrapper = null;
         Connection connection = ConnectionPool.getConnection(true);
         try {
-            Publication publication = publicationDao.read(publicationId, connection);
+            Publication publication = publicationDao.read(id, connection);
             PublicationType publicationType = publicationTypeDao.read(publication.getPublicationTypeId(), connection);
             PublicationTheme publicationTheme = publicationThemeDao.read(publication.getPublicationThemeId(), connection);
             PublicationStatus publicationStatus = publicationStatusDao.read(publication.getPublicationStatusId(), connection);
-            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAllByPubId(connection, publicationId);
+            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAllByPubId(connection, id);
             wrapper = new FullPublicationInfoWrapper.Builder()
                     .setPublication(publication)
                     .setPublicationType(publicationType)
@@ -158,19 +201,33 @@ public class PublicationService {
         return wrapper;
     }
 
-    public EditPublicationWrapper editPublication(int publicationId) {
+    /**
+     * Get publication and information about cost option for update it
+     * @param id publication's id
+     * @return wrapper object with publication's information
+     * @throws DataBaseWorkException errors in DAO layer
+     * @see FullPublicationInfoWrapper
+     */
+    public FullPublicationInfoWrapper aboutPublicationForUpdate(int id) {
         Connection connection = ConnectionPool.getConnection(true);
-        EditPublicationWrapper wrapper = null;
+        FullPublicationInfoWrapper wrapper = null;
         try {
-            Publication publication = publicationDao.read(publicationId, connection);
-            List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
-            List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
-            List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
-            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAll(connection)
-                    .stream()
-                    .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == publicationId)
-                    .collect(Collectors.toList());
-            wrapper = new EditPublicationWrapper(publication, publicationTypeList, publicationThemeList, publicationStatusList, publicationPeriodicyCostList);
+            Publication publication = publicationDao.read(id, connection);
+//            List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
+//            List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
+//            List<PublicationStatus> publicationStatusList = publicationStatusDao.getAll(connection);
+            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAllByPubId(connection, id);
+//            List<PublicationPeriodicyCost> publicationPeriodicyCostList = publicationPeriodicityCostDao.getAll(connection)
+//                    .stream()
+//                    .filter(publicationPeriodicityCost -> publicationPeriodicityCost.getPublicationId() == id)
+//                    .collect(Collectors.toList());
+            wrapper = new FullPublicationInfoWrapper.Builder()
+                    .setPublication(publication)
+//                    .setPublicationTypeList(publicationTypeList)
+//                    .setPublicationThemeList(publicationThemeList)
+//                    .setPublicationStatusList(publicationStatusList)
+                    .setPublicationPeriodicyCostList(publicationPeriodicyCostList)
+                    .build();
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't edit publication", e.getCause());
             throw e;
@@ -180,7 +237,13 @@ public class PublicationService {
         return wrapper;
     }
 
-    public FullPublicationInfoWrapper getAllPublication() {
+    /**
+     * Get all publications and full information about theme
+     * @return wrapper object with publication's information
+     * @throws DataBaseWorkException errors in DAO layer
+     * @see FullPublicationInfoWrapper
+     */
+    public FullPublicationInfoWrapper getAllPublications() {
         Connection connection = ConnectionPool.getConnection(true);
         FullPublicationInfoWrapper wrapper = null;
         try {
@@ -207,13 +270,22 @@ public class PublicationService {
         return wrapper;
     }
 
-    public PublicThemeAndTypeWrapper getPubThemesAndTypes() {
+    /**
+     * Get all information about publication's themes and types
+     * @see FullPublicationInfoWrapper
+     * @return wrapper object with publication's information or null
+     * @throws DataBaseWorkException errors in DAO layer
+     */
+    public FullPublicationInfoWrapper getPubThemesAndTypes() {
         Connection connection = ConnectionPool.getConnection(true);
-        PublicThemeAndTypeWrapper wrapper = null;
+        FullPublicationInfoWrapper wrapper = null;
         try {
             List<PublicationType> publicationTypeList = publicationTypeDao.getAll(connection);
             List<PublicationTheme> publicationThemeList = publicationThemeDao.getAll(connection);
-            wrapper = new PublicThemeAndTypeWrapper(publicationThemeList, publicationTypeList);
+            wrapper = new FullPublicationInfoWrapper.Builder()
+                    .setPublicationTypeList(publicationTypeList)
+                    .setPublicationThemeList(publicationThemeList)
+                    .build();
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get publication themes and types", e.getCause());
             throw e;
@@ -223,6 +295,14 @@ public class PublicationService {
         return wrapper;
     }
 
+    /**
+     * Get all selected publications by type, theme and status
+     * @param pubTypeId publication's type id number
+     * @param pubThemeId publication's theme id number
+     * @param pubStatusId publication's status id number
+     * @return list of selected publications
+     * @throws DataBaseWorkException errors in DAO layer
+     */
     public List<Publication> getSelectedPublication(int pubTypeId, int pubThemeId, int pubStatusId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = null;
@@ -237,6 +317,14 @@ public class PublicationService {
         return publicationList;
     }
 
+    /**
+     * Get all selected publications by type, theme and status. Auxiliary sort method
+     * @param pubTypeId publication's type id number
+     * @param pubThemeId publication's theme id number
+     * @param pubStatusId publication's status id number
+     * @return list of selected publications
+     * @throws DataBaseWorkException errors in DAO layer
+     */
     private List<Publication> supportGetPubList(Connection connection, int pubTypeId, int pubThemeId, int pubStatusId) throws DataBaseWorkException {
         List<Publication> publicationList;
         if (pubTypeId == 0 && pubThemeId == 0 && pubStatusId == 0) {
@@ -259,11 +347,18 @@ public class PublicationService {
         return publicationList;
     }
 
-    public List<Publication> selectPublicationsByTypeByTheme(int typeId, int themeId) {
+    /**
+     * Get all selected publications by type, theme
+     * @param pubTypeId publication's type id number
+     * @param pubThemeId publication's theme id number
+     * @return list of selected publications
+     * @throws DataBaseWorkException errors in DAO layer
+     */
+    public List<Publication> selectPublicationsByTypeByTheme(int pubTypeId, int pubThemeId) {
         Connection connection = ConnectionPool.getConnection(true);
         List<Publication> publicationList = null;
         try {
-            publicationList = supportGetPubList(connection, typeId, themeId, 1);
+            publicationList = supportGetPubList(connection, pubTypeId, pubThemeId, 1);
         } catch (DataBaseWorkException e) {
             LOGGER.error("Can't get selected publications", e.getCause());
             throw e;
@@ -273,13 +368,21 @@ public class PublicationService {
         return publicationList;
     }
 
-    public Map<Publication, List<PublicationPeriodicyCost>> getPublicationWithCosts(int typeId, int themeId, int statusId) {
+    /**
+     * Get publications by type, theme and status with information about subscription options
+     * @param pubTypeId publication's type id number
+     * @param pubThemeId publication's theme id number
+     * @param pubStatusId publication's status id number
+     * @return map of selected publications with information about subscription options
+     * @throws DataBaseWorkException errors in DAO layer
+     */
+    public Map<Publication, List<PublicationPeriodicyCost>> getPublicationWithCosts(int pubTypeId, int pubThemeId, int pubStatusId) {
         Connection connection = ConnectionPool.getConnection(true);
         Map<Publication, List<PublicationPeriodicyCost>> publicationListMap = new LinkedHashMap<>();
         List<PublicationPeriodicyCost> publicationPeriodicyCosts = null;
 
         try {
-            List<Publication> publications = supportGetPubList(connection, typeId, themeId, statusId);
+            List<Publication> publications = supportGetPubList(connection, pubTypeId, pubThemeId, pubStatusId);
             for (int i = 0; i < publications.size(); i++) {
                 publicationPeriodicyCosts = publicationPeriodicityCostDao.getAllByPubId(connection, publications.get(i).getId());
                 publicationListMap.put(publications.get(i), publicationPeriodicyCosts);

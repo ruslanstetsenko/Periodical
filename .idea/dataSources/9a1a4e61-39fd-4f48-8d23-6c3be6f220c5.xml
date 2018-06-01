@@ -17,7 +17,7 @@
     <schema id="5" parent="1" name="periodical">
       <Current>1</Current>
       <Visible>1</Visible>
-      <Collation>utf8_general_ci</Collation>
+      <Collation>utf8mb4_general_ci</Collation>
     </schema>
     <schema id="6" parent="1" name="sys">
       <Collation>utf8_general_ci</Collation>
@@ -1090,7 +1090,7 @@
     <column id="267" parent="232" name="issued_by">
       <Position>5</Position>
       <Comment>
-</Comment>
+	</Comment>
       <DataType>varchar(100)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
@@ -1123,12 +1123,12 @@
       <Position>3</Position>
       <DataType>int(8)|0s</DataType>
       <NotNull>1</NotNull>
+      <DefaultExpression>&apos;11111111&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="273" parent="233" name="registration_date">
       <Position>4</Position>
       <DataType>date|0s</DataType>
-      <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="274" parent="233" name="website">

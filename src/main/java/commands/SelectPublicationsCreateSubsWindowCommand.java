@@ -4,6 +4,7 @@ import beans.Publication;
 import beans.PublicationPeriodicyCost;
 import exceptions.DataBaseWorkException;
 import org.apache.logging.log4j.LogManager;
+
 import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;

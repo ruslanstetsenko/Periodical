@@ -31,6 +31,7 @@ public class Controller extends HttpServlet implements Servlet {
 
     private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Command command = requestHelper.getCommand(request);
+
         String page = command.execute(request, response);
         request.getRequestDispatcher(page).forward(request, response);
     }

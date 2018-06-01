@@ -13,12 +13,23 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * Login service. Checking the authorization options
+ * @author Stetsenko Ruslan
+ */
 public class LoginService {
     private static final Logger LOGGER = LogManager.getLogger(LoginService.class);
 
     private AccountDao accountDao = DaoFactory.getAccountDao();
     private UserDao userDao = DaoFactory.getUserDao();
 
+/**
+ * Check account in database
+ * @param login user login
+ * @param password user password
+ * @return account if the search is successful or null
+ * @exception DataBaseWorkException errors in DAO layer
+ */
     public Account checkAccount(String login, String password) {
         Connection connection = ConnectionPool.getConnection(true);
         try {
@@ -37,6 +48,12 @@ public class LoginService {
         return null;
     }
 
+    /**
+     * Check login
+     * @param login user login
+     * @return true if the user name exists in the database
+     * @exception DataBaseWorkException errors in DAO layer
+     */
     public boolean checkLogin(String login) {
         Connection connection = ConnectionPool.getConnection(true);
         try {
@@ -55,6 +72,12 @@ public class LoginService {
         return false;
     }
 
+    /**
+     * Get user from database
+     * @param account
+     * @return user if the search is successful or null
+     * @exception DataBaseWorkException errors in DAO layer
+     */
     public User getUser(Account account) {
         Connection connection = ConnectionPool.getConnection(true);
         try {

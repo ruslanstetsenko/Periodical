@@ -33,14 +33,14 @@ public class EditUserCommand implements Command {
             return PageConfigManager.getProperty("path.page.login");
         }
 
-        int currentUserId = getCurrentUserId(request, currentUser);
+        int editedUserId = getCurrentUserId(request, currentUser);
         String surnameEditedUser;
         String nameEditedUser;
         String lastnameEditedUser;
 
-        session.setAttribute("currentUserId", currentUserId);
+        session.setAttribute("currentUserId", editedUserId);
         try {
-            AboutUserWrapper wrapper = new UserService().getUserInfo(currentUserId);
+            AboutUserWrapper wrapper = new UserService().getUserInfo(editedUserId);
             User user = wrapper.getUser();
             Account account = wrapper.getAccount();
             ContactInfo contactInfo = wrapper.getContactInfo();
@@ -80,6 +80,7 @@ public class EditUserCommand implements Command {
         } catch (NullPointerException npe) {
             session.setAttribute( "errorMessage", MessageConfigManager.getProperty("message.error.vrongParameters"));
             choicePreviousPage(session, currentUser);
+            npe.printStackTrace();
             LOGGER.error("Can't start edit user", npe.getCause());
             return PageConfigManager.getProperty("path.page.error");
         }
@@ -96,13 +97,13 @@ public class EditUserCommand implements Command {
     }
 
     private int getCurrentUserId(HttpServletRequest request, User currentUser) {
-        int currentUserId;
+        int editedUserId;
         if (currentUser.getUserRoleId() == 1) {
-            currentUserId = Integer.valueOf(request.getParameter("currentUserId"));
+            editedUserId = Integer.valueOf(request.getParameter("currentUserId"));
         } else {
-            currentUserId = currentUser.getId();
+            editedUserId = currentUser.getId();
         }
-        return currentUserId;
+        return editedUserId;
     }
 
 }

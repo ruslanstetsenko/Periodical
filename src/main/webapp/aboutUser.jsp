@@ -37,7 +37,7 @@
 </head>
 <body>
 
-<header>
+<header class="header">
     <div class="header_info">
         <h3><fmt:message key="head.welcome" bundle="${rb}"/>
             <c:out value="${currentUser.surname}"/>
@@ -61,7 +61,7 @@
 </header>
 
 <article>
-    <div class="about_user_block">
+    <div class="about_user_block2">
         <div class="personal_info">
             <table>
                 <tbody>

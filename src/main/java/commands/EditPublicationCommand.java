@@ -8,8 +8,7 @@ import org.apache.logging.log4j.Logger;
 import resourceBundle.MessageConfigManager;
 import resourceBundle.PageConfigManager;
 import service.PublicationService;
-import wrappers.EditPublicationWrapper;
-
+import wrappers.FullPublicationInfoWrapper;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +31,7 @@ public class EditPublicationCommand implements Command {
         int publicationId = Integer.valueOf(request.getParameter("publicationId"));
 
         try {
-            EditPublicationWrapper wrapper = new PublicationService().editPublication(publicationId);
+            FullPublicationInfoWrapper wrapper = new PublicationService().aboutPublicationForUpdate(publicationId);
             List<PublicationPeriodicyCost> costs = wrapper.getPublicationPeriodicyCostList();
             Publication publication = wrapper.getPublication();
             publicationName = wrapper.getPublication().getName();
@@ -41,9 +40,9 @@ public class EditPublicationCommand implements Command {
             request.setAttribute("ISSN", publication.getIssnNumber());
             request.setAttribute("setDate", publication.getRegistrationDate());
             request.setAttribute("website", publication.getWebsite());
-            request.setAttribute("publicationTypeList", wrapper.getPublicationTypeList());
-            request.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());
-            request.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());
+            request.setAttribute("publicationTypeList", wrapper.getPublicationTypeList());//
+            request.setAttribute("publicationThemeList", wrapper.getPublicationThemeList());//
+            request.setAttribute("publicationStatusList", wrapper.getPublicationStatusList());//
             session.setAttribute("publicationPeriodicityCostList", costs);
             setCosts(request, costs);
 

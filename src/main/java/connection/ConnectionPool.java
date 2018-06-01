@@ -42,7 +42,6 @@ public final class ConnectionPool {
             dataSource.setMaxWaitMillis(Long.valueOf(properties.getProperty(MAX_WAIT)));
             dataSource.setMaxTotal(Integer.valueOf(properties.getProperty(MAX_TOTAL)));
             dataSource.setDefaultTransactionIsolation(Integer.valueOf(properties.getProperty(TRANSACTION_ISOLATION)));
-
         } catch (IOException e) {
             LOGGER.error("Cant load connection pool", e);
         }
@@ -73,7 +72,6 @@ public final class ConnectionPool {
             try {
                 connection.setAutoCommit(true);
                 connection.close();
-                LOGGER.info("CONNECTION CLOSED");
             } catch (SQLException e) {
             }
         }
@@ -82,7 +80,6 @@ public final class ConnectionPool {
     public static void transactionRollback(Connection connection) {
         if (connection != null) {
             try {
-                connection.setAutoCommit(true);
                 connection.rollback();
             } catch (SQLException e) {
             }

@@ -70,7 +70,7 @@ public class OkEditUserCommand implements Command {
             Date passportDateOfIssue1 = Date.valueOf(passportDateOfIssue);
 
             try {
-                userService.updateUser(currentUserId, userName, userSurName, userLastName, userBirthDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail, login, password);
+                userService.updateUser(currentUserId, userName, userSurName, userLastName, userBirthDate1, passportSerial, passportNumber1, passportDateOfIssue1, passportIssuedBy, identNuber, region, district, city, street, building, appartment, userPhoneNumber, userEmail);
                 if (currentUser.getUserRoleId() != 1) {
                     AboutUserWrapper wrapper = new UserService().getUserInfo(currentUser.getId());
                     session.setAttribute("currentUser", wrapper.getUser());
@@ -100,7 +100,7 @@ public class OkEditUserCommand implements Command {
             }
 
             LOGGER.info("User " + userSurName + " " + userName + " " + userLastName + " has updated");
-            return currentUser.getUserRoleId() == 1 ? PageConfigManager.getProperty("path.page.users") : PageConfigManager.getProperty("path.page.aboutUser");
+            return currentUser.getUserRoleId() == 1 ? PageConfigManager.getProperty("path.page.users") : PageConfigManager.getProperty("path.page.userPageSubsc");
         }
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
             request.setAttribute(entry.getKey(), entry.getValue());
@@ -134,7 +134,7 @@ public class OkEditUserCommand implements Command {
         if (currentUser.getUserRoleId() == 1) {
             session.setAttribute("previousPage", "path.page.users");
         } else {
-            session.setAttribute("previousPage", "path.page.aboutUser");
+            session.setAttribute("previousPage", "path.page.userPageSubsc");
         }
     }
 }
